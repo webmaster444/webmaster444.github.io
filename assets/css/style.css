@@ -15,3 +15,7 @@
 	border-radius: 3px;
 	padding: 5px;
 }
+
+.grid_item:nth-child(3n) {
+	margin-bottom: 3px;
+}
