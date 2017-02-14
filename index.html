@@ -11,29 +11,32 @@
 <nav id="main_nav" class="navbar navbar-default navbar-fixed-top">
   <div class="container">
     <a class="navbar-brand" id="logo" href="#">
-    	<img alt="Brand" src="assets/images/webmaster-icon.png" width="43px"/>
+    	<img alt="Brand" src="assets/images/webmaster-logo.png" width="180px"/>
     </a>
 
     <ul class="nav navbar-nav navbar-right">
         <li><a href="#">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="#">Work </a></li>
-        <li><a href="#contact.html">Contact</a></li>	
+        <li><a href="#projects">Projects </a></li>
+        <li><a href="">About</a></li>
+        <li><a href="#contact">Contact</a></li>	
     </ul>
   </div>
 </nav>
 
 <div id="header">
-	<div id="header_overlay">
+	<div class="overlay">
 
 	</div>
+
+    <div id="header_content">
+      <h1>Welcome to visit my github page</h1>
+      <br/>
+      <a href="#contact" class="btn btn-info"> Get in touch</a>
+    </div>
 </div>
 
 </div>
-  <div class="container">
-    <div class="page-header">
-      <h1>Welcome to visit my github page</small></h1>
-    </div>
+  <div id="projects" class="container">
 
     <div class="row" style="min-height:600px;">
       <div  class="col-sm-12">
@@ -129,12 +132,70 @@
 
     <div class="clearfix"></div>
 
+</div>
+<div id="contact">
+	<div class="overlay">
+
+	</div>
+	<div id="contact_content" class="container">
+	<div class='row'>
+	<div class="col-md-6">
+		<h1>Get in touch</h1>
+	</div>
+
+	<div class="col-md-6" style="text-align: left;">
+		<h2 style="margin-top: -3px;"><a href="mailto:jlmobile710@gmail.com" ><img class="contact_icon_img" src="assets/images/email_icon.png" width="35px" alt="Email Icon">jlmobile710@gmail.com</a></h2>
+		<h2><img class="contact_icon_img" src="assets/images/skype_icon.png" width="40px" alt="Skype icon">live:jlmobile710</h2>
+	</div>
+
+	</div>
+	</div>
+    
+</div>
+
   <footer class="footer" style="width:100%; text-align:center; padding-bottom:20px;">
     <hr/>
-    <span>&copy Webmaster444 2017</span>
+    <span>&copy 2017 Webmaster444</span>
   </footer>
 
-  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <!-- <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script> -->
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/js/jquery.scrollto.js"></script>
   <script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+  <script src="assets/js/jquery.nav.js"></script>
+
+<script>
+$(function(){
+	// Check the initial Poistion of the Sticky Header
+	var stickyHeaderTop = $('#header').height() - 50;
+
+	$(window).scroll(function(){
+	    if( $(window).scrollTop() > stickyHeaderTop ) {
+	            $('#main_nav').css('background', 'rgba(0,135,206,0.8');
+	            $('#main_nav').css('margin-top', 0);
+	    } else {
+	            $('#main_nav').css('background', 'none');
+	            $('#main_nav').css('margin-top', 50);
+	    }
+	});
+
+	$('#nav').onePageNav( {   currentClass: 'current',
+    changeHash: false,
+    scrollSpeed: 750,
+    scrollThreshold: 0.5,
+    filter: '',
+    easing: 'swing',
+    begin: function() {
+        //I get fired when the animation is starting
+    },
+    end: function() {
+        //I get fired when the animation is ending
+    },
+    scrollChange: function($currentListItem) {
+        //I get fired when you enter a section and I pass the list item of the section
+    }
+});
+});
+</script>
 </body>
 </html>
