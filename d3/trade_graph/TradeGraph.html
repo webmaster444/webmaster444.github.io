@@ -2,7 +2,7 @@
 
 <meta charset="utf-8" />
 
-<link rel="stylesheet" type="text/css" href="jquery-ui.min.css"/>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"/>
 
 <style>
 
@@ -80,8 +80,9 @@ text {
 </style>
 
 <body>
-	<script type="text/javascript" src="./../bin/jquery-ui-1.9.0-rc.1/jquery-1.8.0.js"></script>
-	<script type="text/javascript" src="./../bin/jquery-ui-1.9.0-rc.1/ui/minified/jquery-ui.min.js"></script> 
+	<!-- <script type="text/javascript" src="./../bin/jquery-ui-1.9.0-rc.1/jquery-1.8.0.js"></script> -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script> 
 	<!-- <script src="jquery-1.9.1.min.js"></script> -->
 
 	<h2>Trade Linkages</h2>
@@ -346,9 +347,6 @@ text {
 				}
 			}
 */
-
-			console.log(nodes);
-			console.log(links);
 
 			var nodeColor = d3.scale.category20();
 			//nodes.each(function(d){
