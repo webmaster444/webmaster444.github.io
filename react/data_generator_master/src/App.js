@@ -17,9 +17,9 @@ class App extends Component {
 	render() {
 		return (
 			<div className="App">
-				<AppBar className="title-bar" title="My Data Generator"
-			iconElementLeft={<a href="http://www.sohamkamani.com/"><ActionHome color="white" style={logoStyle}/></a>}
-			iconElementRight={<a href="https://github.com/sohamkamani/mr-data-generator"><img src={githubLogo} style={logoStyle}/> </a>}/>
+				<AppBar className="title-bar" title="React-Sample Data Generator"
+			iconElementLeft={<a href="https://webmaster444.github.io/"><ActionHome color="white" style={logoStyle}/></a>}
+			iconElementRight={<a href="https://github.com/webmaster444/webmaster444.github.io/react/data_generator_master/"><img src={githubLogo} style={logoStyle}/> </a>}/>
 				<div className="content">
 					<div className="primary-container">
 						<ChartConfigBar/>

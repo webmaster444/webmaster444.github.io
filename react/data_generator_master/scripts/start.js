@@ -156,8 +156,6 @@ function runDevServer(port) {
     }
 
     clearConsole();
-    console.log(chalk.cyan('Starting the development server...'));
-    console.log();
     openBrowser(port);
   });
 }
