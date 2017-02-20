@@ -179,7 +179,7 @@ var App = React.createClass({
 				<Map />
 				<div id="sidebar">
 					<header>
-						<h1><Icon type="mountains" width="24" height="24"></Icon> Steepless</h1>
+						<h1><Icon type="mountains" width="24" height="24"></Icon> Find route app</h1>
 					</header>
 					<RouteForm start={this.state.start} end={this.state.end} units={units} travelMode={travelMode} onUnitChange={this.handleUnitChange} onTravelModeChange={this.handleTravelModeChange} />
 					<RouteList data={this.state.routes} travelMode={travelMode} units={units} onRouteClick={this.handleRouteClick} />
