@@ -60,8 +60,6 @@ d3.json("sample_data.json", function(error, data1) {
     		"SLC1":"bar-running"
         };
 
-        var taskNames = ["D Job", "P Job", "E Job", "A Job", "N Job"];
-
         if(unit=='min'){
             var format = "%H:%M";    
         }else{

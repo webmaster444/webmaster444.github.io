@@ -8,10 +8,10 @@ d3.gantt = function() {
     var FIXED_TIME_DOMAIN_MODE = "fixed";
     
     var margin = {
-	top : 20,
-	right : 40,
-	bottom : 20,
-	left : 150
+		top : 20,
+		right : 40,
+		bottom : 20,
+		left : 150
     };
     var timeDomainStart = d3.time.day.offset(new Date(),-3);
     var timeDomainEnd = d3.time.hour.offset(new Date(),+3);
@@ -31,14 +31,14 @@ d3.gantt = function() {
 	return "translate(" + x(d.startDate) + "," + y(d.machineId) + ")";
     };
 
-    var x = d3.time.scale().domain([ timeDomainStart, timeDomainEnd ]).range([ 0, width ]).clamp(true);
+    // var x = d3.time.scale().domain([ timeDomainStart, timeDomainEnd ]).range([ 0, width ]).clamp(true);
 
-    var y = d3.scale.ordinal().domain(taskTypes).rangeRoundBands([ 0, height - margin.top - margin.bottom ], .1);
+    // var y = d3.scale.ordinal().domain(taskTypes).rangeRoundBands([ 0, height - margin.top - margin.bottom ], .1);
     
-    var xAxis = d3.svg.axis().scale(x).orient("bottom").tickFormat(d3.time.format(tickFormat)).tickSubdivide(true)
-	    .tickSize(8).tickPadding(8);
+    // var xAxis = d3.svg.axis().scale(x).orient("bottom").tickFormat(d3.time.format(tickFormat)).tickSubdivide(true)
+	   //  .tickSize(8).tickPadding(8);
 
-    var yAxis = d3.svg.axis().scale(y).orient("left").tickSize(0);
+    // var yAxis = d3.svg.axis().scale(y).orient("left").tickSize(width);
 
     var initTimeDomain = function(tasks) {
 	if (timeDomainMode === FIT_TIME_DOMAIN_MODE) {
@@ -62,9 +62,9 @@ d3.gantt = function() {
 	x = d3.time.scale().domain([ timeDomainStart, timeDomainEnd ]).range([ 0, width ]).clamp(true);
 	y = d3.scale.ordinal().domain(taskTypes).rangeRoundBands([ 0, height - margin.top - margin.bottom ], .1);
 	xAxis = d3.svg.axis().scale(x).orient("bottom").tickFormat(d3.time.format(tickFormat)).tickSubdivide(true)
-		.tickSize(8).tickPadding(8);
+		.tickSize(-height+45).tickPadding(8).outerTickSize(8);
 
-	yAxis = d3.svg.axis().scale(y).orient("left").tickSize(0);
+	yAxis = d3.svg.axis().scale(y).orient("left").tickSize(-width);
     };
     
     function gantt(tasks) {
@@ -83,7 +83,22 @@ d3.gantt = function() {
 	.attr("height", height + margin.top + margin.bottom)
 	.attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
 	
+	svg.append('line').attr('class','y_axis') .style("stroke", "black")  // colour the line
+    .attr("x1", 0)     // x position of the first end of the line
+    .attr("y1", 45)      // y position of the first end of the line
+    .attr("x2", 0)     // x position of the second end of the line
+    .attr("y2", height-margin.top-margin.bottom); 
+	 svg.append("g")
+	 .attr("class", "x axis")
+	 .attr("transform", "translate(0, " + (height - margin.top - margin.bottom) + ")")
+	 .transition()
+	 .call(xAxis);
+	 
+	svg.append("g").attr("class", "y axis").transition().call(yAxis);
 
+	svg.selectAll("g.y .tick text").attr("x", 0).attr("dy", -4);
+	svg.selectAll(".domain").remove();
+	svg.selectAll("g.x .tick line").attr("stroke", "#777").attr("stroke-dasharray", "2,2");
 	        var g_containers = svg.selectAll(".chart")
             .data(tasks, keyFunction).enter()
             .append('g')
@@ -98,6 +113,7 @@ d3.gantt = function() {
             })
             .attr("y", 0)
             .attr('stroke','black')
+            .attr('stroke-opacity',.3)
             .attr("stroke-dasharray", function(d){
             	var tmp_width = x(d.endDate) - x(d.startDate);
             	return  '0, '+tmp_width + ',' + y.rangeBand()+', '+ tmp_width + ','+y.rangeBand();
@@ -172,58 +188,56 @@ d3.gantt = function() {
 	 //     });
 	 
 	 
-	 svg.append("g")
-	 .attr("class", "x axis")
-	 .attr("transform", "translate(0, " + (height - margin.top - margin.bottom) + ")")
-	 .transition()
-	 .call(xAxis);
-	 
-	 svg.append("g").attr("class", "y axis").transition().call(yAxis);
-	 
+
+	
+	
+
 	 return gantt;
 
     };
     
-    gantt.redraw = function(tasks) {
+    
 
-	initTimeDomain();
-	initAxis();
+ //    gantt.redraw = function(tasks) {
+
+	// initTimeDomain();
+	// initAxis();
 	
-        var svg = d3.select("svg");
+ //        var svg = d3.select("svg");
 
-        var ganttChartGroup = svg.select(".gantt-chart");
-        var rect = ganttChartGroup.selectAll("rect").data(tasks, keyFunction);
+ //        var ganttChartGroup = svg.select(".gantt-chart");
+ //        var rect = ganttChartGroup.selectAll("rect").data(tasks, keyFunction);
         
-        rect.enter()
-         .insert("rect",":first-child")
-         // .attr("rx", 5)
-         // .attr("ry", 5)
-	 .attr("class", function(d){ 
-	     if(taskStatus[d.caster] == null){ return "bar";}
-	     return taskStatus[d.caster];
-	     }) 
-	 .transition()
-	 .attr("y", 0)
-	 .attr("transform", rectTransform)
-	 .attr("height", function(d) { return y.rangeBand(); })
-	 .attr("width", function(d) { 
-	     return (x(d.endDate) - x(d.startDate)); 
-	     });
+ //        rect.enter()
+ //         .insert("rect",":first-child")
+ //         // .attr("rx", 5)
+ //         // .attr("ry", 5)
+	//  .attr("class", function(d){ 
+	//      if(taskStatus[d.caster] == null){ return "bar";}
+	//      return taskStatus[d.caster];
+	//      }) 
+	//  .transition()
+	//  .attr("y", 0)
+	//  .attr("transform", rectTransform)
+	//  .attr("height", function(d) { return y.rangeBand(); })
+	//  .attr("width", function(d) { 
+	//      return (x(d.endDate) - x(d.startDate)); 
+	//      });
 
-        rect.transition()
-          .attr("transform", rectTransform)
-	 .attr("height", function(d) { return y.rangeBand(); })
-	 .attr("width", function(d) { 
-	     return (x(d.endDate) - x(d.startDate)); 
-	     });
+ //        rect.transition()
+ //          .attr("transform", rectTransform)
+	//  .attr("height", function(d) { return y.rangeBand(); })
+	//  .attr("width", function(d) { 
+	//      return (x(d.endDate) - x(d.startDate)); 
+	//      });
         
-	rect.exit().remove();
+	// rect.exit().remove();
 
-	svg.select(".x").transition().call(xAxis);
-	svg.select(".y").transition().call(yAxis);
+	// svg.select(".x").transition().call(xAxis);
+	// svg.select(".y").transition().call(yAxis);
 	
-	return gantt;
-    };
+	// return gantt;
+ //    };
 
     gantt.margin = function(value) {
 	if (!arguments.length)
@@ -290,8 +304,4 @@ d3.gantt = function() {
 
     
     return gantt;
-};
-
-d3.selection.prototype.first = function() {
-  return d3.select(this[0][0]);
 };
