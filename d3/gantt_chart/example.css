@@ -16,7 +16,7 @@ html,body,#wrapper {
 }
  
 .bar {
-	fill: #33b5e5;
+	fill: #44b5e5;
 }
  
 .bar-failed {
@@ -28,7 +28,7 @@ html,body,#wrapper {
 }
  
 .bar-succeeded {
-	fill: #33b5e5;
+	fill: #cccccc;
 }
  
 .bar-killed {

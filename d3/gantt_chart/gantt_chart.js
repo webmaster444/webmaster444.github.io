@@ -94,11 +94,13 @@ d3.gantt = function() {
             .attr("ry", 5)
             .attr("class", function(d) {
             	// console.log(d);
-             //    if (taskStatus[d.status] == null) {
-             //        return "bar";
-             //    }
-             //    return taskStatus[d[1]];
-             	return "bar";
+                if (taskStatus[d.caster] == null) {
+                    return "bar";
+                }
+                return taskStatus[d.caster];
+
+                // console.log(taskStatus[d.caster]);
+             	// return "bar";
             })
             .attr("y", 0)
             // .attr("transform", rectTransform)
@@ -181,8 +183,8 @@ d3.gantt = function() {
          .attr("rx", 5)
          .attr("ry", 5)
 	 .attr("class", function(d){ 
-	     if(taskStatus[d.status] == null){ return "bar";}
-	     return taskStatus[d.status];
+	     if(taskStatus[d.caster] == null){ return "bar";}
+	     return taskStatus[d.caster];
 	     }) 
 	 .transition()
 	 .attr("y", 0)

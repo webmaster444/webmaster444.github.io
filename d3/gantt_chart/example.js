@@ -29,8 +29,6 @@ d3.json("sample_data.json", function(error, data1) {
                 data1[i].action_list[j]["boxIndex"] = box_index;
                 data1[i].action_list[j]["duration"] = data1[i].action_list[j][4];
 
-                // console.log(data1[i].action_list[j]);
-
                 tasks.push(data1[i].action_list[j]);
             }
         }
@@ -47,29 +45,18 @@ d3.json("sample_data.json", function(error, data1) {
         }
     }
 
-console.log(machineIds);
     var taskStatus = {
         "BIC1": "bar",
-		"LF3":"bar-failed",
-		"EAF3":"bar-running",
-		"LF2":"bar-failed",
-		"EAF6":"bar",
-		"EAF5":"bar-failed",
-		"LF4":"bar-killed", 
-		"EAF2":"bar-running",
 		"SLC3":"bar-failed",
-		"BLC1":"bar",
+		"BLC1":"bar-succeeded",
 		"BIC2":"bar-killed",
-		"SLC1":"bar-running",
-		"VD1":"bar",
-		"LF1":"bar-killed",
-		"VD2":"bar-running"
+		"SLC1":"bar-running"
     };
 
     var taskNames = ["D Job", "P Job", "E Job", "A Job", "N Job"];
 
     var format = "%H:%M";
 
-    var gantt = d3.gantt().taskTypes(machineIds).taskStatus(machineIds).tickFormat(format);
+    var gantt = d3.gantt().taskTypes(machineIds).taskStatus(taskStatus).tickFormat(format);
     gantt(tasks);
 });
