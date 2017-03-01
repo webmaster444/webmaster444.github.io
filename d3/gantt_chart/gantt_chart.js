@@ -90,20 +90,18 @@ d3.gantt = function() {
             .attr("transform", rectTransform);
 
             g_containers.append("rect")
-            .attr("rx", 5)
-            .attr("ry", 5)
             .attr("class", function(d) {
-            	// console.log(d);
                 if (taskStatus[d.caster] == null) {
                     return "bar";
                 }
                 return taskStatus[d.caster];
-
-                // console.log(taskStatus[d.caster]);
-             	// return "bar";
             })
             .attr("y", 0)
-            // .attr("transform", rectTransform)
+            .attr('stroke','black')
+            .attr("stroke-dasharray", function(d){
+            	var tmp_width = x(d.endDate) - x(d.startDate);
+            	return  '0, '+tmp_width + ',' + y.rangeBand()+', '+ tmp_width + ','+y.rangeBand();
+            })
             .attr("height", function(d) {
                 return y.rangeBand();
             })
@@ -113,13 +111,30 @@ d3.gantt = function() {
             });
          g_containers.append("text")
          	.attr('class','txt_grade')
+         	.attr('font-size','10px')
 		    .attr("x", function(d) { return 5; })
 		    .attr("y", 8)
 		    .attr("dy", ".35em")
-		    .text(function(d) { return d.grade; });
+		    .text(function(d) {
+		    	return d.grade; 
+			});
          
+         g_containers.selectAll('.txt_grade').text(function(d){
+         	var current_length = this.getComputedTextLength();
+         	var g_c = d3.select(this.parentNode);
+         	var rect_length = g_c.select('rect').attr('width');
+         	if(rect_length-5>current_length){
+         		return d.grade;
+         	}
+         	var temp_st = d.grade;
+         	var res = temp_st.substring(0, 5);
+         	return res+'...';
+         });
+
          g_containers.append("text")
          	.attr('class','txt_id')
+         	.attr('font-size','10px')
+         	.attr('font-weight','700')
 		    .attr("x", function(d) { return (x(d.endDate) - x(d.startDate))/2 - 5 })
 		    .attr("y", function(d){
 		    	return y.rangeBand()/2;
@@ -129,6 +144,7 @@ d3.gantt = function() {
          
          g_containers.append("text")
          	.attr('class','txt_duration')
+         	.attr('font-size','10px')
 		    .attr("x", function(d) { return (x(d.endDate) - x(d.startDate))-15; })
 		    .attr("y", function(d){
 		    	return y.rangeBand()-5;
@@ -180,8 +196,8 @@ d3.gantt = function() {
         
         rect.enter()
          .insert("rect",":first-child")
-         .attr("rx", 5)
-         .attr("ry", 5)
+         // .attr("rx", 5)
+         // .attr("ry", 5)
 	 .attr("class", function(d){ 
 	     if(taskStatus[d.caster] == null){ return "bar";}
 	     return taskStatus[d.caster];
@@ -274,4 +290,8 @@ d3.gantt = function() {
 
     
     return gantt;
+};
+
+d3.selection.prototype.first = function() {
+  return d3.select(this[0][0]);
 };

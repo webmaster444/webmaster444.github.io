@@ -16,15 +16,15 @@ html,body,#wrapper {
 }
  
 .bar {
-	fill: #44b5e5;
+	fill: #e1fb82;
 }
  
 .bar-failed {
-	fill: #CC0000;
+	fill: #d5fdc0;
 }
  
 .bar-running {
-	fill: #669900;
+	fill: #faf6ef;
 }
  
 .bar-succeeded {
@@ -32,7 +32,7 @@ html,body,#wrapper {
 }
  
 .bar-killed {
-	fill: #ffbb33;
+	fill: #9fe6f1;
 }
  
 #forkme_banner {
