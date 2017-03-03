@@ -1,5 +1,5 @@
 /**
- * @author Dimitry Kudrayvtsev
+ * @author Webmaster444
  * @version 2.0
  */
 
