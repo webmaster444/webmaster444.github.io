@@ -6,6 +6,7 @@ d3.json("sample_data.json", function(error, data1) {
         var machineIds = [];
         var unit = config_json.unit;
         for (var i = 1; i <= json_length; i++) {
+            console.log(data1[i]);
             var box_color = data1[i].caster;
             var box_grade = data1[i].grade;
             var box_index = data1[i].id;
