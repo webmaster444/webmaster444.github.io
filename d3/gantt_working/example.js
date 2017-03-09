@@ -6,7 +6,6 @@ d3.json("sample_data.json", function(error, data1) {
         var machineIds = [];
         var unit = config_json.unit;
         for (var i = 1; i <= json_length; i++) {
-            console.log(data1[i]);
             var box_color = data1[i].caster;
             var box_grade = data1[i].grade;
             var box_index = data1[i].id;
@@ -41,17 +40,6 @@ d3.json("sample_data.json", function(error, data1) {
             }
         }
 
-        // var tasks_length = Object.keys(tasks).length;
-        // for (var i = 0; i < tasks_length; i++) {
-        //     if(i==0){
-        //         machineIds.push(tasks[0].machineId);
-        //     }
-
-        //     if(machineIds.indexOf(tasks[i].machineId)==-1){
-        //         machineIds.push(tasks[i].machineId);
-        //     }
-        // }
-
         machineIds = config_json.sequence;
         var taskStatus = {
             "BIC1": "bar",
@@ -67,7 +55,6 @@ d3.json("sample_data.json", function(error, data1) {
             var format = "%M:%S";    
         }
         
-
         var gantt = d3.gantt().taskTypes(machineIds).taskStatus(taskStatus).tickFormat(format);
         gantt(tasks);
     })

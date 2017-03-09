@@ -124,15 +124,6 @@ d3.gantt = function() {
 
         focus.append("g").attr("class", "y axis").transition().call(yAxis);
 
-        // context.append("path")
-        //        // .datum(data)
-        //        .attr("class", "area")
-        //        .attr("d", area2);
-        // x.domain(d3.extent(tasks.map(function(d) { return d.startDate; })));
-        // y.domain([0, d3.max(tasks.map(function(d) { return d.duration; }))]);
-        // x2.domain(x.domain());
-        // y2.domain(y.domain());
-
         zoom.x(x);
 
         context.append("g")
@@ -305,11 +296,12 @@ d3.gantt = function() {
         svg.selectAll(".txt_grade").remove();
         svg.selectAll(".txt_id").remove();
         svg.selectAll(".txt_duration").remove();
+        svg.selectAll(".domain").remove();    
 
         var g_wrappers = ganttChartGroup.selectAll('.box').data(tasks, keyFunction).attr("transform", rectTransform);
 
         var rect = ganttChartGroup.selectAll("rect").data(tasks, keyFunction);
-
+        svg.selectAll("g.x .tick line").attr("stroke", "#777").attr("stroke-dasharray", "2,2");
         rect.enter()
             .insert("rect", ":first-child")
             .attr("class", function(d) {
@@ -318,9 +310,8 @@ d3.gantt = function() {
                 }
                 return taskStatus[d.status];
             })
-            // .transition()
+
             .attr("y", 0)
-            // .attr("transform", rectTransform)
             .attr("height", function(d) {
                 return y.rangeBand();
             })
@@ -328,10 +319,7 @@ d3.gantt = function() {
                 return (x(d.endDate) - x(d.startDate));
             });
 
-
         rect
-            // .transition()
-            // .attr("transform", rectTransform)
             .attr('stroke', 'black')
             .attr('stroke-opacity', .3)
             .attr("stroke-dasharray", function(d) {
@@ -373,7 +361,6 @@ d3.gantt = function() {
             var res = temp_st.substring(0, 5);
             return res + '...';
 
-
         });
 
         g_wrappers.append("text")
@@ -397,7 +384,6 @@ d3.gantt = function() {
                 return d.boxIndex;
             });
 
-
         g_wrappers.append("text")
             .attr('class', 'txt_duration')
             .attr('font-size', '10px')
@@ -417,7 +403,7 @@ d3.gantt = function() {
                     return '';
                 return d.duration;
             });
-
+    
         return gantt;
     };
 
@@ -435,11 +421,6 @@ d3.gantt = function() {
         return gantt;
     };
 
-    /**
-     * @param {string}
-     *                vale The value can be "fit" - the domain fits the data or
-     *                "fixed" - fixed domain.
-     */
     gantt.timeDomainMode = function(value) {
         if (!arguments.length)
             return timeDomainMode;
@@ -482,10 +463,6 @@ d3.gantt = function() {
         tickFormat = value;
         return gantt;
     };
-
-    //brush functions
-
-
 
     return gantt;
 };
