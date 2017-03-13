@@ -109,12 +109,29 @@ d3.gantt = function() {
         var zoom = d3.behavior.zoom()
             .on("zoom", draw);
 
+
+
         var rect = svg.append("svg:rect")
             .attr("class", "pane")
             .attr("width", width)
             .attr("height", focus_height + margin.top + margin.bottom - 80)
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+            .on("mouseout",function(){
+                var redline = d3.select('.red_line').style('display','none');
+            })
+            .on("mouseover",function(){
+                var redline = d3.select('.red_line').style('display','block');
+            })
+            .on("mousemove",function(d){
+                var coordinates = [0, 0];
+                coordinates = d3.mouse(this);
+                var x = coordinates[0];
+                
+                var redline = d3.select('.red_line').attr('x1',x).attr('x2',x);
+            })
             .call(zoom);
+
+
 
         focus.append("g")
             .attr("class", "x axis")
@@ -285,9 +302,15 @@ d3.gantt = function() {
             .attr("x2", 0) // x position of the second end of the line
             .attr("y2", focus_height - margin.top - margin.bottom);
 
+        focus.append('line').attr('class','red_line').attr("x1", 0).style('stroke','red') // x position of the first end of the line
+            .attr("y1", 8) // y position of the first end of the line
+            .attr("x2", 0) // x position of the second end of the line
+            .attr("y2", focus_height - margin.top - margin.bottom);
+            // .attr("y2", 100);
+
         function brushed() {
             x.domain(brush.empty() ? x2.domain() : brush.extent());
-focus.select(".x.axis").call(xAxis);
+            focus.select(".x.axis").call(xAxis);
             gantt.redraw(tasks);
             
             // Reset zoom scale's domain
