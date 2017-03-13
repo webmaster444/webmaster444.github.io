@@ -42,12 +42,18 @@ html,body,#wrapper {
 
 /* Clip path*/
 .brush .extent {
-  stroke: #fff;
-  fill-opacity: .125;
-  shape-rendering: crispEdges;
-  clip-path: url(#clip);
+  /*stroke: #fff;*/
+  fill:	black;
+  fill-opacity: .65;
+  /*shape-rendering: crispEdges;*/
+  /*clip-path: url(#clip);*/
 }
 
+rect.background{
+	opacity: 0.5;
+	fill: gray;
+	visibility: inherit !important;
+}
 rect.pane {
   cursor: move;
   fill: none;

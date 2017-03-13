@@ -69,7 +69,7 @@ d3.gantt = function() {
             .tickSize(-focus_height + 45).tickPadding(8).outerTickSize(8);
         xAxis2 = d3.svg.axis().scale(x2).orient("bottom");
 
-        yAxis = d3.svg.axis().scale(y).orient("left").tickSize(-width);
+        yAxis = d3.svg.axis().scale(y).orient("left").tickSize(-width).tickPadding(5);
         yAxis2 = d3.svg.axis().scale(y2).orient("left").tickSize(0).tickValues('');
     };
 
@@ -165,7 +165,7 @@ d3.gantt = function() {
                 return (x(d.endDate) - x(d.startDate));
             });
 
-        focus.selectAll("g.y .tick text").attr("x", 0).attr("dy", -4);
+        // focus.selectAll("g.y .tick text").attr("x", 0).attr("dy", -4);
         focus.selectAll(".domain").remove();
         focus.selectAll("g.x .tick line").attr("stroke", "#777").attr("stroke-dasharray", "2,2");
         var g_containers = focus.selectAll(".chart")
@@ -247,12 +247,36 @@ d3.gantt = function() {
             .text(function(d) {
                 return d.duration;
             });
+        
         context.append("g")
             .attr("class", "x brush")
             .call(brush)
             .selectAll("rect")
             .attr("y", -6)
             .attr("height", height2 + 7);
+
+        var brush_content = svg.selectAll('g.resize.e');
+
+        brush_content.append('circle')
+            .attr("transform", function(d) { return "translate(0,60 )"; })
+            .attr("fill","black")
+            .attr("r", 12);
+
+        brush_content.append('circle')
+            .attr("transform", function(d) { return "translate(0,60 )"; })
+            .attr("fill","white")
+            .attr("r", 3.5);
+
+        brush_content = svg.selectAll('g.resize.w');
+        
+        brush_content.append('circle')
+            .attr("transform", function(d) { return "translate(0,60 )"; })
+            .attr("fill","black")
+            .attr("r", 12);        
+        brush_content.append('circle')
+            .attr("transform", function(d) { return "translate(0,60 )"; })
+            .attr("fill","white")
+            .attr("r", 3.5);
 
         // add y axis
         focus.append('line').attr('class', 'y_axis').style("stroke", "black") // colour the line
@@ -263,9 +287,9 @@ d3.gantt = function() {
 
         function brushed() {
             x.domain(brush.empty() ? x2.domain() : brush.extent());
-
+focus.select(".x.axis").call(xAxis);
             gantt.redraw(tasks);
-            focus.select(".x.axis").call(xAxis);
+            
             // Reset zoom scale's domain
             zoom.x(x);
         }
@@ -296,7 +320,9 @@ d3.gantt = function() {
         svg.selectAll(".txt_grade").remove();
         svg.selectAll(".txt_id").remove();
         svg.selectAll(".txt_duration").remove();
-        svg.selectAll(".domain").remove();    
+        
+        var fc = d3.select('.focus');
+        fc.selectAll(".domain").remove();    
 
         var g_wrappers = ganttChartGroup.selectAll('.box').data(tasks, keyFunction).attr("transform", rectTransform);
 
@@ -352,7 +378,7 @@ d3.gantt = function() {
             var g_c = d3.select(this.parentNode);
             var rect_length = g_c.select('rect').attr('width');
 
-            if (rect_length < 70)
+            if (rect_length < 50)
                 return '';
             if (rect_length - 5 > current_length) {
                 return d.grade;
@@ -379,7 +405,7 @@ d3.gantt = function() {
                 var g_c = d3.select(this.parentNode);
                 var rect_length = g_c.select('rect').attr('width');
 
-                if (rect_length < 70)
+                if (rect_length < 50)
                     return '';
                 return d.boxIndex;
             });
@@ -399,7 +425,7 @@ d3.gantt = function() {
                 var g_c = d3.select(this.parentNode);
                 var rect_length = g_c.select('rect').attr('width');
 
-                if (rect_length < 70)
+                if (rect_length < 50)
                     return '';
                 return d.duration;
             });
