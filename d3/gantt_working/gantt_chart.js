@@ -144,35 +144,6 @@ d3.gantt = function() {
             .attr("transform", "translate(0," + 0 + ")")
             .call(yAxis2);
 
-        //Add boxes in 2nd chart
-        var g_containers_context = context.selectAll(".chart")
-            .data(tasks, keyFunction).enter()
-            .append('g')
-            .attr("transform", function(d) {
-                return "translate(" + x(d.startDate) + "," + y2(d.machineId) + ")";
-            });
-
-        g_containers_context.append("rect")
-            .attr("class", function(d) {
-                if (taskStatus[d.caster] == null) {
-                    return "task_style_1";
-                }
-                return taskStatus[d.caster];
-            })
-            .attr("y", 0)
-            .attr('stroke', 'black')
-            .attr('stroke-opacity', .3)
-            .attr("stroke-dasharray", function(d) {
-                var tmp_width = x(d.endDate) - x(d.startDate);
-                return '0, ' + tmp_width + ',' + y2.rangeBand() + ', ' + tmp_width + ',' + y2.rangeBand();
-            })
-            .attr("height", function(d) {
-                return y2.rangeBand();
-            })
-            .attr("width", function(d) {
-                return (x(d.endDate) - x(d.startDate));
-            });
-
         // axis styling in 1st chart
         focus.selectAll(".domain").remove();
         focus.selectAll("g.x .tick line").attr("stroke", "#777").attr("stroke-dasharray", "2,2");
@@ -259,6 +230,42 @@ d3.gantt = function() {
                 return d.duration;
             });
         
+        var bbox_container = context.append('g').attr('class','bbox_container');
+
+        var sec_g_containers = bbox_container.selectAll(".chart").data(tasks, keyFunction).enter()
+            .append('g')
+            .attr("transform", function(d) {
+                return "translate(" + x(d.startDate) + "," + y2(d.machineId) + ")";
+            });
+
+        sec_g_containers.append("rect")
+            .attr("class", function(d) {
+                if (taskStatus[d.caster] == null) {
+                    return "task_style_1";
+                }
+                return taskStatus[d.caster];
+            })
+            .attr("y", 0)
+            .attr('stroke', 'black')
+            .attr('stroke-opacity', .3)
+            .attr("stroke-dasharray", function(d) {
+                var tmp_width = x(d.endDate) - x(d.startDate);
+                return '0, ' + tmp_width + ',' + y2.rangeBand() + ', ' + tmp_width + ',' + y2.rangeBand();
+            })
+            .attr("height", function(d) {
+                return y2.rangeBand();
+            })
+            .attr("width", function(d) {
+                return (x(d.endDate) - x(d.startDate));
+            });
+
+        //Add red line to make hover effect
+        focus.append('line').attr('class','red_line').attr("x1", 0).style('stroke','red') 
+            .attr("y1", 8) 
+            .attr("x2", 0) 
+            .attr("y2", focus_height - margin.top - margin.bottom);
+
+
         //Add brush
         context.append("g")
             .attr("class", "x brush")
@@ -298,18 +305,27 @@ d3.gantt = function() {
             .attr("x2", 0) 
             .attr("y2", focus_height - margin.top - margin.bottom);
 
-        //Add red line to make hover effect
-        focus.append('line').attr('class','red_line').attr("x1", 0).style('stroke','red') 
-            .attr("y1", 8) 
-            .attr("x2", 0) 
-            .attr("y2", focus_height - margin.top - margin.bottom);
-
+        //init brush
+        brushed();
+        draw();
         function brushed() {
             x.domain(brush.empty() ? x2.domain() : brush.extent());
             
             //redraw x axis in 1st chart
             focus.select(".x.axis").call(xAxis);
-            
+
+            //Highlight view area
+            var tmp_domain = new Array();
+            tmp_domain = x.domain();
+            bbox_container.selectAll('g').data(tasks,keyFunction).classed('active',function(d){
+                var ts =d.startDate;
+                var es = d.endDate;
+                if((ts>tmp_domain[0])&&(es<tmp_domain[1])){
+                    return true;
+                }else{
+                    return false;
+                }
+            });
             //Redraw boxes
             gantt.redraw(tasks);
             
@@ -322,6 +338,20 @@ d3.gantt = function() {
             
             // Force changing brush range
             brush.extent(x.domain());
+
+            //Highlight view area
+            var tmp_domain = new Array();
+            tmp_domain = x.domain();
+            bbox_container.selectAll('g').data(tasks,keyFunction).classed('active',function(d){
+                var ts =d.startDate;
+                var es = d.endDate;
+                if((ts>tmp_domain[0])&&(es<tmp_domain[1])){
+                    return true;
+                }else{
+                    return false;
+                }
+            });
+
             svg.select(".brush").call(brush);
             
             // Redraw boxes
@@ -341,6 +371,7 @@ d3.gantt = function() {
         svg.selectAll(".txt_id").remove();
         svg.selectAll(".txt_duration").remove();
         
+        // svg.selectAll(".init_circle").remove();
         var fc = d3.select('.focus');
         fc.selectAll(".domain").remove();    
 

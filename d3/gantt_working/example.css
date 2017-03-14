@@ -14,7 +14,13 @@ html,body,#wrapper {
 	stroke: #000;
 	shape-rendering: crispEdges;
 }
- 
+
+.context .active rect[class^=task_style]{
+	opacity: 1;
+}
+.context [class^=task_style]{
+	opacity: 0.3;
+}
 .task_style_1 {
 	fill: #e1fb82;
 }
@@ -44,13 +50,13 @@ html,body,#wrapper {
 }
 
 .brush .extent {
-  	fill:	black;
-  	fill-opacity: .65;
+  	fill:	white;
+  	fill-opacity: .35;
   	clip-path: url(#clip);
 }
 
 rect.background{
-	opacity: 0.5;
+	opacity: 0.2;
 	fill: gray;
 	visibility: inherit !important;
 }

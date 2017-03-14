@@ -274,31 +274,6 @@ d3.gantt = function() {
             .attr("y", 0)
             .attr("height", height2);
 
-        // context.append('circle')
-        //     .attr("transform", function(d) { return "translate(0,60 )"; })
-        //     .attr("fill","black")
-        //     .attr("class","init_circle")
-        //     .attr("r", 12);
-
-        // context.append('circle')
-        //     .attr("transform", function(d) { return "translate(0,60 )"; })
-        //     .attr("fill","white")
-        //     .attr("class","init_circle")
-        //     .attr("r", 3.5);
-
-
-        
-        // context.append('circle')
-        //     .attr("transform", function(d) { return "translate("+width+",60 )"; })
-        //     .attr("fill","black")
-        //     .attr("class","init_circle")
-        //     .attr("r", 12);        
-        // context.append('circle')
-        //     .attr("transform", function(d) { return "translate("+width+",60 )"; })
-        //     .attr("fill","white")
-        //     .attr("class","init_circle")
-        //     .attr("r", 3.5);
-
         //Cutomize brush handles
         var brush_content = svg.selectAll('g.resize.e');
 
@@ -330,6 +305,7 @@ d3.gantt = function() {
             .attr("x2", 0) 
             .attr("y2", focus_height - margin.top - margin.bottom);
 
+        //init brush
         brushed();
         draw();
         function brushed() {
