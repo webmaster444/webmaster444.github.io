@@ -58,7 +58,7 @@ d3.gantt = function() {
     };
 
     var initAxis = function() {
-        x = d3.time.scale().domain([timeDomainStart, timeDomainEnd]).range([0, width]).clamp(true);
+        x = d3.time.scale().domain([timeDomainStart, timeDomainEnd]).range([0, width]);
         y = d3.scale.ordinal().domain(taskTypes).rangeRoundBands([0, focus_height - margin.top - margin.bottom], .1);
 
         // var xAxis = d3.svg.axis().scale(x).orient("bottom"),
@@ -98,8 +98,10 @@ d3.gantt = function() {
 
         var focus = svg.append("g")
             .attr("class", "gantt-chart focus")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", focus_height + margin.top + margin.bottom - 150)
+            // .attr("width", width + margin.left + margin.right)
+            // .attr("width", 1368)
+            // .attr("height", focus_height + margin.top + margin.bottom - 150)
+            // .attr("height", 694)
             .attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
 
         var context = svg.append("g")
@@ -124,7 +126,7 @@ d3.gantt = function() {
             })
             .on("mousemove",function(d){
                 var coordinates = [0, 0];
-                coordinates = d3.mouse(this);
+                coordinates = d3.mouse( this);
                 var x = coordinates[0];
                 
                 var redline = d3.select('.red_line').attr('x1',x).attr('x2',x);
@@ -140,6 +142,8 @@ d3.gantt = function() {
             .call(xAxis);
 
         focus.append("g").attr("class", "y axis").transition().call(yAxis);
+
+        var box_container = focus.append("g").attr('class','box_container');
 
         zoom.x(x);
 
@@ -185,7 +189,8 @@ d3.gantt = function() {
         // focus.selectAll("g.y .tick text").attr("x", 0).attr("dy", -4);
         focus.selectAll(".domain").remove();
         focus.selectAll("g.x .tick line").attr("stroke", "#777").attr("stroke-dasharray", "2,2");
-        var g_containers = focus.selectAll(".chart")
+        
+        var g_containers = box_container.selectAll(".chart")
             .data(tasks, keyFunction).enter()
             .append('g')
             .attr('class', 'box')
@@ -269,8 +274,8 @@ d3.gantt = function() {
             .attr("class", "x brush")
             .call(brush)
             .selectAll("rect")
-            .attr("y", -6)
-            .attr("height", height2 + 7);
+            .attr("y", 0)
+            .attr("height", height2);
 
         var brush_content = svg.selectAll('g.resize.e');
 
@@ -307,6 +312,8 @@ d3.gantt = function() {
             .attr("x2", 0) // x position of the second end of the line
             .attr("y2", focus_height - margin.top - margin.bottom);
             // .attr("y2", 100);
+        // focus.append('rect').attr('x',0).attr('y',0).attr('width',150).attr('height',694).style('fill','green');
+        // focus.append("g").attr("class", "y axis").transition().call(yAxis);
 
         function brushed() {
             x.domain(brush.empty() ? x2.domain() : brush.extent());
@@ -315,6 +322,8 @@ d3.gantt = function() {
             
             // Reset zoom scale's domain
             zoom.x(x);
+
+            console.log('brushed');
         }
 
         function draw() {
@@ -323,13 +332,15 @@ d3.gantt = function() {
             brush.extent(x.domain());
             svg.select(".brush").call(brush);
             gantt.redraw(tasks);
+
+            console.log('draw');
         }
 
-        function type(d) {
-            d.date = parseDate(d.date);
-            d.price = +d.price;
-            return d;
-        }
+        // function type(d) {
+        //     d.date = parseDate(d.date);
+        //     d.price = +d.price;
+        //     return d;
+        // }
 
         return gantt;
 
@@ -401,8 +412,6 @@ d3.gantt = function() {
             var g_c = d3.select(this.parentNode);
             var rect_length = g_c.select('rect').attr('width');
 
-            if (rect_length < 50)
-                return '';
             if (rect_length - 5 > current_length) {
                 return d.grade;
             }
@@ -428,8 +437,6 @@ d3.gantt = function() {
                 var g_c = d3.select(this.parentNode);
                 var rect_length = g_c.select('rect').attr('width');
 
-                if (rect_length < 50)
-                    return '';
                 return d.boxIndex;
             });
 
@@ -448,8 +455,6 @@ d3.gantt = function() {
                 var g_c = d3.select(this.parentNode);
                 var rect_length = g_c.select('rect').attr('width');
 
-                if (rect_length < 50)
-                    return '';
                 return d.duration;
             });
     

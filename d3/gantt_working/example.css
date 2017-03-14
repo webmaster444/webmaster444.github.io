@@ -40,13 +40,16 @@ html,body,#wrapper {
 }
 
 
+.box_container{
+	clip-path: url(#clip);
+}
 /* Clip path*/
 .brush .extent {
   /*stroke: #fff;*/
   fill:	black;
   fill-opacity: .65;
   /*shape-rendering: crispEdges;*/
-  /*clip-path: url(#clip);*/
+  clip-path: url(#clip);
 }
 
 rect.background{
