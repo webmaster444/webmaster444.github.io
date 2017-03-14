@@ -42,11 +42,11 @@ d3.json("sample_data.json", function(error, data1) {
 
         machineIds = config_json.sequence;
         var taskStatus = {
-            "BIC1": "bar",
-    		"SLC3":"bar-failed",
-    		"BLC1":"bar-succeeded",
-    		"BIC2":"bar-killed",
-    		"SLC1":"bar-running"
+            "BIC1": "task_style_1",
+    		"SLC3":"task_style_2",
+    		"BLC1":"task_style_3",
+    		"BIC2":"task_style_4",
+    		"SLC1":"task_style_5"
         };
 
         if(unit=='min'){

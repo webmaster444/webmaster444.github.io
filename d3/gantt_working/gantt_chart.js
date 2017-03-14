@@ -57,7 +57,6 @@ d3.gantt = function() {
         x = d3.time.scale().domain([timeDomainStart, timeDomainEnd]).range([0, width]);
         y = d3.scale.ordinal().domain(taskTypes).rangeRoundBands([0, focus_height - margin.top - margin.bottom], .1);
 
-        // var xAxis = d3.svg.axis().scale(x).orient("bottom"),
         x2 = d3.time.scale().domain([timeDomainStart, timeDomainEnd]).range([0, width]).clamp(true);
         y2 = d3.scale.ordinal().domain(taskTypes).rangeRoundBands([0, 120], .1);
 
@@ -156,7 +155,7 @@ d3.gantt = function() {
         g_containers_context.append("rect")
             .attr("class", function(d) {
                 if (taskStatus[d.caster] == null) {
-                    return "bar";
+                    return "task_style_1";
                 }
                 return taskStatus[d.caster];
             })
@@ -188,7 +187,7 @@ d3.gantt = function() {
         g_containers.append("rect")
             .attr("class", function(d) {
                 if (taskStatus[d.caster] == null) {
-                    return "bar";
+                    return "task_style_1";
                 }
                 return taskStatus[d.caster];
             })
@@ -353,7 +352,7 @@ d3.gantt = function() {
             .insert("rect", ":first-child")
             .attr("class", function(d) {
                 if (taskStatus[d.status] == null) {
-                    return "bar";
+                    return "task_style_1";
                 }
                 return taskStatus[d.status];
             })

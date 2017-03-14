@@ -15,23 +15,23 @@ html,body,#wrapper {
 	shape-rendering: crispEdges;
 }
  
-.bar {
+.task_style_1 {
 	fill: #e1fb82;
 }
  
-.bar-failed {
+.task_style_2 {
 	fill: #d5fdc0;
 }
  
-.bar-running {
+.task_style_3 {
 	fill: #faf6ef;
 }
  
-.bar-succeeded {
+.task_style_4 {
 	fill: #cccccc;
 }
  
-.bar-killed {
+.task_style_5 {
 	fill: #9fe6f1;
 }
 
@@ -39,17 +39,14 @@ html,body,#wrapper {
 	opacity: 0.3;
 }
 
-
 .box_container{
 	clip-path: url(#clip);
 }
-/* Clip path*/
+
 .brush .extent {
-  /*stroke: #fff;*/
-  fill:	black;
-  fill-opacity: .65;
-  /*shape-rendering: crispEdges;*/
-  clip-path: url(#clip);
+  	fill:	black;
+  	fill-opacity: .65;
+  	clip-path: url(#clip);
 }
 
 rect.background{
@@ -58,7 +55,7 @@ rect.background{
 	visibility: inherit !important;
 }
 rect.pane {
-  cursor: move;
-  fill: none;
-  pointer-events: all;
+	cursor: move;
+	fill: none;
+	pointer-events: all;
 }
