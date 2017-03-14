@@ -13,12 +13,6 @@ d3.gantt = function() {
         left: 150
     };
 
-    var margin2 = {
-        top: 430,
-        right: 10,
-        bottom: 20,
-        left: 40
-    }
     var timeDomainStart = d3.time.day.offset(new Date(), -3);
     var timeDomainEnd = d3.time.hour.offset(new Date(), +3);
     var timeDomainMode = FIT_TIME_DOMAIN_MODE; // fixed or fit
@@ -39,6 +33,7 @@ d3.gantt = function() {
         return "translate(" + x(d.startDate) + "," + y(d.machineId) + ")";
     };
 
+    //initialize time domain 
     var initTimeDomain = function(tasks) {
         if (timeDomainMode === FIT_TIME_DOMAIN_MODE) {
             if (tasks === undefined || tasks.length < 1) {
@@ -57,6 +52,7 @@ d3.gantt = function() {
         }
     };
 
+    //initialize x axis, y axis based on time domain
     var initAxis = function() {
         x = d3.time.scale().domain([timeDomainStart, timeDomainEnd]).range([0, width]);
         y = d3.scale.ordinal().domain(taskTypes).rangeRoundBands([0, focus_height - margin.top - margin.bottom], .1);
@@ -72,8 +68,6 @@ d3.gantt = function() {
         yAxis = d3.svg.axis().scale(y).orient("left").tickSize(-width).tickPadding(5);
         yAxis2 = d3.svg.axis().scale(y2).orient("left").tickSize(0).tickValues('');
     };
-
-
 
     function gantt(tasks) {
 
@@ -98,10 +92,6 @@ d3.gantt = function() {
 
         var focus = svg.append("g")
             .attr("class", "gantt-chart focus")
-            // .attr("width", width + margin.left + margin.right)
-            // .attr("width", 1368)
-            // .attr("height", focus_height + margin.top + margin.bottom - 150)
-            // .attr("height", 694)
             .attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
 
         var context = svg.append("g")
@@ -110,8 +100,6 @@ d3.gantt = function() {
 
         var zoom = d3.behavior.zoom()
             .on("zoom", draw);
-
-
 
         var rect = svg.append("svg:rect")
             .attr("class", "pane")
@@ -133,8 +121,7 @@ d3.gantt = function() {
             })
             .call(zoom);
 
-
-
+        //Add axis in 1st chart
         focus.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0, " + (focus_height - margin.top - margin.bottom) + ")")
@@ -147,6 +134,7 @@ d3.gantt = function() {
 
         zoom.x(x);
 
+        //Add axis in 2nd chart
         context.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + height2 + ")")
@@ -157,6 +145,7 @@ d3.gantt = function() {
             .attr("transform", "translate(0," + 0 + ")")
             .call(yAxis2);
 
+        //Add boxes in 2nd chart
         var g_containers_context = context.selectAll(".chart")
             .data(tasks, keyFunction).enter()
             .append('g')
@@ -182,14 +171,14 @@ d3.gantt = function() {
                 return y2.rangeBand();
             })
             .attr("width", function(d) {
-                // return (d[4]);
                 return (x(d.endDate) - x(d.startDate));
             });
 
-        // focus.selectAll("g.y .tick text").attr("x", 0).attr("dy", -4);
+        // axis styling in 1st chart
         focus.selectAll(".domain").remove();
         focus.selectAll("g.x .tick line").attr("stroke", "#777").attr("stroke-dasharray", "2,2");
         
+        //Add boxes to 1st chart
         var g_containers = box_container.selectAll(".chart")
             .data(tasks, keyFunction).enter()
             .append('g')
@@ -214,9 +203,10 @@ d3.gantt = function() {
                 return y.rangeBand();
             })
             .attr("width", function(d) {
-                // return (d[4]);
                 return (x(d.endDate) - x(d.startDate));
             });
+
+        //Add text to boxes its grade,duration or so
         g_containers.append("text")
             .attr('class', 'txt_grade')
             .attr('font-size', '10px')
@@ -270,6 +260,7 @@ d3.gantt = function() {
                 return d.duration;
             });
         
+        //Add brush
         context.append("g")
             .attr("class", "x brush")
             .call(brush)
@@ -277,6 +268,7 @@ d3.gantt = function() {
             .attr("y", 0)
             .attr("height", height2);
 
+        //Cutomize brush handles
         var brush_content = svg.selectAll('g.resize.e');
 
         brush_content.append('circle')
@@ -300,52 +292,47 @@ d3.gantt = function() {
             .attr("fill","white")
             .attr("r", 3.5);
 
-        // add y axis
-        focus.append('line').attr('class', 'y_axis').style("stroke", "black") // colour the line
-            .attr("x1", 0) // x position of the first end of the line
-            .attr("y1", 8) // y position of the first end of the line
-            .attr("x2", 0) // x position of the second end of the line
+        //Add y axis line in 1st chart
+        focus.append('line').attr('class', 'y_axis').style("stroke", "black") 
+            .attr("x1", 0) 
+            .attr("y1", 8) 
+            .attr("x2", 0) 
             .attr("y2", focus_height - margin.top - margin.bottom);
 
-        focus.append('line').attr('class','red_line').attr("x1", 0).style('stroke','red') // x position of the first end of the line
-            .attr("y1", 8) // y position of the first end of the line
-            .attr("x2", 0) // x position of the second end of the line
+        //Add red line to make hover effect
+        focus.append('line').attr('class','red_line').attr("x1", 0).style('stroke','red') 
+            .attr("y1", 8) 
+            .attr("x2", 0) 
             .attr("y2", focus_height - margin.top - margin.bottom);
-            // .attr("y2", 100);
-        // focus.append('rect').attr('x',0).attr('y',0).attr('width',150).attr('height',694).style('fill','green');
-        // focus.append("g").attr("class", "y axis").transition().call(yAxis);
 
         function brushed() {
             x.domain(brush.empty() ? x2.domain() : brush.extent());
+            
+            //redraw x axis in 1st chart
             focus.select(".x.axis").call(xAxis);
+            
+            //Redraw boxes
             gantt.redraw(tasks);
             
             // Reset zoom scale's domain
             zoom.x(x);
-
-            console.log('brushed');
         }
 
         function draw() {
             focus.select(".x.axis").call(xAxis);
+            
             // Force changing brush range
             brush.extent(x.domain());
             svg.select(".brush").call(brush);
+            
+            // Redraw boxes
             gantt.redraw(tasks);
-
-            console.log('draw');
         }
 
-        // function type(d) {
-        //     d.date = parseDate(d.date);
-        //     d.price = +d.price;
-        //     return d;
-        // }
-
         return gantt;
-
     };
 
+    //Redraw boxes in 1st chart
     gantt.redraw = function(tasks) {
         var svg = d3.select("svg");
 
@@ -461,28 +448,6 @@ d3.gantt = function() {
         return gantt;
     };
 
-    gantt.margin = function(value) {
-        if (!arguments.length)
-            return margin;
-        margin = value;
-        return gantt;
-    };
-
-    gantt.timeDomain = function(value) {
-        if (!arguments.length)
-            return [timeDomainStart, timeDomainEnd];
-        timeDomainStart = +value[0], timeDomainEnd = +value[1];
-        return gantt;
-    };
-
-    gantt.timeDomainMode = function(value) {
-        if (!arguments.length)
-            return timeDomainMode;
-        timeDomainMode = value;
-        return gantt;
-
-    };
-
     gantt.taskTypes = function(value) {
         if (!arguments.length)
             return taskTypes;
@@ -494,20 +459,6 @@ d3.gantt = function() {
         if (!arguments.length)
             return taskStatus;
         taskStatus = value;
-        return gantt;
-    };
-
-    gantt.width = function(value) {
-        if (!arguments.length)
-            return width;
-        width = +value;
-        return gantt;
-    };
-
-    gantt.height = function(value) {
-        if (!arguments.length)
-            return height;
-        height = +value;
         return gantt;
     };
 
