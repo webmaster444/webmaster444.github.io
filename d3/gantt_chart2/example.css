@@ -50,7 +50,7 @@ html,body,#wrapper {
 }
 
 .brush .extent {
-  	fill:	black;
+  	fill:	white;
   	fill-opacity: .35;
   	clip-path: url(#clip);
 }
