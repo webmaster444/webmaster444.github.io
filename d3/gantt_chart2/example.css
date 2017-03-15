@@ -4,6 +4,9 @@ html,body,#wrapper {
 	margin: 0px;
 }
  
+body{
+	overflow-x:hidden;
+}
 .chart {
 	font-family: Arial, sans-serif;
 	font-size: 12px;
