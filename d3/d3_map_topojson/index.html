@@ -27,13 +27,15 @@ var svg = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height);
 
-var url = "cb_2016_us_cd115_20m.json";
-var url = "us.json";
+// var url = "cb_2016_us_cd115_20m.json";
+// var url = "cb_2016_us_cd115_5m.json";
+var url = "cb_2016_us_cd115_500k.json";
+// var url = "us.json";
 d3.json(url, function(error, topology) {
   if (error) throw error;
   
   console.log("topojson", topology)
-  var geojson = topojson.feature(topology, topology.objects.counties);
+  var geojson = topojson.feature(topology, topology.objects.cb_2016_us_cd115_500k);
   console.log("geojson", geojson)
 
   svg.selectAll("path")
