@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<html>
+<head>
+  <title>Network Topology</title>  
 <meta charset="UTF-8">
 <style>
 
@@ -43,9 +46,10 @@ div.tooltip {
   stroke-width: 2px;
 }
 </style>
-
+</head>
 <body>
-
+<button onclick="expandAll()">Expand All </button>
+<button onclick="collapseAll()">Collapse All </button>
 <!-- load the d3.js library --> 
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
@@ -821,5 +825,33 @@ function updateServerLinks(){
   }
 );
 }
+
+function expand(d){   
+    var children = (d.children)?d.children:d._children;
+    if (d._children) {        
+        d.children = d._children;
+        d._children = null;       
+    }
+    if(children)
+      children.forEach(expand);
+}
+
+function expandAll(){
+    expand(root); 
+    update(root);
+    updateServerLinks();
+}
+
+function collapseAll(){  
+
+    root.children.forEach(function(d){
+      d.children.forEach(collapse);
+      collapse(d);
+      update(d);
+    });
+    // collapse(root);
+    // update(root);
+}
 </script>
 </body>
+</html>
