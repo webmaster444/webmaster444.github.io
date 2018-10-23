@@ -845,12 +845,13 @@ function expandAll(){
 function collapseAll(){  
 
     root.children.forEach(function(d){
-      d.children.forEach(collapse);
+      if(d.children){
+        d.children.forEach(collapse);
+      }      
       collapse(d);
       update(d);
     });
-    // collapse(root);
-    // update(root);
+    updateServerLinks();
 }
 </script>
 </body>
