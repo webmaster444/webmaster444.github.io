@@ -3,6 +3,8 @@
 <title>Depviz - Interactive Visualization</title>
 <head>
 <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:600" rel="stylesheet">
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <meta charset="utf-8">
 <style>
     ellipse{
@@ -14,10 +16,48 @@
     svg text{
         font-size: 10px;
     }
+    svg{
+        width:100%;
+        height:100%;
+    }
+    .orphan1 span,.orphan2 span{
+        font-size: 8px;
+        text-align: center;
+        line-height: 10px;
+        display: block;
+    }
+    .orphan1,.orphan2{
+        background: #c0c0c0;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 10px;
+        padding: 10px;
+    }
+    #orphans_section{
+        padding:30px;
+        border:1px dotted black;
+        margin-top: 30px;
+    }
+    .axis{
+        display: none;
+    }
 </style>
 </head>
 <body>
-    <div id="chart_container"></div>
+    <div class="container-fluid">
+        <div class="row">
+    <div id="chart_container" class="col-md-9"></div>
+    <div id="orphans_section" class="col-md-3">
+        <p>Orphans without links</p>
+        <div class='row'>
+            <div class="orphan1_wrapper col-md-6">
+            </div>
+            <div class="orphan2_wrapper col-md-6">
+            </div>
+        </div>
+    </div>
+</div>
+</div>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script>    
         d3.json("data.json", function(error, data) {
@@ -72,9 +112,7 @@
                       .range([0,height])
                       .padding(0.5);
 
-            var svg = d3.select("#chart_container").append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
+            var svg = d3.select("#chart_container").append("svg").attr('viewBox','0 0 1560 800').attr( 'preserveAspectRatio',"xMinYMin meet")
                 .append("g")
                 .attr("transform", 
                       "translate(" + margin.left + "," + margin.top + ")");
@@ -82,11 +120,13 @@
                 x.domain(weightGroup);
                 y.domain(yDomain);
             svg.append("g")
+                .attr('class','xaxis axis')
                 .attr("transform", "translate(0," + height + ")")
                 .call(d3.axisBottom(x));
 
             // add the y Axis
             svg.append("g")
+                .attr('class','yaxis axis')
                 .call(d3.axisLeft(y));
 
             var weight_group = svg.selectAll('.weight_group').data(nestedData).enter().append('g').attr('class','weight_group').attr('transform',function(d){
@@ -135,6 +175,20 @@
 
             g_item.append('rect').attr('x',0).attr('width',x.bandwidth()).attr('y',0).attr('height',y.bandwidth()).attr('rx',2).attr('ry',2);
             g_item.append('text').attr('text-anchor','middle').attr('x',x.bandwidth()/2).attr('y',y.bandwidth()/2-10).text(function(d){return d.title}).call(wrap,x.bandwidth());
+
+            var orphans_section1 = d3.select('#orphans_section .orphan1_wrapper');
+            orphans_section1.selectAll('.orphan1').data(orphansWithoutLinks.filter(function(d,i){
+                if(i<=orphansWithoutLinks.length / 2){
+                    return d;
+                }
+            })).enter().append('div').attr('class','orphan1').append('span').html(function(d){return d.title});
+
+            var orphans_section2 = d3.select('#orphans_section .orphan2_wrapper');
+            orphans_section2.selectAll('.orphan2').data(orphansWithoutLinks.filter(function(d,i){
+                if(i > orphansWithoutLinks.length / 2){
+                    return d;
+                }
+            })).enter().append('div').attr('class','orphan2').append('span').html(function(d){return d.title});
         })
 
         function wrap(text, width) {
