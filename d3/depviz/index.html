@@ -10,7 +10,7 @@
     ellipse{
         fill:#ffa500;
     }
-    .item rect{
+    .item rect,.ritem rect{
         fill:#ffc0cb;
     }
     svg text{
@@ -191,7 +191,7 @@
             g_item.append('rect').attr('x',0).attr('width',x.bandwidth()).attr('y',0).attr('height',y.bandwidth()).attr('rx',2).attr('ry',2);
             g_item.append('text').attr('text-anchor','middle').attr('x',x.bandwidth()/2).attr('y',y.bandwidth()/2-10).text(function(d){return d.title}).call(wrap,x.bandwidth());
 
-            svg.selectAll('.item_link').data(linksData).enter().append('line').attr('class','item_link')
+            svg.selectAll('.item_link').data(linksData).enter().append('line').attr('class',function(d){return 'item_link link_'+d['source']+'_to_'+d['target']})
             .attr('x1',function(d){return d3.select('.item_'+d['source']).attr('pos_X')})
             .attr('y1',function(d){return d3.select('.item_'+d['source']).attr('pos_Y')})
             .attr('x2',function(d){return d3.select('.item_'+d['target']).attr('pos_X')})
@@ -209,6 +209,53 @@
                 return $(s).width()+'px';})
             .style('height',function(d){var s = '.item_'+d['number'];                 
                 return $(s).height()+'px';})
+
+
+            var weight_group1 = svg.selectAll('.weight_group1').data(nestedData).enter().append('g').attr('class','weight_group1').attr('transform',function(d){
+                return 'translate('+x(d.key)+',0)';
+            });
+
+            var g_epic_real_item = weight_group1.selectAll('.epic_real_item')
+                .data(function(d){
+                    d.values.map(function(value,i){value['yIndex']=i});                    
+                    var epics = d.values.filter(function(value){
+                    if(value['labels']!==null){
+                        var labelIDs = value['labels'].map(function(label){
+                            return label['ID'];
+                        });
+                        if(labelIDs.indexOf('epic')!==-1){
+                            return value;
+                        }                        
+                    };
+                });                
+                return epics;
+                }).enter().append('g').attr('class',function(d){return 'epic_real_item item_'+d['number']}).attr('transform',function(d,i){
+                    return 'translate(0,'+y(d['yIndex'])+')';
+                }).attr('pos_X',function(d){return x(d['weight'])+x.bandwidth()/2}).attr('pos_Y',function(d){return y(d['yIndex'])+y.bandwidth()/2;});
+
+            g_epic_real_item.append('ellipse').attr('cx',x.bandwidth()/2).attr('cy',y.bandwidth()/2).attr('rx',x.bandwidth()*0.9).attr('ry',y.bandwidth()*0.9);
+
+            g_epic_real_item.append('text').attr('text-anchor','middle').attr('x',x.bandwidth()/2).text(function(d){return d.title}).call(wrap,x.bandwidth());
+            var g_ritem = weight_group1.selectAll('.ritem')
+                .data(function(d){
+                    var epics = d.values.filter(function(value){
+                    if(value['labels']==null){
+                        return value;                       
+                    }else{
+                        var labelIDs = value['labels'].map(function(label){
+                            return label['ID'];
+                        });
+                        if(labelIDs.indexOf('epic')==-1){
+                            return value;
+                        } 
+                }});                
+                return epics;
+                }).enter().append('g').attr('class',function(d){return 'ritem item_'+d['number']}).attr('transform',function(d,i){
+                    return 'translate(0,'+y(d['yIndex'])+')';
+                }).attr('pos_X',function(d){return x(d['weight'])+x.bandwidth()/2}).attr('pos_Y',function(d){return y(d['yIndex'])+y.bandwidth()/2;});
+
+            g_ritem.append('rect').attr('x',0).attr('width',x.bandwidth()).attr('y',0).attr('height',y.bandwidth()).attr('rx',2).attr('ry',2);
+            g_ritem.append('text').attr('text-anchor','middle').attr('x',x.bandwidth()/2).attr('y',y.bandwidth()/2-10).text(function(d){return d.title}).call(wrap,x.bandwidth());
 
             var orphans_section1 = d3.select('#orphans_section .orphan1_wrapper');
             orphans_section1.selectAll('.orphan1').data(orphansWithoutLinks.filter(function(d,i){
@@ -250,6 +297,7 @@
             })
             return number;
         }
+
         function wrap(text, width) {
             text.each(function() {
                 var text = d3.select(this),
