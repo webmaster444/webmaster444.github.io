@@ -169,7 +169,7 @@
 
             g_epic_item.append('ellipse').attr('cx',x.bandwidth()/2).attr('cy',y.bandwidth()/2).attr('rx',x.bandwidth()*0.9).attr('ry',y.bandwidth()*0.9);
 
-            g_epic_item.append('text').attr('text-anchor','middle').attr('x',x.bandwidth()/2).text(function(d){return d.title}).call(wrap,x.bandwidth());
+            // g_epic_item.append('text').attr('text-anchor','middle').attr('x',x.bandwidth()/2).text(function(d){return d.title}).call(wrap,x.bandwidth());
             var g_item = weight_group.selectAll('.item')
                 .data(function(d){
                     var epics = d.values.filter(function(value){
@@ -189,7 +189,7 @@
                 }).attr('pos_X',function(d){return x(d['weight'])+x.bandwidth()/2}).attr('pos_Y',function(d){return y(d['yIndex'])+y.bandwidth()/2;});
 
             g_item.append('rect').attr('x',0).attr('width',x.bandwidth()).attr('y',0).attr('height',y.bandwidth()).attr('rx',2).attr('ry',2);
-            g_item.append('text').attr('text-anchor','middle').attr('x',x.bandwidth()/2).attr('y',y.bandwidth()/2-10).text(function(d){return d.title}).call(wrap,x.bandwidth());
+            // g_item.append('text').attr('text-anchor','middle').attr('x',x.bandwidth()/2).attr('y',y.bandwidth()/2-10).text(function(d){return d.title}).call(wrap,x.bandwidth());
 
             svg.selectAll('.item_link').data(linksData).enter().append('line').attr('class',function(d){return 'item_link link_'+d['source']+'_to_'+d['target']})
             .attr('x1',function(d){return d3.select('.item_'+d['source']).attr('pos_X')})
