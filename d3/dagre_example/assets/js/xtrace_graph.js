@@ -12,17 +12,18 @@ function XTraceDAG(attachPoint, reports, /*optional*/ params) {
     var minimapSVG = rootSVG.append("svg").attr("class", "minimap-attach");
     var listSVG = rootSVG.append("svg").attr("class", "history-attach");
     
+    console.log(reports);
     // Create the graph and history representations
     var graph = createGraphFromReports(reports, params);
-    var history = DirectedAcyclicGraphHistory();
+    // var history = DirectedAcyclicGraphHistory();
     
     
     // Create the chart instances
     var DAG = DirectedAcyclicGraph().animate(!lightweight);
     var DAGMinimap = DirectedAcyclicGraphMinimap(DAG).width("19.5%").height("19.5%").x("80%").y("80%");
-    var DAGHistory = List().width("15%").height("99%").x("0.5%").y("0.5%");
-    var DAGTooltip = DirectedAcyclicGraphTooltip();
-    var DAGContextMenu = DirectedAcyclicGraphContextMenu(graph, graphSVG);
+    // var DAGHistory = List().width("15%").height("99%").x("0.5%").y("0.5%");
+    // var DAGTooltip = DirectedAcyclicGraphTooltip();
+    // var DAGContextMenu = DirectedAcyclicGraphContextMenu(graph, graphSVG);
 
     // Attach the panzoom behavior
     var refreshViewport = function() {
@@ -49,170 +50,170 @@ function XTraceDAG(attachPoint, reports, /*optional*/ params) {
     }
     
     // Attaches a context menu to any selected graph nodess
-    function attachContextMenus() {
-        DAGContextMenu.call(graphSVG.node(), graphSVG.selectAll(".node"));
-        DAGContextMenu.on("open", function() {
-            DAGTooltip.hide();
-        }).on("close", function() {
-            if (!lightweight) {
-                graphSVG.selectAll(".node").classed("preview", false);
-                graphSVG.selectAll(".edge").classed("preview", false);
-            }
-        }).on("hidenodes", function(nodes, selectionname) {
-            var item = history.addSelection(nodes, selectionname);
-            if (!lightweight) graphSVG.classed("hovering", false);
-            listSVG.datum(history).call(DAGHistory);
+    // function attachContextMenus() {
+    //     DAGContextMenu.call(graphSVG.node(), graphSVG.selectAll(".node"));
+    //     DAGContextMenu.on("open", function() {
+    //         DAGTooltip.hide();
+    //     }).on("close", function() {
+    //         if (!lightweight) {
+    //             graphSVG.selectAll(".node").classed("preview", false);
+    //             graphSVG.selectAll(".edge").classed("preview", false);
+    //         }
+    //     }).on("hidenodes", function(nodes, selectionname) {
+    //         var item = history.addSelection(nodes, selectionname);
+    //         if (!lightweight) graphSVG.classed("hovering", false);
+    //         listSVG.datum(history).call(DAGHistory);
             
-            // Find the point to animate the hidden nodes to
-            var bbox = DAGHistory.bbox().call(DAGHistory.select.call(listSVG.node(), item), item);
-            var transform = zoom.getTransform(bbox);
-            DAG.removenode(function(d) {
-                if (lightweight) {
-                    d3.select(this).remove();
-                } else {
-                    d3.select(this).classed("visible", false).transition().duration(800).attr("transform", transform).remove();
-                }
-            });
+    //         // Find the point to animate the hidden nodes to
+    //         var bbox = DAGHistory.bbox().call(DAGHistory.select.call(listSVG.node(), item), item);
+    //         var transform = zoom.getTransform(bbox);
+    //         DAG.removenode(function(d) {
+    //             if (lightweight) {
+    //                 d3.select(this).remove();
+    //             } else {
+    //                 d3.select(this).classed("visible", false).transition().duration(800).attr("transform", transform).remove();
+    //             }
+    //         });
             
-            dag.draw();
+    //         dag.draw();
 
-            // Refresh selected edges
-            var selected = {};
-            graphSVG.selectAll(".node.selected").data().forEach(function(d) { selected[d.id]=true; });
-            graphSVG.selectAll(".edge").classed("selected", function(d) {
-                return selected[d.source.id] && selected[d.target.id]; 
-            });
-        }).on("hovernodes", function(nodes) {
-            if (!lightweight) {
-                graphSVG.selectAll(".node").classed("preview", function(d) {
-                    return nodes.indexOf(d)!=-1;
-                })
-                var previewed = {};
-                graphSVG.selectAll(".node.preview").data().forEach(function(d) { previewed[d.id]=true; });
-                graphSVG.selectAll(".edge").classed("preview", function(d) {
-                    return previewed[d.source.id] && previewed[d.target.id]; 
-                });
-            }
-        }).on("selectnodes", function(nodes) {
-            var selected = {};
-            nodes.forEach(function(d) { selected[d.id]=true; });
-            graphSVG.selectAll(".node").classed("selected", function(d) {
-                var selectme = selected[d.id];
-                if (d3.event.ctrlKey) selectme = selectme || d3.select(this).classed("selected");
-                return selectme;
-            })
-            graphSVG.selectAll(".edge").classed("selected", function(d) {
-                var selectme = selected[d.source.id] && selected[d.target.id];
-                if (d3.event.ctrlKey) selectme = selectme || d3.select(this).classed("selected");
-                return selectme;
-            });           
-            attachContextMenus();
-            DAGTooltip.hide();
-        });
-    }
+    //         // Refresh selected edges
+    //         var selected = {};
+    //         graphSVG.selectAll(".node.selected").data().forEach(function(d) { selected[d.id]=true; });
+    //         graphSVG.selectAll(".edge").classed("selected", function(d) {
+    //             return selected[d.source.id] && selected[d.target.id]; 
+    //         });
+    //     }).on("hovernodes", function(nodes) {
+    //         if (!lightweight) {
+    //             graphSVG.selectAll(".node").classed("preview", function(d) {
+    //                 return nodes.indexOf(d)!=-1;
+    //             })
+    //             var previewed = {};
+    //             graphSVG.selectAll(".node.preview").data().forEach(function(d) { previewed[d.id]=true; });
+    //             graphSVG.selectAll(".edge").classed("preview", function(d) {
+    //                 return previewed[d.source.id] && previewed[d.target.id]; 
+    //             });
+    //         }
+    //     }).on("selectnodes", function(nodes) {
+    //         var selected = {};
+    //         nodes.forEach(function(d) { selected[d.id]=true; });
+    //         graphSVG.selectAll(".node").classed("selected", function(d) {
+    //             var selectme = selected[d.id];
+    //             if (d3.event.ctrlKey) selectme = selectme || d3.select(this).classed("selected");
+    //             return selectme;
+    //         })
+    //         graphSVG.selectAll(".edge").classed("selected", function(d) {
+    //             var selectme = selected[d.source.id] && selected[d.target.id];
+    //             if (d3.event.ctrlKey) selectme = selectme || d3.select(this).classed("selected");
+    //             return selectme;
+    //         });           
+    //         attachContextMenus();
+    //         DAGTooltip.hide();
+    //     });
+    // }
     
-    // Detaches any bound context menus
-    function detachContextMenus() {
-        $(".graph .node").unbind("contextmenu");    
-    }
+    // // Detaches any bound context menus
+    // function detachContextMenus() {
+    //     $(".graph .node").unbind("contextmenu");    
+    // }
     
     // A function that attaches mouse-click events to nodes to enable node selection
     function setupEvents(){
-        var nodes = graphSVG.selectAll(".node");
-        var edges = graphSVG.selectAll(".edge");
-        var items = listSVG.selectAll(".item");
+        // var nodes = graphSVG.selectAll(".node");
+        // var edges = graphSVG.selectAll(".edge");
+        // var items = listSVG.selectAll(".item");
     
         // Set up node selection events
-        var select = Selectable().getrange(function(a, b) {
-            var path = getNodesBetween(a, b).concat(getNodesBetween(b, a));
-            return nodes.data(path, DAG.nodeid());
-        }).on("select", function() {
-            var selected = {};
-            graphSVG.selectAll(".node.selected").data().forEach(function(d) { selected[d.id]=true; });
-            edges.classed("selected", function(d) {
-                return selected[d.source.id] && selected[d.target.id]; 
-            });
-            attachContextMenus();
-            DAGTooltip.hide();
-        });
-        select(nodes);
+        // var select = Selectable().getrange(function(a, b) {
+        //     var path = getNodesBetween(a, b).concat(getNodesBetween(b, a));
+        //     return nodes.data(path, DAG.nodeid());
+        // }).on("select", function() {
+        //     var selected = {};
+        //     graphSVG.selectAll(".node.selected").data().forEach(function(d) { selected[d.id]=true; });
+        //     edges.classed("selected", function(d) {
+        //         return selected[d.source.id] && selected[d.target.id]; 
+        //     });
+        //     // attachContextMenus();
+        //     // DAGTooltip.hide();
+        // });
+        // select(nodes);
     
         
-        if (!lightweight) {
-            nodes.on("mouseover", function(d) {
-                graphSVG.classed("hovering", true);
-                highlightPath(d);
-            }).on("mouseout", function(d){
-                graphSVG.classed("hovering", false);
-                edges.classed("hovered", false).classed("immediate", false);
-                nodes.classed("hovered", false).classed("immediate", false);
-            });
-        }
+        // if (!lightweight) {
+        //     nodes.on("mouseover", function(d) {
+        //         graphSVG.classed("hovering", true);
+        //         highlightPath(d);
+        //     }).on("mouseout", function(d){
+        //         graphSVG.classed("hovering", false);
+        //         edges.classed("hovered", false).classed("immediate", false);
+        //         nodes.classed("hovered", false).classed("immediate", false);
+        //     });
+        // }
         
         // When a list item is clicked, it will be removed from the history and added to the graph
         // So we override the DAG node transition behaviour so that the new nodes animate from the click position
-        items.on("click", function(d, i) {
-            // Remove the item from the history and redraw the history
-            history.remove(d);
-            listSVG.datum(history).call(DAGHistory);
+        // items.on("click", function(d, i) {
+        //     // Remove the item from the history and redraw the history
+        //     history.remove(d);
+        //     listSVG.datum(history).call(DAGHistory);
             
-            // Now update the location that the new elements of the graph will enter from
-            var transform = zoom.getTransform(DAGHistory.bbox().call(this, d));
-            DAG.newnodetransition(function(d) {
-                if (DAG.animate()) {
-                    d3.select(this).attr("transform", transform).transition().duration(800).attr("transform", DAG.nodeTranslate);
-                } else {
-                    d3.select(this).attr("transform", transform).attr("transform", DAG.nodeTranslate);                    
-                }
-            })
+        //     // Now update the location that the new elements of the graph will enter from
+        //     var transform = zoom.getTransform(DAGHistory.bbox().call(this, d));
+        //     DAG.newnodetransition(function(d) {
+        //         if (DAG.animate()) {
+        //             d3.select(this).attr("transform", transform).transition().duration(800).attr("transform", DAG.nodeTranslate);
+        //         } else {
+        //             d3.select(this).attr("transform", transform).attr("transform", DAG.nodeTranslate);                    
+        //         }
+        //     })
             
-            // Redraw the graph and such
-            dag.draw();
-        })
+        //     // Redraw the graph and such
+        //     dag.draw();
+        // })
         
-        function highlightPath(center) {        
-            var path = getEntirePathLinks(center);
+        // function highlightPath(center) {        
+        //     var path = getEntirePathLinks(center);
             
-            var pathnodes = {};
-            var pathlinks = {};
+        //     var pathnodes = {};
+        //     var pathlinks = {};
             
-            path.forEach(function(p) {
-               pathnodes[p.source.id] = true;
-               pathnodes[p.target.id] = true;
-               pathlinks[p.source.id+p.target.id] = true;
-            });
+        //     path.forEach(function(p) {
+        //        pathnodes[p.source.id] = true;
+        //        pathnodes[p.target.id] = true;
+        //        pathlinks[p.source.id+p.target.id] = true;
+        //     });
             
-            edges.classed("hovered", function(d) {
-                return pathlinks[d.source.id+d.target.id];            
-            })
-            nodes.classed("hovered", function(d) {
-                return pathnodes[d.id];
-            });
+        //     edges.classed("hovered", function(d) {
+        //         return pathlinks[d.source.id+d.target.id];            
+        //     })
+        //     nodes.classed("hovered", function(d) {
+        //         return pathnodes[d.id];
+        //     });
             
-            var immediatenodes = {};
-            var immediatelinks = {};
-            immediatenodes[center.id] = true;
-            center.getVisibleParents().forEach(function(p) {
-                immediatenodes[p.id] = true;
-                immediatelinks[p.id+center.id] = true;
-            })
-            center.getVisibleChildren().forEach(function(p) {
-                immediatenodes[p.id] = true;
-                immediatelinks[center.id+p.id] = true;
-            })
+        //     var immediatenodes = {};
+        //     var immediatelinks = {};
+        //     immediatenodes[center.id] = true;
+        //     center.getVisibleParents().forEach(function(p) {
+        //         immediatenodes[p.id] = true;
+        //         immediatelinks[p.id+center.id] = true;
+        //     })
+        //     center.getVisibleChildren().forEach(function(p) {
+        //         immediatenodes[p.id] = true;
+        //         immediatelinks[center.id+p.id] = true;
+        //     })
             
-            edges.classed("immediate", function(d) {
-                return immediatelinks[d.source.id+d.target.id];
-            })
-            nodes.classed("immediate", function(d) {
-                return immediatenodes[d.id];
-            })
-        }
+        //     edges.classed("immediate", function(d) {
+        //         return immediatelinks[d.source.id+d.target.id];
+        //     })
+        //     nodes.classed("immediate", function(d) {
+        //         return immediatenodes[d.id];
+        //     })
+        // }
     }
     
     // The main draw function
     this.draw = function() {
-        DAGTooltip.hide();                  // Hide any tooltips
+        // DAGTooltip.hide();                  // Hide any tooltips
         console.log("draw begin")
         var begin = (new Date()).getTime();  
         var start = (new Date()).getTime();        
@@ -222,7 +223,7 @@ function XTraceDAG(attachPoint, reports, /*optional*/ params) {
         minimapSVG.datum(graphSVG.node()).call(DAGMinimap);  // Draw a Minimap at the minimap attach
         console.log("draw minimap", new Date().getTime() - start);
         start = (new Date()).getTime();
-        graphSVG.selectAll(".node").call(DAGTooltip);        // Attach tooltips
+        // graphSVG.selectAll(".node").call(DAGTooltip);        // Attach tooltips
         console.log("draw tooltips", new Date().getTime() - start);
         start = (new Date()).getTime();
         setupEvents();                      // Set up the node selection events
@@ -231,7 +232,7 @@ function XTraceDAG(attachPoint, reports, /*optional*/ params) {
         refreshViewport();                  // Update the viewport settings
         console.log("draw viewport", new Date().getTime() - start);
         start = (new Date()).getTime();
-        attachContextMenus();
+        // attachContextMenus();
         console.log("draw contextmenus", new Date().getTime() - start);
         console.log("draw complete, total time=", new Date().getTime() - begin);
     }
@@ -247,12 +248,12 @@ function XTraceDAG(attachPoint, reports, /*optional*/ params) {
     this.reports = reports;
     this.DAG = DAG
     this.DAGMinimap = DAGMinimap;
-    this.DAGHistory = DAGHistory;
-    this.DAGTooltip = DAGTooltip;
-    this.DAGContextMenu = DAGContextMenu;
+    // this.DAGHistory = DAGHistory;
+    // this.DAGTooltip = DAGTooltip;
+    // this.DAGContextMenu = DAGContextMenu;
     this.graph = graph;
     this.resetViewport = resetViewport;
-    this.history = history;
+    // this.history = history;
     
     
     // Add a play button
