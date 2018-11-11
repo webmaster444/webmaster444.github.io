@@ -71,6 +71,7 @@ var getReports = function(ids_str, callback, errback) {
     
     var json_fecthing_id = null;
     var json_batch_callback = function(json) {
+        console.log(json);
         if (json.length==1) json[0].id = json_fecthing_id;
         results = results.concat(json);
         if (json_ids.length == 0) {
