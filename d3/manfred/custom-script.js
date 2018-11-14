@@ -32,21 +32,36 @@ d3.json("data.json", function(error, data) {
             
   makeLinks(graphData);
 
+  var maxCnt = Math.ceil(Math.ceil(Math.sqrt(orphansWithoutLinks.length))/2);  
   //orphans without links
   vizChartScript += 'subgraph cluster_orphans_without_links { label="orphans without links";	style=dashed; ';
-  vizChartScript +='subgraph cluster_orphans_without_links_0 { label="";	style=invis;'
-    orphansWithoutLinks1.forEach(function(d){            		    	
-			vizChartScript += '"'+d['url']+'" ' + '[ color=gray, href="'+d['url']+'",'+'label=<'+wrapTable(d)+'>, shape=record, style="rounded,filled"]; ';
-		})
-							           
-	vizChartScript += 'placeholder_orphans_without_links_0 [ label="", style=invis ];}';
 
-  vizChartScript +='subgraph cluster_orphans_without_links_1 { label="";	style=invis;'
-    orphansWithoutLinks2.forEach(function(d){            		    	
-			vizChartScript += '"'+d['url']+'" ' + '[ color=gray, href="'+d['url']+'",'+'label=<'+wrapTable(d)+'>, shape=record, style="rounded,filled"]; ';
-		})
+  var orphans = [];
+  for(var i=0;i<maxCnt;i++){
+    orphans[i] = '';
+  }
+  orphansWithoutLinks.forEach(function(d,i){    
+    var j = i % maxCnt;
+    orphans[j] += '"'+d['url']+'" ' + '[ color=gray, href="'+d['url']+'",'+'label=<'+wrapTable(d)+'>, shape=record, style="rounded,filled"]; ';    
+  })
+  for(var i=0;i<maxCnt;i++){
+    vizChartScript +='subgraph cluster_orphans_without_links_'+i+' { label="";  style=invis;'+orphans[i]+'placeholder_orphans_without_links_'+i+' [ label="", style=invis ];}';
+  }
+
+  console.log(orphans);
+ //  vizChartScript +='subgraph cluster_orphans_without_links_0 { label="";	style=invis;'
+ //    orphansWithoutLinks1.forEach(function(d){            		    	
+	// 		vizChartScript += '"'+d['url']+'" ' + '[ color=gray, href="'+d['url']+'",'+'label=<'+wrapTable(d)+'>, shape=record, style="rounded,filled"]; ';
+	// 	})
 							           
-	vizChartScript += 'placeholder_orphans_without_links_1 [ label="", style=invis ];}';
+
+
+ //  vizChartScript +='subgraph cluster_orphans_without_links_1 { label="";	style=invis;'
+ //    orphansWithoutLinks2.forEach(function(d){            		    	
+	// 		vizChartScript += '"'+d['url']+'" ' + '[ color=gray, href="'+d['url']+'",'+'label=<'+wrapTable(d)+'>, shape=record, style="rounded,filled"]; ';
+	// 	})
+							           
+	// vizChartScript += 'placeholder_orphans_without_links_1 [ label="", style=invis ];}';
 	vizChartScript +='}';
                         
             var weightGroup = [];
@@ -69,7 +84,10 @@ d3.json("data.json", function(error, data) {
             // 	placeholder_1->placeholder_2[ label="weight=16", rank=same, shape=none, style=invis ];
             // 	vizChartScript +='pl'
             // })  
-            vizChartScript += 'placeholder_orphans_without_links_1->placeholder_orphans_without_links_0[ label="weight=16", rank=same, shape=none, style=invis ];';
+            for(var i=maxCnt-1;i>0;i--){
+              vizChartScript += 'placeholder_orphans_without_links_'+i+'->placeholder_orphans_without_links_'+(i-1)+'[ label="weight=16", rank=same, shape=none, style=invis ];';
+            }
+            // vizChartScript += 'placeholder_orphans_without_links_1->placeholder_orphans_without_links_0[ label="weight=16", rank=same, shape=none, style=invis ];';
             vizChartScript += 'placeholder_orphans_without_links_0->placeholder_1[ label="weight=16", rank=same, shape=none, style=invis ];';
             for(var i=0;i<weightGroup.length-1;i++){
             	var w = weightGroup[i];
@@ -150,8 +168,7 @@ function wrapTable(data){
             tString +=tdString;
         }
     };
-
-    console.log(data);
+    
     if(data.labels!=null){
       var ts = '<tr>'
       data.labels.forEach(function(label){        
