@@ -36,14 +36,14 @@ d3.json("data.json", function(error, data) {
   vizChartScript += 'subgraph cluster_orphans_without_links { label="orphans without links";	style=dashed; ';
   vizChartScript +='subgraph cluster_orphans_without_links_0 { label="";	style=invis;'
     orphansWithoutLinks1.forEach(function(d){            		    	
-			vizChartScript += '"'+d['url']+'" ' + '[ color=gray, href="'+d['url']+'",'+'label=<'+wrapTable(d['title'])+'>, shape=record, style="rounded,filled"]; ';
+			vizChartScript += '"'+d['url']+'" ' + '[ color=gray, href="'+d['url']+'",'+'label=<'+wrapTable(d)+'>, shape=record, style="rounded,filled"]; ';
 		})
 							           
 	vizChartScript += 'placeholder_orphans_without_links_0 [ label="", style=invis ];}';
 
   vizChartScript +='subgraph cluster_orphans_without_links_1 { label="";	style=invis;'
     orphansWithoutLinks2.forEach(function(d){            		    	
-			vizChartScript += '"'+d['url']+'" ' + '[ color=gray, href="'+d['url']+'",'+'label=<'+wrapTable(d['title'])+'>, shape=record, style="rounded,filled"]; ';
+			vizChartScript += '"'+d['url']+'" ' + '[ color=gray, href="'+d['url']+'",'+'label=<'+wrapTable(d)+'>, shape=record, style="rounded,filled"]; ';
 		})
 							           
 	vizChartScript += 'placeholder_orphans_without_links_1 [ label="", style=invis ];}';
@@ -91,10 +91,10 @@ d3.json("data.json", function(error, data) {
                 };
                 if(shapeType=='record'){
                 	var ts = value['title'].replace(/[^a-zA-Z ]/g, "");
-                	vizChartScript +='"'+value['url']+'" [ color=pink, href="'+value['url']+'", label=<'+wrapTable(value['title'])+'>, shape=record, style="rounded,filled" ];'
+                	vizChartScript +='"'+value['url']+'" [ color=pink, href="'+value['url']+'", label=<'+wrapTable(value)+'>, shape=record, style="rounded,filled" ];'
                 }else{
                 	var ts = value['title'].replace(/[^a-zA-Z ]/g, "");
-                	vizChartScript +='"'+value['url']+'" [ color=orange, href="'+value['url']+'", label=<'+wrapTable(value['title'])+'>, shape=oval, style="rounded,filled" ];'
+                	vizChartScript +='"'+value['url']+'" [ color=orange, href="'+value['url']+'", label=<'+wrapTable(value)+'>, shape=oval, style="rounded,filled" ];'
                 }            		
             	})
             	vizChartScript +='placeholder_'+n.key+' [ label="weight='+n.key+'", rank=same, shape=none, style=invis ];}';
@@ -105,13 +105,13 @@ d3.json("data.json", function(error, data) {
 			var options = {
 			  format: 'svg'  
 			}
-
-            console.log(vizChartScript);
+            
 			var image = Viz(vizChartScript, options);
 			var main = document.getElementById('main');
 
 			main.innerHTML = image;
 
+        // d3.selectAll('.node').on('mouseover',function(d){console.log(this);}).on('mousemove',function(d){console.log(d);console.log(this);})
         });
 // SVG
 function makeLinks(showData){    
@@ -123,14 +123,9 @@ function makeLinks(showData){
         }
     })    
 }
-
 		
-wrapTable("airtable: use dedicated tables for milestones & labels + auto provision them");
-wrapTable("Show epic's completion rate");
-wrapTable("feat: use a minimal record when an error occurs");
-wrapTable("make '--fetch' the default behavior (add '--no-fetch' instead)");
-wrapTable("Support Cross-Provider dependencies (GitHub -> GitLab)");
-function wrapTable(title){	
+function wrapTable(data){	
+  var title = data['title'];
     title = title.replace(/&/g, "#");    
     title = title.replace(/->/g, "#");    
  	var words = title.split(/\s+/).reverse(),
@@ -138,8 +133,7 @@ function wrapTable(title){
     line = [];    
             
     var tString = '<table>';  
-    var tdString = '';
-    console.log(words);
+    var tdString = '';    
     while (word = words.pop()) {    
         line.push(word);        
         tdString = '<tr><td>'+line.join(" ") +'</td></tr>';                
@@ -156,8 +150,23 @@ function wrapTable(title){
             tString +=tdString;
         }
     };
-    tString +='</table>';
 
-    console.log(tString);
+    console.log(data);
+    if(data.labels!=null){
+      var ts = '<tr>'
+      data.labels.forEach(function(label){        
+        ts +='<td bgcolor="#'+label.Color+'">'+label.ID+'</td>';
+      })
+      ts +='</tr>';
+      tString +=ts;
+    }    
+
+    if(data.author!=null){
+      var ts = '<tr>';
+      ts+='<td>@'+data.author.Name+'</td>';
+      ts+='</tr>';
+      tString +=ts;
+    }
+    tString +='</table>';  
     return tString;
 }
