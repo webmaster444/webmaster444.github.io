@@ -235,7 +235,7 @@
 
             g_epic_real_item.append('ellipse').attr('cx',x.bandwidth()/2).attr('cy',y.bandwidth()/2).attr('rx',x.bandwidth()*0.9).attr('ry',y.bandwidth()*0.9);
 
-            g_epic_real_item.append('text').attr('text-anchor','middle').attr('x',x.bandwidth()/2).text(function(d){return d.number}).call(wrap,x.bandwidth());
+            // g_epic_real_item.append('text').attr('text-anchor','middle').attr('x',x.bandwidth()/2).text(function(d){return d.title}).call(wrap,x.bandwidth());
             var g_ritem = weight_group1.selectAll('.ritem')
                 .data(function(d){
                     var epics = d.values.filter(function(value){
@@ -255,7 +255,7 @@
                 }).attr('pos_X',function(d){return x(d['weight'])+x.bandwidth()/2}).attr('pos_Y',function(d){return y(d['yIndex'])+y.bandwidth()/2;});
 
             g_ritem.append('rect').attr('x',0).attr('width',x.bandwidth()).attr('y',0).attr('height',y.bandwidth()).attr('rx',2).attr('ry',2);
-            g_ritem.append('text').attr('text-anchor','middle').attr('x',x.bandwidth()/2).attr('y',y.bandwidth()/2-10).text(function(d){return d.number}).call(wrap,x.bandwidth());
+            // g_ritem.append('text').attr('text-anchor','middle').attr('x',x.bandwidth()/2).attr('y',y.bandwidth()/2-10).text(function(d){return d.number}).call(wrap,x.bandwidth());
 
             var orphans_section1 = d3.select('#orphans_section .orphan1_wrapper');
             orphans_section1.selectAll('.orphan1').data(orphansWithoutLinks.filter(function(d,i){
@@ -270,6 +270,8 @@
                     return d;
                 }
             })).enter().append('div').attr('class','orphan2').append('span').html(function(d){return d.title});
+
+            svg.append('text').text('DepViz has "cool" features').call(wrap,60);
         })
 
         function makeLinks(showData){
@@ -310,13 +312,17 @@
                     x = text.attr('x')?text.attr('x'):0,
                     dy = text.attr('dy')? parseFloat(text.attr("dy")):0,
                     tspan = text.text(null).append("tspan").attr("x", x).attr("dy", dy + "em");
+                    console.log(words);
                 while (word = words.pop()) {
                     line.push(word);
                     tspan.text(line.join(" "));
+                    console.log(line);
                     if (tspan.node().getComputedTextLength() > width) {
                         line.pop();
                         tspan.text(line.join(" "));
                         line = [word];
+                        console.log(word);
+                        console.log(line);
                         tspan = text.append("tspan").attr("x", x).attr("dy", lineHeight + dy + "em").text(word);
                     }
                 }

@@ -12,6 +12,18 @@ d3.json("data.json", function(error, data) {
     }
   })
 
+  var orphansWithoutLinksLength = orphansWithoutLinks.length;
+  var orphansWithoutLinks1 = orphansWithoutLinks.filter(function(d,i){
+  	if(i<orphansWithoutLinksLength/2){
+  		return d;
+  	}
+  })
+
+  var orphansWithoutLinks2 = orphansWithoutLinks.filter(function(d,i){
+  	if(i>=orphansWithoutLinksLength/2){
+  		return d;
+  	}
+  })
 	var graphData = showData.filter(function(d){
     if(d['is-linked-with-an-epic']==true || d['is-orphan']==false){
       return d;
@@ -21,14 +33,22 @@ d3.json("data.json", function(error, data) {
   makeLinks(graphData);
 
   //orphans without links
-  vizChartScript += 'subgraph cluster_orphans_without_links { label="orphans without links";	style=dashed; subgraph cluster_orphans_without_links_0 { label="";	style=invis;'
-    orphansWithoutLinks.forEach(function(d){            		
-			vizChartScript += '"'+d['url']+'" ' + '[ color=gray, href="'+d['url']+'",'+'label=<'+d['number']+'>, shape=record, style="rounded,filled"]; ';
+  vizChartScript += 'subgraph cluster_orphans_without_links { label="orphans without links";	style=dashed; ';
+  vizChartScript +='subgraph cluster_orphans_without_links_0 { label="";	style=invis;'
+    orphansWithoutLinks1.forEach(function(d){            		    	
+			vizChartScript += '"'+d['url']+'" ' + '[ color=gray, href="'+d['url']+'",'+'label=<'+wrapTable(d['title'])+'>, shape=record, style="rounded,filled"]; ';
 		})
 							           
-	vizChartScript += 'placeholder_orphans_without_links_0 [ label="", style=invis ];}}';
-            
-            // console.log(linksData);
+	vizChartScript += 'placeholder_orphans_without_links_0 [ label="", style=invis ];}';
+
+  vizChartScript +='subgraph cluster_orphans_without_links_1 { label="";	style=invis;'
+    orphansWithoutLinks2.forEach(function(d){            		    	
+			vizChartScript += '"'+d['url']+'" ' + '[ color=gray, href="'+d['url']+'",'+'label=<'+wrapTable(d['title'])+'>, shape=record, style="rounded,filled"]; ';
+		})
+							           
+	vizChartScript += 'placeholder_orphans_without_links_1 [ label="", style=invis ];}';
+	vizChartScript +='}';
+                        
             var weightGroup = [];
             graphData.map(function(d){
                 if(weightGroup.indexOf(d['weight'])==-1){
@@ -42,14 +62,14 @@ d3.json("data.json", function(error, data) {
                 return d['weight']
             })            
             .entries(graphData);                        
-            
-            console.log(weightGroup);
+                        
 
 
             // weightGroup.forEach(function(weight,i){
             // 	placeholder_1->placeholder_2[ label="weight=16", rank=same, shape=none, style=invis ];
             // 	vizChartScript +='pl'
             // })  
+            vizChartScript += 'placeholder_orphans_without_links_1->placeholder_orphans_without_links_0[ label="weight=16", rank=same, shape=none, style=invis ];';
             vizChartScript += 'placeholder_orphans_without_links_0->placeholder_1[ label="weight=16", rank=same, shape=none, style=invis ];';
             for(var i=0;i<weightGroup.length-1;i++){
             	var w = weightGroup[i];
@@ -70,20 +90,23 @@ d3.json("data.json", function(error, data) {
                     }                        
                 };
                 if(shapeType=='record'){
-                	vizChartScript +='"'+value['url']+'" [ color=pink, href="'+value['url']+'", label=<'+value['number']+'>, shape=record, style="rounded,filled" ];'
+                	var ts = value['title'].replace(/[^a-zA-Z ]/g, "");
+                	vizChartScript +='"'+value['url']+'" [ color=pink, href="'+value['url']+'", label=<'+wrapTable(value['title'])+'>, shape=record, style="rounded,filled" ];'
                 }else{
-                	vizChartScript +='"'+value['url']+'" [ color=orange, href="'+value['url']+'", label=<'+value['number']+'>, shape=oval, style="rounded,filled" ];'
+                	var ts = value['title'].replace(/[^a-zA-Z ]/g, "");
+                	vizChartScript +='"'+value['url']+'" [ color=orange, href="'+value['url']+'", label=<'+wrapTable(value['title'])+'>, shape=oval, style="rounded,filled" ];'
                 }            		
             	})
             	vizChartScript +='placeholder_'+n.key+' [ label="weight='+n.key+'", rank=same, shape=none, style=invis ];}';
             })
 
             vizChartScript += '}';
-            console.log(vizChartScript);
+            
 			var options = {
 			  format: 'svg'  
 			}
 
+            console.log(vizChartScript);
 			var image = Viz(vizChartScript, options);
 			var main = document.getElementById('main');
 
@@ -101,12 +124,40 @@ function makeLinks(showData){
     })    
 }
 
-function getIndexByUrl(url,data){
-    var number;
-    data.forEach(function(d){
-        if(d['url']==url){
-            number =  d['number'];
+		
+wrapTable("airtable: use dedicated tables for milestones & labels + auto provision them");
+wrapTable("Show epic's completion rate");
+wrapTable("feat: use a minimal record when an error occurs");
+wrapTable("make '--fetch' the default behavior (add '--no-fetch' instead)");
+wrapTable("Support Cross-Provider dependencies (GitHub -> GitLab)");
+function wrapTable(title){	
+    title = title.replace(/&/g, "#");    
+    title = title.replace(/->/g, "#");    
+ 	var words = title.split(/\s+/).reverse(),
+    word,
+    line = [];    
+            
+    var tString = '<table>';  
+    var tdString = '';
+    console.log(words);
+    while (word = words.pop()) {    
+        line.push(word);        
+        tdString = '<tr><td>'+line.join(" ") +'</td></tr>';                
+        if (line.join(" ").length > 30) {
+            line.pop();
+            tdString = '<tr><td>' + (line.join(" ")) + '</td></tr>';
+            tString +=tdString;
+            line = [word];                                    
+            tdString = '<tr><td>' + (word) + '</td></tr>';
+            if(words.length == 0){                
+                tString +=tdString;
+            }
+        }else if(words.length == 0){            
+            tString +=tdString;
         }
-    })
-    return number;
-}				
+    };
+    tString +='</table>';
+
+    console.log(tString);
+    return tString;
+}

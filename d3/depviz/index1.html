@@ -111,6 +111,7 @@
                         line.pop();
                         tspan.text(line.join(" "));
                         line = [word];
+                        console.log(word);
                         tspan = text.append("tspan").attr("x", x).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
                     }
                 }
