@@ -19,10 +19,6 @@ svg{
 rect{
   stroke:black;
 }
-
-.labels text{
-  text-anchor: middle;
-}
 </style>
 <body>
 Select District: <select id="districtSelector"></select>
@@ -41,15 +37,6 @@ var jsonData;
 var rectWidth = 50, rectHeight = 50;
 var padding = 10;
 
-var firstKey,secondKey,thirdKey;
-var drag = d3.drag()
-    .on("start", dragstarted)
-    .on("drag", dragged)
-    .on("end", dragended);
-var firstPos = rectWidth/2, secPos = (rectWidth + padding + rectWidth/2), thirdPos = 2 * (rectWidth + padding);
-firstKey = "Acct";
-secondKey = "Object";
-thirdKey  = "Desc";
 var numberFormat = d3.format(",.0f");
 
 var color= d3.scaleSequential(d3["interpolateBlues"])
@@ -100,12 +87,10 @@ function drawChart(selectedDistrict){
 
   //Account Block
   var acctData = d3.nest()
-  .key(function(d) { return d[firstKey]; })
+  .key(function(d) { return d.Acct; })
   .rollup(function(v) { return d3.sum(v, function(d) { return d.Amount; }); })
   .entries(chartData);
   
-  d3.select('svg').attr('height',function(){return height + acctData.length * padding + margin.top + 50});
-
   acctData.sort(function(x,y){ return d3.ascending(x.key,y.key)});
 
   var total = d3.sum(acctData.map(function(d){return d.value}));
@@ -126,7 +111,7 @@ function drawChart(selectedDistrict){
   color.domain([0, d3.max(acctData.map(function(d){return d.value}))]);
   
   var rows = svg.selectAll('.row').data(acctData).enter().append('g').attr('class','row')
-  .attr('transform',function(d,i){return "translate("+0 + ',' + (accountRectYScale(d.per0) + (i-1)*padding) + ')'})
+  .attr('transform',function(d,i){return "translate("+margin.left + ',' + (accountRectYScale(d.per0) + (i-1)*padding) + ')'})
   .attr('rect-height',(d)=>accountRectYScale(d.per-d.per0))
   .attr('data-account',(d)=>d.key)
   
@@ -149,7 +134,7 @@ function drawChart(selectedDistrict){
     .on("mouseout", function(d){ tooltip.style("display", "none");}); 
 
   // Object Block
-  var objData = d3.nest().key(function(d){return d[firstKey];}).key(function(d) { return d[secondKey]; }).rollup(function(v){return d3.sum(v,function(d){return d.Amount;})}).entries(chartData);
+  var objData = d3.nest().key(function(d){return d.Acct;}).key(function(d) { return d.Object; }).rollup(function(v){return d3.sum(v,function(d){return d.Amount;})}).entries(chartData);
   
   objData.sort(function(x,y){ return d3.ascending(x.key,y.key)});
 
@@ -203,7 +188,7 @@ function drawChart(selectedDistrict){
   }); 
 
   // Description Block
-  var descData = d3.nest().key(function(d){return d[firstKey];}).key(function(d){return d[secondKey]}).entries(chartData);
+  var descData = d3.nest().key(function(d){return d.Acct;}).key(function(d){return d.Object}).entries(chartData);
   
   descData.sort(function(x,y){
     return d3.ascending(x.Object, y.Object);
@@ -286,11 +271,6 @@ function drawChart(selectedDistrict){
     })
     .on("mouseout", function(d){ tooltip.style("display", "none");
   }); 
-
-  var labels = svg.append('g').attr('class','labels');
-  labels.append('g').attr('class','firstkey').append('text').attr('x',rectWidth/2).attr('y',-20).text(firstKey).call(drag);
-  labels.append('g').attr('class','secondkey').append('text').attr('x',rectWidth + padding + rectWidth/2).attr('y',-20).text(secondKey).call(drag);
-  labels.append('g').attr('class','thirdkey').append('text').attr('x',2 * rectWidth + 2*padding + rectWidth/2).attr('y',-20).text(thirdKey).call(drag);
 }
 
 $('#districtSelector').change(function(){
@@ -298,72 +278,5 @@ $('#districtSelector').change(function(){
   svg.selectAll('*').remove();
   drawChart(selectedDistrict);  
 })
-
-function dragstarted(d){
-
-}
-function dragged(d) {    
-  d3.select(this)      
-    .attr("x", d3.event.x)
-    .attr("y", d3.event.y)
-}
-function dragended(d){
-  var first, second, third;  
-  var currentNth = d3.select(this.parentNode).attr('class');
-  var cuX = d3.event.x;
-  if(currentNth=='thirdkey'){
-    if(cuX < firstPos){
-      first = thirdKey;
-      second = firstKey;
-      third = secondKey;      
-    }else if(cuX < secPos){
-      first = firstKey;
-      second = thirdKey;
-      third = secondKey;      
-    }else{
-      first = firstKey;
-      second = secondKey;
-      third = thirdKey;      
-    }
-  }else if(currentNth=='secondkey'){
-    if(cuX < firstPos){
-      first = secondKey;
-      second = firstKey;
-      third = thirdKey;
-    }else if(cuX > thirdPos){
-      first = firstKey;
-      second = thirdKey;
-      third = secondKey;
-    }else{
-      first = firstKey;
-      second = secondKey;
-      third = thirdKey; 
-    }
-  }else if(currentNth=='firstkey'){
-   if(cuX>thirdPos){
-      first = secondKey;
-      second = thirdKey;
-      third = firstKey;
-    }else if(cuX>secPos){
-      first = secondKey;
-      second = firstKey;
-      third = thirdKey;
-    }else{
-      first = firstKey;
-      second = secondKey;
-      third = thirdKey;
-    }
-  }
-  
-  updateKeys(first,second,third);  
-}
-
-function updateKeys(first,second,third){
-  firstKey = first;
-  secondKey = second;
-  thirdKey = third;
-  svg.selectAll('*').remove();
-  drawChart(selectedDistrict);
-};
 </script>
 </body>
