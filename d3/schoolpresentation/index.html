@@ -38,15 +38,21 @@ Select District: <select id="districtSelector"></select>
 var tooltip = d3.select("body").append("div").attr("class", "toolTip");
 var selectedDistrict;
 var jsonData;
-var rectWidth = 50, rectHeight = 50;
-var padding = 10;
+var rectWidth = 160, rectHeight = 50;
+var paddingLeft = 10, paddingTop = 3; 
 
 var firstKey,secondKey,thirdKey;
 var drag = d3.drag()
     .on("start", dragstarted)
     .on("drag", dragged)
     .on("end", dragended);
-var firstPos = rectWidth/2, secPos = (rectWidth + padding + rectWidth/2), thirdPos = 2 * (rectWidth + padding);
+
+var drag1 = d3.drag()
+    .on("start", dragstarted1)
+    .on("drag", dragged1)
+    .on("end", dragended1);
+
+var firstPos = rectWidth/2, secPos = (rectWidth + paddingLeft + rectWidth/2), thirdPos = 2 * (rectWidth + paddingLeft);
 firstKey = "Acct";
 secondKey = "Object";
 thirdKey  = "Desc";
@@ -104,7 +110,7 @@ function drawChart(selectedDistrict){
   .rollup(function(v) { return d3.sum(v, function(d) { return d.Amount; }); })
   .entries(chartData);
   
-  d3.select('svg').attr('height',function(){return height + acctData.length * padding + margin.top + 50});
+  d3.select('svg').attr('height',function(){return height + acctData.length * paddingTop + margin.top + 50});
 
   acctData.sort(function(x,y){ return d3.ascending(x.key,y.key)});
 
@@ -119,34 +125,33 @@ function drawChart(selectedDistrict){
     }
   })
   
-  console.log(acctData);
-
   accountRectYScale.domain([0, 1]);
 
   color.domain([0, d3.max(acctData.map(function(d){return d.value}))]);
   
   var rows = svg.selectAll('.row').data(acctData).enter().append('g').attr('class','row')
-  .attr('transform',function(d,i){return "translate("+0 + ',' + (accountRectYScale(d.per0) + (i-1)*padding) + ')'})
+  .attr('transform',function(d,i){return "translate("+0 + ',' + (accountRectYScale(d.per0) + (i-1)*paddingTop) + ')'})
   .attr('rect-height',(d)=>accountRectYScale(d.per-d.per0))
   .attr('data-account',(d)=>d.key)
   
 
-  var accounts = rows.selectAll('.account_rect')
+  var accounts = rows.selectAll('.firstkey')
     .data(function(d){
       var acctKey = d.key;
       return acctData.filter(function(datum){return d.key==datum.key})
     }).enter().append('rect').attr('x',0).attr('width',rectWidth).attr('y',0)
     .attr('height',function(d){return accountRectYScale(d.per-d.per0)})
-    .attr('class','account_rect')
+    .attr('class','firstkey')
     .attr('fill',(d)=>color(d.value))
     .on("mousemove", function(d){        
       tooltip
         .style("left", d3.event.pageX - 50 + "px")
         .style("top", d3.event.pageY - 70 + "px")
         .style("display", "inline-block")
-        .html("Account:"+(d.key) + "<br>" + "Amount:" + numberFormat(d.value));
+        .html(firstKey + ": "+(d.key) + "<br>" + "Amount:" + numberFormat(d.value));
     })
-    .on("mouseout", function(d){ tooltip.style("display", "none");}); 
+    .on("mouseout", function(d){ tooltip.style("display", "none");})
+    .call(drag1); 
 
   // Object Block
   var objData = d3.nest().key(function(d){return d[firstKey];}).key(function(d) { return d[secondKey]; }).rollup(function(v){return d3.sum(v,function(d){return d.Amount;})}).entries(chartData);
@@ -174,12 +179,12 @@ function drawChart(selectedDistrict){
   var object_g = rows.selectAll('.object_g').data(function(d){    
     return objData.filter(function(obj){return d.key == obj.key})
   }).enter().append('g').attr('class','object_g').attr('transform',function(d,i){
-    return 'translate(' + (rectWidth + padding) +',0)';
+    return 'translate(' + (rectWidth + paddingLeft) +',0)';
   })
 
   color.domain([0, 1]);
 
-  object_g.selectAll('.object_rect').data(function(d){return d.values}).enter().append('rect').attr('class',function(d){return 'object_rect'})
+  object_g.selectAll('.secondkey').data(function(d){return d.values}).enter().append('rect').attr('class',function(d){return 'secondkey'})
   .attr('x',0)
   .attr('y',function(datum){
     var maxHeight = $(this).parents('.row').attr('rect-height');    
@@ -197,10 +202,10 @@ function drawChart(selectedDistrict){
         .style("left", d3.event.pageX - 50 + "px")
         .style("top", d3.event.pageY - 90 + "px")
         .style("display", "inline-block")
-        .html("Object:"+(d.key) + "<br>" + "Amount:" + numberFormat(d.value) + '<br>' + "Percent:" + ((d.per - d.per0) * 100).toFixed(2) +'%');
-    })
-    .on("mouseout", function(d){ tooltip.style("display", "none");
-  }); 
+        .html(secondKey+":"+(d.key) + "<br>" + "Amount:" + numberFormat(d.value) + '<br>' + "Percent:" + ((d.per - d.per0) * 100).toFixed(2) +'%');
+  })
+  .on("mouseout", function(d){ tooltip.style("display", "none");})
+  .call(drag1); 
 
   // Description Block
   var descData = d3.nest().key(function(d){return d[firstKey];}).key(function(d){return d[secondKey]}).entries(chartData);
@@ -261,12 +266,12 @@ function drawChart(selectedDistrict){
       return d.key==val.key      
     })
   }).enter().append('g').attr('class','desc_g').attr('transform',function(d,i){
-    return 'translate(' + 2*(rectWidth + padding) +',' + i*(rectHeight+padding) +')';
+    return 'translate(' + 2*(rectWidth + paddingLeft) +',' + i*(rectHeight+paddingTop) +')';
   });
 
   color.domain([0, 1]);
 
-  desc_g.selectAll('.desc_rect').data(function(d){return d.values}).enter().append('rect').attr('class',function(d){return 'desc_rect'})
+  desc_g.selectAll('.thirdkey').data(function(d){return d.values}).enter().append('rect').attr('class',function(d){return 'thirdkey'})
   .attr('x',0).attr('y',function(datum){
     var maxHeight = $(this).parents('.row').attr('rect-height');    
     rectYScale.range([0,maxHeight]);  
@@ -282,15 +287,15 @@ function drawChart(selectedDistrict){
         .style("left", d3.event.pageX - 50 + "px")
         .style("top", d3.event.pageY - 90 + "px")
         .style("display", "inline-block")
-        .html("Desc:"+(d.Desc) + "<br>" + "Amount:" + numberFormat(d.Amount) + '<br>' + "Percent:" + ((d.per - d.per0) * 100).toFixed(2) +'%');
+        .html(thirdKey+":"+(d[thirdKey]) + "<br>" + "Amount:" + numberFormat(d.Amount) + '<br>' + "Percent:" + ((d.per - d.per0) * 100).toFixed(2) +'%');
     })
-    .on("mouseout", function(d){ tooltip.style("display", "none");
-  }); 
+    .on("mouseout", function(d){ tooltip.style("display", "none");})
+    .call(drag1); 
 
   var labels = svg.append('g').attr('class','labels');
   labels.append('g').attr('class','firstkey').append('text').attr('x',rectWidth/2).attr('y',-20).text(firstKey).call(drag);
-  labels.append('g').attr('class','secondkey').append('text').attr('x',rectWidth + padding + rectWidth/2).attr('y',-20).text(secondKey).call(drag);
-  labels.append('g').attr('class','thirdkey').append('text').attr('x',2 * rectWidth + 2*padding + rectWidth/2).attr('y',-20).text(thirdKey).call(drag);
+  labels.append('g').attr('class','secondkey').append('text').attr('x',rectWidth + paddingLeft + rectWidth/2).attr('y',-20).text(secondKey).call(drag);
+  labels.append('g').attr('class','thirdkey').append('text').attr('x',2 * rectWidth + 2*paddingLeft + rectWidth/2).attr('y',-20).text(thirdKey).call(drag);
 }
 
 $('#districtSelector').change(function(){
@@ -309,8 +314,13 @@ function dragged(d) {
 }
 function dragended(d){
   var first, second, third;  
-  var currentNth = d3.select(this.parentNode).attr('class');
+  var currentNth;
+  if(d==undefined){
+    currentNth = d3.select(this.parentNode).attr('class');
+  }
+  console.log(currentNth);
   var cuX = d3.event.x;
+  console.log(cuX);
   if(currentNth=='thirdkey'){
     if(cuX < firstPos){
       first = thirdKey;
@@ -345,6 +355,72 @@ function dragended(d){
       second = thirdKey;
       third = firstKey;
     }else if(cuX>secPos){
+      first = secondKey;
+      second = firstKey;
+      third = thirdKey;
+    }else{
+      first = firstKey;
+      second = secondKey;
+      third = thirdKey;
+    }
+  }
+  
+  updateKeys(first,second,third);  
+}
+
+
+function dragstarted1(d){
+
+}
+function dragged1(d) {    
+  d3.select(this)      
+    .attr("x", d3.event.x)
+    .attr("y", d3.event.y)
+}
+function dragended1(d){
+  var first, second, third;  
+  var currentNth = d3.select(this).attr('class');
+  console.log(currentNth);
+  var cuX = d3.event.x;  
+  var s = d3.select(this.parentNode).attr('transform').substr(10);
+  cuX += parseInt(s.substr(0,s.lastIndexOf(',')));
+  if(currentNth=='thirdkey'){
+    if(cuX < firstPos - rectWidth / 2){
+      first = thirdKey;
+      second = firstKey;
+      third = secondKey;      
+    }else if(cuX < secPos - rectWidth / 2){
+      console.log(secPos, secPos-rectWidth / 2)
+      console.log(cuX);
+      first = firstKey;
+      second = thirdKey;
+      third = secondKey;      
+    }else{
+      console.log('keep');
+      first = firstKey;
+      second = secondKey;
+      third = thirdKey;      
+    }
+  }else if(currentNth=='secondkey'){
+    if(cuX < firstPos - rectWidth / 2){
+      first = secondKey;
+      second = firstKey;
+      third = thirdKey;
+    }else if(cuX > thirdPos - rectWidth / 2){
+      first = firstKey;
+      second = thirdKey;
+      third = secondKey;
+    }else{
+      first = firstKey;
+      second = secondKey;
+      third = thirdKey; 
+    }
+  }else if(currentNth=='firstkey'){
+   if(cuX>thirdPos - rectWidth / 2){
+      first = secondKey;
+      second = thirdKey;
+      third = firstKey;
+    }else if(cuX>secPos - rectWidth / 2){
       first = secondKey;
       second = firstKey;
       third = thirdKey;
