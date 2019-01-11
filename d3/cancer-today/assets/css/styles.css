@@ -326,3 +326,8 @@ polyline{
     fill: none;
     stroke: black;
 }
+
+#chart_container{
+    height: 100%;
+    width: 100%;
+}

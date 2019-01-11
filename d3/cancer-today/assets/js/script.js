@@ -3,10 +3,10 @@ var width = 960,
     height = 500; // adjust for height of input bar div
 var color = d3.scale.category20();
 // draw and append the container
-var svg = d3.select("#chart_content").append("svg").attr('width','100%').attr('height','100%')
+var svg = d3.select("#chart_container").append("svg").attr('width','100%').attr('height','100%')
   .attr("viewBox","0 0 960 500").attr("preserveAspectRatio","xMidYMid meet");
 
-var charts = d3.select("#chart_content");
+var charts = d3.select("#chart_container");
 // set the thickness of the inner and outer radii
 var min = Math.min(width, (height-50));
 var chart_r = min / 2;
