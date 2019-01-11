@@ -131,6 +131,7 @@ ul.nav img{
     padding-left: 65px;
     height: 100vh;
     color: #fff;
+    padding-top: 15px;
     background: #f5f5f5;
     -webkit-transition: all 0.2s ease-in-out;
     -moz-transition: all 0.2s ease-in-out;
@@ -158,7 +159,7 @@ ul.nav img{
 	color: #fff;
     overflow-y: hidden;
     overflow-x: hidden;
-    padding: 8px;
+    padding: 8px 10px;
 }
 
 #toggle-left-bar {
@@ -207,4 +208,122 @@ ul.nav img{
     text-align: center;
     box-shadow: 0 0 5px #999;
     z-index: 10;
+}
+
+.chart-title{
+    font-family: "Noto Sans";
+    font-weight: 500 !important;
+    fill: #000;
+    color: #000;
+    font-size: 20px !important;
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 30px;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    width: 100%;
+}
+
+#content{
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    position: relative;
+}
+
+/* right side panel */
+ul.dataviz_tool ul.sub-group {
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 2px;
+}
+
+ul.dataviz_tool ul.sub-group li {
+    padding-left: 0px;
+    margin: 0 0 7px 0;
+}
+
+.fiv-viv.fiv-icon-png {
+    background-image: url(../imgs/png.svg);
+}
+
+.rightsidepanel ul{
+    list-style-type: none;
+}
+
+.rightsidepanel{
+    z-index: 1001;
+    position: absolute;
+    top: 25%;
+    right: 0;
+}
+
+.fiv-viv {
+    position: relative;
+    display: inline-block;
+    line-height: 1em;
+    width: 0.75em;
+    font-size: 2em;
+}
+ul.dataviz_tool ul.sub-group li a span.hd {
+    display: block;
+    position: absolute;
+    color: #000;
+    font-weight: 800;
+    font-size: 8px;
+    bottom: -5px;
+    right: -5px;
+    background: #fff;
+    border: solid 1px #cccccc;
+    padding: 2px;
+    border-radius: 15px;
+}
+
+.fiv-background, .fiv-viv {
+    background-size: contain;
+    background-position: 50%;
+    background-repeat: no-repeat;
+}
+
+.fiv-viv:before {
+    content: '\00a0';
+}
+
+ul.dataviz_tool ul.sub-group li a {
+    display: block;
+    position: relative;
+    cursor: pointer;
+}
+.fiv-viv.fiv-icon-pdf {
+    background-image: url(../imgs/pdf.svg);
+}
+
+.fiv-viv.fiv-icon-ppt {
+    background-image: url(../imgs/ppt.svg);
+}
+.fiv-viv.fiv-icon-svg {
+    background-image: url(../imgs/svg.svg);
+}
+.fiv-viv.fiv-icon-json {
+    background-image: url(../imgs/json.svg);
+}
+.fiv-viv.fiv-icon-csv {
+    background-image: url(../imgs/csv.svg);
+}
+
+ul.dataviz_tool ul.sub-group li a i {
+    font-size: 1.8em;
+}
+
+body{
+    position: relative;
+}
+
+polyline{
+    fill: none;
+    stroke: black;
 }

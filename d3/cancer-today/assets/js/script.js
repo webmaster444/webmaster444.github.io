@@ -1,10 +1,11 @@
-var nCount = 10;
+var nCount = 5;
 var width = 960,
     height = 500; // adjust for height of input bar div
 var color = d3.scale.category20();
 // draw and append the container
 var svg = d3.select("#chart_content").append("svg")
   .attr("width", width).attr("height", height);
+
 var charts = d3.select("#chart_content");
 // set the thickness of the inner and outer radii
 var min = Math.min(width, (height-50));
@@ -13,17 +14,24 @@ var chart_r = min / 2;
 var pie = d3.layout.pie().value(function(d){ return d; }).sort(null);
 // construct arc generator
 var arc = d3.svg.arc()
-  .outerRadius(chart_r)
-  .innerRadius(chart_r * 0.7);
+  .outerRadius(chart_r * 0.8)
+  .innerRadius(chart_r * 0.4);
+
+var outerArc = d3.svg.arc()
+  .innerRadius(chart_r * 0.9)
+  .outerRadius(chart_r * 0.9);
 // creates the pie chart container
-var g = svg.append('g')
 var g = svg.append('g')
   .attr('transform', function(){
     if ( window.innerWidth >= 960 ) var shiftWidth = width / 2;
     if ( window.innerWidth < 960 ) var shiftWidth = width / 3;
     return 'translate(' + shiftWidth + ',' + height / 2 + ')';
   })
-var tooltip = d3.select('#chart_content')
+    g.append("g")
+  .attr("class", "labels");
+g.append("g")
+  .attr("class", "lines");
+var tooltip = d3.select('body')
     .append('div')
     .attr('class','tooltip')
 // generate random data
@@ -74,6 +82,7 @@ function render(){
   // remove data not being used
   g.datum(data).selectAll("path")
     .data(pie).exit().remove();    
+  changeLabels(data);
 }
 render();
 
@@ -100,21 +109,85 @@ function pathAnim(path, dir) {
           .duration(500)
           .ease('bounce')
           .attr('d', d3.svg.arc()
-              .innerRadius(chart_r * 0.7)
-              .outerRadius(chart_r)
+              .innerRadius(chart_r * 0.4)
+              .outerRadius(chart_r * 0.8)
           );
       break;
 
       case 1:
         path.transition()
           .attr('d', d3.svg.arc()
-              .innerRadius(chart_r * 0.7)
-              .outerRadius(chart_r * 1.08)
+              .innerRadius(chart_r * 0.4)
+              .outerRadius(chart_r * 0.8)
           );
         break;
     }
 }
 
+function changeLabels(data){
+  var text = svg.select(".labels").selectAll("text")
+    .data(pie(data));
+
+  text.enter()
+    .append("text")
+    .attr("dy", ".35em")
+    .text(function(d) {
+      return d.data.toFixed(2);
+    });
+  
+  function midAngle(d){
+    return d.startAngle + (d.endAngle - d.startAngle)/2;
+  }
+
+  text.transition().duration(1000)
+    .attrTween("transform", function(d) {
+      this._current = this._current || d;
+      var interpolate = d3.interpolate(this._current, d);
+      this._current = interpolate(0);
+      return function(t) {
+        var d2 = interpolate(t);
+        var pos = outerArc.centroid(d2);
+        pos[0] = chart_r * (midAngle(d2) < Math.PI ? 1 : -1);
+        return "translate("+ pos +")";
+      };
+    })
+    .styleTween("text-anchor", function(d){
+      this._current = this._current || d;
+      var interpolate = d3.interpolate(this._current, d);
+      this._current = interpolate(0);
+      return function(t) {
+        var d2 = interpolate(t);
+        return midAngle(d2) < Math.PI ? "start":"end";
+      };
+    });
+
+  text.exit()
+    .remove();
+
+  /* ------- SLICE TO TEXT POLYLINES -------*/
+
+  var polyline = svg.select(".lines").selectAll("polyline")
+    .data(pie(data));
+  
+  polyline.enter()
+    .append("polyline");
+
+  polyline.transition().duration(1000)
+    .attrTween("points", function(d){
+      this._current = this._current || d;
+      var interpolate = d3.interpolate(this._current, d);
+      this._current = interpolate(0);
+      return function(t) {
+        var d2 = interpolate(t);
+        var pos = outerArc.centroid(d2);
+        pos[0] = chart_r * 0.95 * (midAngle(d2) < Math.PI ? 1 : -1);
+        return [arc.centroid(d2), outerArc.centroid(d2), pos];
+      };      
+    });
+  
+  polyline.exit()
+    .remove();
+}
 $(document).ready(function () {
 
   $('#updateData').on('click',function(){
