@@ -110,6 +110,7 @@ nav.sub-nav #sub-nav ul li a{
 
 nav.sub-nav #sub-nav ul li{
     position: relative;
+    width: 100%;
 }
 
 ul.nav{
@@ -196,6 +197,8 @@ ul.nav img{
 
 #content{
 	padding: 8px;
+    width: 100%;
+    height: 100%;
 }
 
 .tooltip {
@@ -219,19 +222,11 @@ ul.nav img{
     margin: 0 auto;
     text-align: center;
     margin-top: 30px;
-    position: absolute;
+/*    position: absolute;
     left: 50%;
     top: 0;
     transform: translateX(-50%);
-    width: 100%;
-}
-
-#content{
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    height: 100%;
-    position: relative;
+    width: 100%;*/
 }
 
 /* right side panel */
@@ -319,8 +314,9 @@ ul.dataviz_tool ul.sub-group li a i {
     font-size: 1.8em;
 }
 
-body{
-    position: relative;
+body{    
+    width: 100%;
+    height: 100%;
 }
 
 polyline{
