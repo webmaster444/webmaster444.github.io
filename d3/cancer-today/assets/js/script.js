@@ -49,7 +49,7 @@ var path = g.datum(data).selectAll("path")
       if (!thisPath.classed('clicked')) {
           pathAnim(thisPath, 0);
       }
-      div.transition()    
+      tooltip.transition()    
         .duration(500)    
         .style("opacity", 0); 
     }).on('click',function(){        
