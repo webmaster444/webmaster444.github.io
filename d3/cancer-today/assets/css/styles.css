@@ -122,8 +122,9 @@ ul.nav img{
 }
 
 .wrapper {
-    display: flex;
-    align-items: stretch;
+    position: relative;
+    height: 100%;
+    display: inline-block;
 }
 
 #sidebar {
@@ -141,6 +142,7 @@ ul.nav img{
     box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
     bottom: 0;
     z-index: 60;
+    float: left;
 }
 
 #sidebar.active {
@@ -197,8 +199,9 @@ ul.nav img{
 
 #content{
 	padding: 8px;
-    width: 100%;
+    width: calc(100vw - 365px);
     height: 100%;
+    display: inline-block;
 }
 
 .tooltip {
