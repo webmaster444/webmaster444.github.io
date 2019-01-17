@@ -8,13 +8,92 @@ var svg = d3.select("#svg_wrapper").append("svg")
     .on("mousedown", mousedown)
     .on("mouseup", mouseup);
 
+var margin = {top:50};
 //data for polygon
 var points = [], g;
 var dragging = false, drawing = false, startPoint;
 
-var dragger = d3.behavior.drag()
+var svgWidth = 560, svgHeight = 800;
+var padding = 30
+var roomStart = svgWidth / 4 + padding;
+var index = 2;
+var squareWidth = 30;
+var roomWidth = 360, roomHeight = 700;
+drawBasicFloor();
+function drawBasicFloor(){
+    svg.append('rect').attr('x', svgWidth/4).attr('y',50).attr('width',roomWidth).attr('height',700).attr('fill',"red");
+    svg.append('circle').attr('cx', svgWidth/4).attr('cy',svgHeight / 2).attr('r',svgHeight/6).attr('fill',"red");    
+    svg.append('circle').attr('cx', svgWidth/4).attr('cy',svgHeight / 2).attr('r',30).attr('fill',"steelblue").attr('stroke','black').attr('id','circle_1');    
+    drawRect(roomStart,margin.top+padding,squareWidth,squareWidth);
+    drawRect(roomStart + padding + squareWidth,margin.top+padding,squareWidth,squareWidth);
+    drawRect(roomStart + 2 * (padding + squareWidth),margin.top+padding,squareWidth,squareWidth);
+    drawRect(roomStart - 10, margin.top+padding+40, squareWidth * 6, 10);
+    drawRect(roomStart,margin.top+padding+60,squareWidth,squareWidth);
+    drawRect(roomStart + padding + squareWidth,margin.top+padding+60,squareWidth,squareWidth);
+    drawRect(roomStart + 2 * (padding + squareWidth),margin.top+padding+60,squareWidth,squareWidth);
+
+    drawRect(roomStart,margin.top+padding + squareWidth * 3 + padding,squareWidth,squareWidth);
+    drawRect(roomStart + padding + squareWidth,margin.top+padding + squareWidth * 3 + padding,squareWidth,squareWidth);
+    drawRect(roomStart + 2 * (padding + squareWidth),margin.top+padding + squareWidth * 3 + padding,squareWidth,squareWidth);
+    drawRect(roomStart - 10, margin.top+padding+40 + squareWidth * 3 + padding, squareWidth * 6, 10);
+    drawRect(roomStart,margin.top+padding+60 + squareWidth * 3 + padding,squareWidth,squareWidth);
+    drawRect(roomStart + padding + squareWidth,margin.top+padding+60 + squareWidth * 3 + padding,squareWidth,squareWidth);
+    drawRect(roomStart + 2 * (padding + squareWidth),margin.top+padding+60 + squareWidth * 3 + padding,squareWidth,squareWidth);
+
+    drawRect(roomStart,margin.top+padding + squareWidth * 14 + padding,squareWidth,squareWidth);
+    drawRect(roomStart + padding + squareWidth,margin.top+padding + squareWidth * 14 + padding,squareWidth,squareWidth);
+    drawRect(roomStart + 2 * (padding + squareWidth),margin.top+padding + squareWidth * 14 + padding,squareWidth,squareWidth);
+    drawRect(roomStart - 10, margin.top+padding+40 + squareWidth * 14 + padding, squareWidth * 6, 10);
+    drawRect(roomStart,margin.top+padding+60 + squareWidth * 14 + padding,squareWidth,squareWidth);
+    drawRect(roomStart + padding + squareWidth,margin.top+padding+60 + squareWidth * 14 + padding,squareWidth,squareWidth);
+    drawRect(roomStart + 2 * (padding + squareWidth),margin.top+padding+60 + squareWidth * 14 + padding,squareWidth,squareWidth);
+
+
+    drawRect(roomStart,margin.top+padding + squareWidth * 18 + padding,squareWidth,squareWidth);
+    drawRect(roomStart + padding + squareWidth,margin.top+padding + squareWidth * 18 + padding,squareWidth,squareWidth);
+    drawRect(roomStart + 2 * (padding + squareWidth),margin.top+padding + squareWidth * 18 + padding,squareWidth,squareWidth);
+    drawRect(roomStart - 10, margin.top+padding+40 + squareWidth * 18 + padding, squareWidth * 6, 10);
+    drawRect(roomStart,margin.top+padding+60 + squareWidth * 18 + padding,squareWidth,squareWidth);
+    drawRect(roomStart + padding + squareWidth,margin.top+padding+60 + squareWidth * 18 + padding,squareWidth,squareWidth);
+    drawRect(roomStart + 2 * (padding + squareWidth),margin.top+padding+60 + squareWidth * 18 + padding,squareWidth,squareWidth);
+
+    drawRect(roomStart + svgWidth / 5 * 2, margin.top+padding, 25, 40);
+    drawRect(roomStart + svgWidth / 5 * 2, margin.top+padding + 50, 25, 40);
+    drawRect(roomStart + svgWidth / 5 * 2, margin.top+padding + 2 * 50, 25, 40);
+    drawRect(roomStart + svgWidth / 5 * 2, margin.top+padding + 3* 50, 25, 40);
+    drawRect(roomStart + svgWidth / 5 * 2, margin.top+padding + 9 * 50, 25, 40);
+    drawRect(roomStart + svgWidth / 5 * 2, margin.top+padding + 10 * 50, 25, 40);
+    drawRect(roomStart + svgWidth / 5 * 2, margin.top+padding + 11* 50, 25, 40);
+    drawRect(roomStart + svgWidth / 5 * 2, margin.top+padding + 12 * 50, 25, 40);
+
+    drawRect(roomStart + roomWidth - 80, margin.top+ padding, 10, 200);
+    drawRect(roomStart + roomWidth - 120, margin.top+ padding + 4 * 50 + 25, 25, 200);
+    drawRect(roomStart + roomWidth - 80, margin.top+ padding + 9 * 50, 10, 200);
+
+    drawRect(roomStart - 80, svgHeight / 2 - svgHeight / 6 + 50, squareWidth, squareWidth);
+    drawRect(roomStart , svgHeight / 2 - svgHeight / 6 + 50, squareWidth, squareWidth);
+    drawRect(roomStart - 80, svgHeight / 2 - svgHeight / 6 + 190, squareWidth, squareWidth);
+    drawRect(roomStart , svgHeight / 2 - svgHeight / 6 + 190, squareWidth, squareWidth);
+
+    drawRect(roomStart - 130, svgHeight / 2 - svgHeight / 6 + 90, squareWidth, squareWidth);
+    drawRect(roomStart - 130, svgHeight / 2 - svgHeight / 6 + 150, squareWidth, squareWidth);
+
+    drawRect(roomStart + svgWidth / 5 * 2 - 40, svgHeight / 2 - svgHeight / 6 + 50, squareWidth, squareWidth);
+    drawRect(roomStart + svgWidth / 5 * 2 - 40, svgHeight / 2 - svgHeight / 6 + 2 * 50, squareWidth, squareWidth);
+    drawRect(roomStart + svgWidth / 5 * 2 - 40, svgHeight / 2 - svgHeight / 6 + 3 * 50, squareWidth, squareWidth);
+    drawRect(roomStart + svgWidth / 5 * 2 - 40, svgHeight / 2 - svgHeight / 6 + 4 * 50, squareWidth, squareWidth);    
+
+    drawRect(roomStart + roomWidth - 30, margin.top-10, 20, roomHeight+20, "white");
+    drawRect(roomStart + roomWidth - 10, margin.top-10, 40, roomHeight+20, "lightgreen");
+    drawRect(roomStart + roomWidth + 30, svgHeight / 2 - 100, 30, 200, "purple");
+    drawRect(roomStart + roomWidth + 30, margin.top + 30, 20, 50, "white");
+    drawRect(roomStart + roomWidth + 30, margin.top + 600, 20, 50, "white");
+}
+
+
+var dragger = d3.drag()
     .on('drag', handleDrag)
-    .on('dragend', function(d){
+    .on('end', function(d){
         dragging = false;
     });
 function mousedown() {
@@ -49,7 +128,10 @@ function mousedown() {
         svg.on("mousemove", mousemove);
     }
 }
-
+function drawRect(x,y,width, height,backcolor="none",strokeStyle){
+    index++;
+    svg.append('rect').attr('x',x).attr('y',y).attr('width',width).attr('height',height).attr('id','rect_'+index).attr('fill',backcolor).attr('stroke','black');
+}
 function mousemove(d) {
     var m = d3.mouse(this);
     if(currentTool=="rect"){
@@ -63,13 +145,13 @@ function mousemove(d) {
     }else if(currentTool=="polygon"){
             if(!drawing) return;
     var g = d3.select('g.drawPoly');
-    g.select('line').remove();
+    g.selectAll('line').remove();
     var line1 = g.append('line')
                 .attr('x1', startPoint[0])
                 .attr('y1', startPoint[1])
                 .attr('x2', d3.mouse(this)[0] + 2)
                 .attr('y2', d3.mouse(this)[1])
-                .attr('stroke', '#53DBF3')
+                .attr('stroke', 'red')
                 .attr('stroke-width', 1);
     }
 }
@@ -79,12 +161,12 @@ function handleDrag() {
     var dragCircle = d3.select(this), newPoints = [], circle;
     dragging = true;
     var poly = d3.select(this.parentNode).select('polygon');
-    var circles = d3.select(this.parentNode).selectAll('circle');
+    var circles = d3.select(this.parentNode).selectAll('circle');    
     dragCircle
     .attr('cx', d3.event.x)
-    .attr('cy', d3.event.y);
-    for (var i = 0; i < circles[0].length; i++) {
-        circle = d3.select(circles[0][i]);
+    .attr('cy', d3.event.y);    
+    for (var i = 0; i < circles._groups[0].length; i++) {
+        circle = d3.select(circles._groups[0][i]);
         newPoints.push([circle.attr('cx'), circle.attr('cy')]);
     }
     poly.attr('points', newPoints);
@@ -110,7 +192,7 @@ function mouseup() {
         drawing = true;
         startPoint = [d3.mouse(this)[0], d3.mouse(this)[1]];
         if(svg.select('g.drawPoly').empty()) g = svg.append('g').attr('class', 'drawPoly');
-        if(d3.event.target.hasAttribute('is-handle')) {
+        if(d3.event.target.hasAttribute('is-handle')) {            
             closePolygon();
             return;
         };
@@ -136,7 +218,7 @@ function closePolygon() {
     var g = svg.append('g');
     g.append('polygon')
     .attr('points', points)
-    .style('fill', getRandomColor());
+    .style('fill', getRandomColor());    
     for(var i = 0; i < points.length; i++) {
         var circle = g.selectAll('circles')
         .data([points[i]])
@@ -148,8 +230,9 @@ function closePolygon() {
         .attr('fill', '#FDBC07')
         .attr('stroke', '#000')
         .attr('is-handle', 'true')
+        .call(dragger)
         .style({cursor: 'move'})
-        .call(dragger);
+        
     }
     points.splice(0);
     drawing = false;

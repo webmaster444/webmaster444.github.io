@@ -13,15 +13,21 @@
   stroke-linecap: round;
 }
   </style>
-    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="assets/js/simple-undo.js"></script>
   </head>
   <body>
+    <div class="small-12 columns">
+            <a role="button" href="javascript:void(0)" class="button" id="undo" title="Undo last action">Undo</a>
+            <a role="button" href="javascript:void(0)" class="button" id="redo" title="Redo last undone action" disabled="disabled">Redo</a>
+          </div>
+          <textarea name="editor" id="editor" rows="10"></textarea>
     <svg id="canvas" width="960px" height="500px"></svg>    
       <script>
 (function() {
   var active_color, active_line, canvas, drag, drawing_data, lines_layer, palette, redraw, render_line, swatches, trash_btn, ui;
   
-
   render_line = d3.svg.line().x(function(d) {
     return d[0];
   }).y(function(d) {
@@ -101,6 +107,93 @@
   redraw();
 
 }).call(this);
+    var svg = d3.select('body')
+      .append('svg')
+      .attr('width', 1000)
+      .attr('height', 1000);
+      
+    var color = d3.scale.category20();
+    
+    var line = d3.svg.line()
+        .interpolate("basis");
+    
+    var drawObj = {
+      isDown: false,
+      dataPoints: [],
+      currentPath: null,
+      color: 0
+    }
+    
+    svg.on("mousedown", function(){
+      drawObj.isDown = true;
+      
+    });
+    svg.on("mousemove", function(){
+      if (drawObj.isDown){
+        drawObj.dataPoints.push(
+          [d3.event.x, d3.event.y]
+        );
+        if (!drawObj.currentPath){
+          drawObj.currentPath = svg.append("path")
+            .attr("class","currentPath")
+            .style("stroke-width", 1)
+            .style("stroke",color(drawObj.color))
+            .style("fill", "none");
+        }
+        drawObj.currentPath
+          .datum(drawObj.dataPoints)
+          .attr("d", line);
+      }
+    });
+    svg.on("mouseup", function(){
+      drawObj.isDown = false;
+      drawObj.currentPath.attr("class","oldPath");
+      drawObj.dataPoints = [];
+      drawObj.currentPath = null;
+      if (++drawObj.color > 19) {
+        drawObj.color = 0;
+      }
+    })
+
+    'use strict';
+
+function updateButtons(history) {
+  $('#undo').attr('disabled',!history.canUndo());
+  $('#redo').attr('disabled',!history.canRedo());
+}
+
+function setEditorContents(contents) {
+  $('#editor').val(contents);
+}
+
+
+
+$(function(){
+  var history = new SimpleUndo({
+    maxLength: 200,
+    provider: function(done) {
+      done($('#editor').val());
+    },
+    onUpdate: function() {
+      //onUpdate is called in constructor, making history undefined
+      if (!history) return; 
+      
+      updateButtons(history);
+    }
+  });
+  
+  $('#undo').click(function() {
+    history.undo(setEditorContents);
+  });
+  $('#redo').click(function() {
+    history.redo(setEditorContents);
+  });
+  $('#editor').keypress(function() {
+    history.save();
+  });
+  
+  updateButtons(history);
+});
     </script>
   </body>
 </html>
