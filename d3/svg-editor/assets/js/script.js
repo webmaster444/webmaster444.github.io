@@ -296,12 +296,41 @@ $(document).ready(function () {
    });
 
     $("#delete-btn").click(function(){
-
         var s = "#"+$("#selected_id").val();
         if(s!=="#"){
             $(s).remove();            
             $(this).addClass('disabled');
         }            
+    })
+
+    $("#save-btn").click(function(e){        
+        e.preventDefault();
+        
+        var s = $("#svg_wrapper").html();
+        var name = $("#name").val();
+        console.log('add');
+        $.ajax({
+            type:'POST',
+            data:{"content":"testabc111","q":"saveBlob"},
+            dataType:"json",
+            url:'https://reg6.meetmatch.biz/api.php',
+            success:function(response) {
+                $.notify({message: 'Success to save' },{type: 'success'});        
+            },error:function(error){
+                console.log(error);
+            }
+        });
+
+        // $.ajax({
+        //     type:'GET',
+        //     data:{"q":"getBlob"},
+        //     dataType:"json",
+        //     url:'https://reg6.meetmatch.biz/api.php',
+        //     success:function(data) {
+        //         console.log(data);
+        //         $.notify({message: 'Success to Load' },{type: 'success'});        
+        //     },
+        // })
     })
 });
 
