@@ -1,8 +1,9 @@
 var width = Math.min(1200, document.getElementById('main_content').clientWidth);
 height = 800;
-var currentTool = "active"; // Selected tool in toolbox
+var currentTool = "mouse"; // Selected tool in toolbox
 var index = 0;
 var svg = d3.select("#svg_wrapper").append("svg")
+    .attr('id','svg')
     .attr("width", width)
     .attr("height", height)
     .on("mousedown", mousedown)
@@ -16,14 +17,14 @@ var dragging = false, drawing = false, startPoint;
 var svgWidth = 560, svgHeight = 800;
 var padding = 30
 var roomStart = svgWidth / 4 + padding;
-var index = 2;
+var index = 4;
 var squareWidth = 30;
 var roomWidth = 360, roomHeight = 700;
 drawBasicFloor();
 function drawBasicFloor(){
-    svg.append('rect').attr('x', svgWidth/4).attr('y',50).attr('width',roomWidth).attr('height',700).attr('fill',"red");
-    svg.append('circle').attr('cx', svgWidth/4).attr('cy',svgHeight / 2).attr('r',svgHeight/6).attr('fill',"red");    
-    svg.append('circle').attr('cx', svgWidth/4).attr('cy',svgHeight / 2).attr('r',30).attr('fill',"steelblue").attr('stroke','black').attr('id','circle_1');    
+    svg.append('rect').attr('x', svgWidth/4).attr('class','element').attr('y',50).attr('width',roomWidth).attr('height',700).attr('fill',"red").attr('id','rect_3');
+    svg.append('circle').attr('cx', svgWidth/4).attr('class','element').attr('cy',svgHeight / 2).attr('r',svgHeight/6).attr('fill',"red").attr('id','circle_2');    
+    svg.append('circle').attr('cx', svgWidth/4).attr('class','element').attr('cy',svgHeight / 2).attr('r',30).attr('fill',"steelblue").attr('stroke','black').attr('id','circle_1');    
     drawRect(roomStart,margin.top+padding,squareWidth,squareWidth);
     drawRect(roomStart + padding + squareWidth,margin.top+padding,squareWidth,squareWidth);
     drawRect(roomStart + 2 * (padding + squareWidth),margin.top+padding,squareWidth,squareWidth);
@@ -100,45 +101,64 @@ function mousedown() {
     index++;
     //if currentTool == rect
     var m = d3.mouse(this);
-  
+    
     if(currentTool=="rect"){
         rect = svg.append("rect")
         .attr("x", m[0])
         .attr("y", m[1])
+        .attr('class','element')
         .attr("height", 0)
         .attr("width", 0)
+        .attr('fill','red')
+        .attr('stroke','black')
         .attr('id',"rect_"+index);
 
         svg.on("mousemove", mousemove);
     }else if(currentTool=="ellipse"){
-        rect = svg.append("rect")
-        .attr("x", m[0])
-        .attr("y", m[1])
-        .attr("height", 0)
-        .attr("width", 0);
+        ellipse = svg.append("ellipse")
+        .attr("cx", m[0])
+        .attr("cy", m[1])
+        .attr('sx',m[0])
+        .attr('sy',m[1])
+        .attr('class','element')
+        .attr("rx", 0)
+        .attr("ry", 0)
+        .attr('id','ellipse_'+index)
+        .attr("fill","red")
+        .attr("stroke","black");
 
         svg.on("mousemove", mousemove);
     }else if(currentTool=="line"){
         line = svg.append("line")
-        .attr("x1", m[0])
+        .attr("x1", m[0]).attr('class','element')
         .attr("y1", m[1])        
         .attr('id',"line_"+index)
         .attr('class','hide');
 
         svg.on("mousemove", mousemove);
+    }else if(currentTool == "mouse"){        
+        d3.selectAll('.element').on("mousedown", function(){
+            if(currentTool=="mouse"){
+                $("#delete-btn").removeClass("disabled");
+                $("#selected_id").val($(this).attr('id'));
+            }    
+        });
+        // $("#delete-btn").addClass("disabled");
     }
 }
-function drawRect(x,y,width, height,backcolor="none",strokeStyle){
+function drawRect(x,y,width, height,backcolor="red",strokeStyle){
     index++;
-    svg.append('rect').attr('x',x).attr('y',y).attr('width',width).attr('height',height).attr('id','rect_'+index).attr('fill',backcolor).attr('stroke','black');
+    svg.append('rect').attr('x',x).attr('y',y).attr('width',width).attr('class','element').attr('height',height).attr('id','rect_'+index).attr('fill',backcolor).attr('stroke','black');
 }
 function mousemove(d) {
     var m = d3.mouse(this);
     if(currentTool=="rect"){
         rect.attr("width", Math.max(0, m[0] - +rect.attr("x")))
         .attr("height", Math.max(0, m[1] - +rect.attr("y")));
-    }else if(currentTool=="circle"){
-
+    }else if(currentTool=="ellipse"){
+        var rx = Math.max(0,(m[0] - +ellipse.attr('sx'))/2);
+        var ry = Math.max(0,(m[1] - +ellipse.attr('sy'))/2);
+        ellipse.attr('rx',rx).attr('ry',ry).attr('cx',m[0] - rx ).attr('cy', m[1] - ry);
     }else if(currentTool=="line"){
         line.attr('x2',m[0]).attr('y2',m[1]);
         line.classed('hide',false);
@@ -241,21 +261,53 @@ $(document).ready(function () {
     $("#line-btn").click(function(){
         currentTool = "line";
         $('.leftsidepannel a').removeClass('active');
+        $("#delete-btn").addClass("disabled");                
+        $(this).addClass("active");        
+    });
+    $("#ellipse-btn").click(function(){
+        currentTool = "ellipse";
+        $('.leftsidepannel a').removeClass('active');
+        $("#delete-btn").addClass("disabled");                
         $(this).addClass("active");        
     });
     $("#rect-btn").click(function(){
         currentTool = "rect";
         $('.leftsidepannel a').removeClass('active');
+        $("#delete-btn").addClass("disabled");                
         $(this).addClass("active");        
    });
     $("#pencil-btn").click(function(){
         currentTool = "pencil";
         $('.leftsidepannel a').removeClass('active');
+        $("#delete-btn").addClass("disabled");                
         $(this).addClass("active");        
    });
     $("#polygon-btn").click(function(){
         currentTool = "polygon";
         $('.leftsidepannel a').removeClass('active');
+        $("#delete-btn").addClass("disabled");                
         $(this).addClass("active");        
    });
+    $("#mouse-btn").click(function(){
+        currentTool = "mouse";
+        $('.leftsidepannel a').removeClass('active');
+        document.getElementById("svg").dispatchEvent(new Event('mousedown'))
+        $(this).addClass("active");        
+   });
+
+    $("#delete-btn").click(function(){
+
+        var s = "#"+$("#selected_id").val();
+        if(s!=="#"){
+            $(s).remove();            
+            $(this).addClass('disabled');
+        }            
+    })
+});
+
+d3.selectAll('.element').on("mousedown", function(){
+    if(currentTool=="mouse"){
+        $("#delete-btn").removeClass("disabled");       
+        $("#selected_id").val($(this).attr('id'));         
+    }    
 });
