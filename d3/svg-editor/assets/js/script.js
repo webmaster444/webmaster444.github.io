@@ -23,14 +23,12 @@ var dragger = d3.drag()
     .on('end', function(d){
         dragging = false;
     });
-function mousedown() {
-    console.log('mousedown');
+function mousedown() {    
     index++;
     //if currentTool == rect
     var m = d3.mouse(this);
-    console.log(svg);
-    if(currentTool=="rect"){
-    console.log('here');
+    
+    if(currentTool=="rect"){    
         rect = d3.select('svg').append("rect")
         .attr("x", m[0])
         .attr("y", m[1])
@@ -222,8 +220,7 @@ $(document).ready(function () {
    });
 
     $("#delete-btn").click(function(){
-        var s = "#"+$("#selected_id").val();
-        console.log($(s));        
+        var s = "#"+$("#selected_id").val();        
         if(s!=="#"){
             $(s).remove();            
             $(this).addClass('disabled');
@@ -234,8 +231,7 @@ $(document).ready(function () {
         e.preventDefault();
         
         var s = $("#svg_wrapper").html();
-        var name = $("#name").val();
-        console.log('add');
+        var name = $("#name").val();        
         $.ajax({
             method:'POST',
             data:{"content":s,"q":"saveBlob"},
@@ -258,8 +254,7 @@ $(document).ready(function () {
             dataType:"json",
             url:'https://reg6.meetmatch.biz/api.php',
             success:function(data) {                
-            },error:function(error){
-                console.log(error);
+            },error:function(error){                
                 $.notify({message: 'Success to Load' },{type: 'success',delay: 1000,timer: 1000});                
                 $("#svg_wrapper").html(error.responseText);
                 d3.select('svg')    
