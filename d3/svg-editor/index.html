@@ -16,10 +16,11 @@
     <a id="delete-btn" class="disabled"><i class="fas fa-trash-alt"></i></a>
   </div>
   <div id="svg_wrapper">
+    <svg id="svg" width="1200" height="800"></svg>
   </div>
   <div class="hide">
     <input type="hidden" id="selected_id" />
-  </div>
+  </div>  
 </div>
 <div class="leftsidepannel">  
   <a id="mouse-btn" class="active"><img src="assets/img/pointer.png" alt="Mouse Pointer"/></a>
@@ -28,6 +29,12 @@
   <a id="ellipse-btn"><img src="assets/img/circle.png" alt="Circle" /></a>
   <a id="pencil-btn"><img src="assets/img/pencil.png" alt="Circle" /></a>
   <a id="line-btn"><img src="assets/img/line.png" alt="Line" /></a>
+</div>
+<div class="rightsidepanel">
+  <div>
+    <span>Element Id</span>
+    <input id="element_id" value="">
+  </div>
 </div>
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script

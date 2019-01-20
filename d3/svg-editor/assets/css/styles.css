@@ -79,3 +79,13 @@ line{
 	color: grey;
     pointer-events: none;
 }
+
+.rightsidepanel{
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    bottom: 0;
+    background: white;
+    padding: 10px;
+}
