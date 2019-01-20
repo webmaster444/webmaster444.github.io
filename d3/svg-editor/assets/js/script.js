@@ -274,5 +274,6 @@ d3.selectAll('.element').on("mousedown", function(){
 
 $('#element_id').on('input',function(){
     var s = "#" + $("#selected_id").val();
+    $('#selected_id').val($(this).val());
     d3.select(s).attr('id',$(this).val());
 })
