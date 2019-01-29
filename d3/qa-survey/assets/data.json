@@ -3,25 +3,25 @@
       "caddfec146661fa3245fc5d52376efb6":[  
          {  
             "type":"event",
-            "highlight":false,
+            "highlight":true,
             "label":"Page 1 - introduction : This is a generic question with 2 possible answers",
             "pageid":"a64299c7c5b0905f7512aa006cd85bdd"
          },
          {  
             "type":"action",
-            "highlight":false,
+            "highlight":true,
             "label":"Answer 3, this will bring you to another section (page 3). This is a better option so it awards more points.",
             "decisionid":"11b8a2e8da47102c4b7d148b0d7574e3"
          },
          {  
             "type":"event",
-            "highlight":false,
+            "highlight":true,
             "label":"Page 3 - More points : Can you guess which one gives you more points",
             "pageid":"9649b2b08835a2045ce00be0f3ea9fac"
          },
          {  
             "type":"exit",
-            "highlight":false,
+            "highlight":true,
             "endstatus":"2"
          }
       ],

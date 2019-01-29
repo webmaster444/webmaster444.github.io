@@ -9,7 +9,7 @@ var drawPath = d3.line().curve(d3.curveCardinal );
 
 var strokeWidth = d3.scaleLinear().range([3,50]);
 
-d3.json("assets/data3.json", function(error, data) { 
+d3.json("assets/data.json", function(error, data) { 
 
     var jsonData = data.paths;        
 
@@ -167,7 +167,13 @@ d3.json("assets/data3.json", function(error, data) {
     strokeWidth.domain([0,strokeMax]);
 
     var g_links = svg.append("g").attr('class',"g_links");
-    g_links.selectAll('.link').data(uniqueLinkArray).enter().append('path').attr('class','link').attr("d",function(d){
+    g_links.selectAll('.link').data(uniqueLinkArray).enter().append('path').attr('class',function(d){        
+        var key = findKey(nodesObject,d.to);
+        if(nodesObject[key[0]][key[1]].highlight == true){
+            return 'link highlight';
+        };
+        return 'link';
+    }).attr("d",function(d){
             var pathData = [];
             var key = findKey(nodesObject,d.from);
             var tmp1 = [x(key[0]), y[key[0]](key[1]) + y[key[0]].bandwidth()/2];
@@ -191,7 +197,7 @@ d3.json("assets/data3.json", function(error, data) {
             pathData.push(tmp3);
             
             return drawPath(pathData);
-        })       
+        })             
         .attr('stroke-width',function(d){
             var key = findKey(nodesObject,d.to);
             var tmp = nodesObject[key[0]][key[1]].cnt;
@@ -227,13 +233,28 @@ d3.json("assets/data3.json", function(error, data) {
         .style("opacity", 0);   
     });
 
-    g_node.selectAll("text").data(function(d){return d;}).enter().append("text").attr("x",function(d){return x(d.id)})
+    g_node.selectAll("text.cnt").data(function(d){return d;}).enter().append("text").attr('class','cnt').attr("x",function(d){return x(d.id)})
     .attr("y",function(d,i){
         var index = d3.select(this.parentNode).attr('class');
         index = parseInt(index.substr(9));                       
         return y[index](i) + y[index].bandwidth()/2;        
     }).attr("text-anchor","middle").text(function(d){return d.cnt});    
 
+    g_node.selectAll("text.label").data(function(d){return d;}).enter().append("text").attr('class','label').attr("x",function(d){return x(d.id)})
+    .attr("y",function(d,i){
+        var index = d3.select(this.parentNode).attr('class');
+        index = parseInt(index.substr(9));                       
+        return y[index](i) + y[index].bandwidth()/2 -  25;        
+    }).attr("text-anchor","middle").text(function(d){
+        if(d.label!=undefined){
+            var s = d.label; 
+            if(s.length > 10);
+                return s.substr(0,10) + "...";
+            return s;
+        }else{
+            return "Exit " + d.endstatus;
+        }
+    }); 
 });
 
 
