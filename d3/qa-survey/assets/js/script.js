@@ -9,7 +9,7 @@ var drawPath = d3.line().curve(d3.curveCardinal );
 
 var strokeWidth = d3.scaleLinear().range([3,50]);
 
-d3.json("assets/data2.json", function(error, data) { 
+d3.json("assets/data.json", function(error, data) { 
 
     var jsonData = data.paths;        
 
