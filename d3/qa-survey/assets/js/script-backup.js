@@ -9,11 +9,9 @@ var x = d3.scaleBand()
     .range([0, width])
     .paddingInner(0.1);
 
-var y = [];
-var drawPath = d3.line().curve(d3.curveCardinal );
-// var y = d3.scaleBand().range([0,height]).paddingInner(0.1);
+var y = d3.scaleBand().range([0,height]).paddingInner(0.1);
 
-var strokeWidth = d3.scaleLinear().range([2,20]);
+var strokeWidth = d3.scaleLinear().range([1,10]);
 d3.json("assets/data.json", function(error, data) { 
 
     var jsonData = data.paths;        
@@ -77,10 +75,6 @@ d3.json("assets/data.json", function(error, data) {
     var allIds = [];    
     xLevel = d3.max(uniqueLinks.map(function(ul){return ul.length;}));
     
-    for(var i=0;i<xLevel;i++){
-        y[i] = d3.scaleBand().range([0,height]).paddingInner(0.1);
-    }
-
     uniqueLinks.forEach(function(ul){
         var i=0;
         linksArray.forEach(function(l){            
@@ -128,7 +122,7 @@ d3.json("assets/data.json", function(error, data) {
     uniqueLinks.forEach(function(ul){
         ul.forEach(function(u,i){
             if(ul[i+1] == undefined){                
-            }else{                                
+            }else{                
                 var tmp = new Object;
                 tmp['from'] = u;
                 var toIds = uniqueLinkArray.filter(function(d){return d.from == u}).map(function(d){return d.to});                
@@ -141,65 +135,44 @@ d3.json("assets/data.json", function(error, data) {
     })    
     var strokeMax = d3.max(nodes.map(function(n){return n.cnt}));    
 
-    x.domain(Object.keys(nodesObject));    
+    x.domain(Object.keys(nodesObject));
+    // y.domain(Object.values(nodesObject).forEach(function(n){return n;}));
     var yMax = d3.max(Object.values(nodesObject).map(function(d){return d.length}));
 
-
-    Object.keys(nodesObject).forEach(function(d,i){        
-        var yDomain = [];
-        for(var j=0;j<nodesObject[d].length;j++){
-            yDomain.push(j);
-        }
-        y[i].domain(yDomain);
-    })
-        
+    var yDomain = [];
+    for(var i=0;i<yMax;i++){
+        yDomain.push(i);
+    }
+    y.domain(yDomain);
+    
     strokeWidth.domain([0,strokeMax]);
 
     var g_links = svg.append("g").attr('class',"g_links");
-    g_links.selectAll('.link').data(uniqueLinkArray).enter().append('path').attr('class','link').attr("d",function(d){
-            var pathData = [];
+    g_links.selectAll('.link').data(uniqueLinkArray).enter().append('line').attr('class','link')
+        .attr("x1",function(d){            
             var key = findKey(nodesObject,d.from);
-            var tmp1 = [x(key[0]), y[key[0]](key[1]) + y[key[0]].bandwidth()/2];
-            pathData.push(tmp1);
-
-            key = findKey(nodesObject,d.to);
-            var tmp3 = [x(key[0]),y[key[0]](key[1]) + y[key[0]].bandwidth()/2];
-
-            var tmp2 = [];
-            tmp2[0] = (tmp3[0] - tmp1[0])/2 + tmp1[0];
-
-
-            if(tmp3[1] > tmp1[1]){
-                tmp2[1] = tmp1[1] - (tmp1[1] - tmp3[1])/2 + 30;
-            }else if(tmp3[1] < tmp1[1]){
-                tmp2[1] = tmp1[1] + (tmp3[1] - tmp1[1])/2 - 30;
-            }else{
-                tmp2[1] = tmp1[1] + (tmp3[1] - tmp1[1])/2;
-            }
-            pathData.push(tmp2);
-            pathData.push(tmp3);
-
-            console.log(pathData);
-            return drawPath(pathData);
-        })       
+            return x(key[0]);
+        })
+        .attr("y1",function(d){
+            var key = findKey(nodesObject,d.from);
+            return y(key[1]);
+        }).attr('x2',function(d){
+            var key = findKey(nodesObject,d.to);            
+            return x(key[0]);
+        }).attr('y2',function(d){
+            var key = findKey(nodesObject,d.to);
+            return y(key[1]);
+        })
         .attr('stroke-width',function(d){
             var key = findKey(nodesObject,d.to);
             var tmp = nodesObject[key[0]][key[1]].cnt;
             return strokeWidth(tmp);
         });
 
-    var g_node = svg.selectAll('.node_g').data(Object.values(nodesObject)).enter().append('g').attr('class',(d,i)=>'node_g g_'+i).attr('transform',function(d,i){return "translate("+x(i)+",0)"});
-    g_node.selectAll('.node')
-    .data(function(d,i){return d;}).enter()
-    .append('circle').attr('class',function(d){return "node node_"+ d.id + " " + d.type})
-    .attr('cx',function(d){return 0;})
-    .attr('cy',function(d,i){
-        var index = d3.select(this.parentNode).attr('class');
-        index = parseInt(index.substr(9));                       
-        return y[index](i) + y[index].bandwidth()/2;
-    })
-    .attr('r',20).attr('fill','red')
-    .on("mousemove",function(d){
+    var g_node = svg.selectAll('.node_g').data(Object.values(nodesObject)).enter().append('g').attr('class','node_g').attr('transform',function(d,i){return "translate("+x(i)+",0)"});
+    g_node.selectAll('.node').data(function(d){return d;}).enter().append('circle').attr('class','node')
+    .attr('cx',function(d){return 0;}).attr('cy',function(d,i){return y(i)}).attr('r',20).attr('fill','red')
+        .on("mousemove",function(d){
         div.transition()        
             .duration(200)      
             .style("opacity", .9);      
@@ -209,27 +182,15 @@ d3.json("assets/data.json", function(error, data) {
             }
             return d.label;
         })  
-        .style("left", (d3.event.pageX) + "px")     
-        .style("top", (d3.event.pageY - 28) + "px");    
-    }).on("mouseout",function(){
+            .style("left", (d3.event.pageX) + "px")     
+            .style("top", (d3.event.pageY - 28) + "px");    })
+    .on("mouseout",function(){
         div.transition()        
         .duration(500)      
         .style("opacity", 0);   
     });
 
-    g_node.selectAll("text").data(function(d){return d;}).enter().append("text").attr("x",function(d){return x(d.id)})
-    .attr("y",function(d,i){
-        var index = d3.select(this.parentNode).attr('class');
-        index = parseInt(index.substr(9));                       
-        return y[index](i) + y[index].bandwidth()/2;        
-    }).attr("text-anchor","middle").text(function(d){return d.cnt});    
-
-//     d3.link({
-//   source: [100, 100],
-//   target: [300, 300]
-// });
-
-  // svg.append('path').attr('d',line(data2)).attr('stroke-width','10px').attr("stroke","black");
+    g_node.selectAll("text").data(function(d){return d;}).enter().append("text").attr("x",function(d){return x(d.id)}).attr("y",function(d,i){return y(i)}).attr("text-anchor","middle").text(function(d){return d.cnt});    
 });
 
 
