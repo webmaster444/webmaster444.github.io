@@ -1,7 +1,7 @@
 var margin = {top:50,left:50};
 var nodes = [], linksArray = [],nodeIds = [], links = [],uniqueLinks=[], nodesObject = new Object;
-
-var minBandX = 200, minBandY = 200;
+var height = 800;
+var minBandX = 200;
 var xLevel = 0, yLevel = 0;
 
 var y = [];
@@ -9,7 +9,7 @@ var drawPath = d3.line().curve(d3.curveCardinal );
 
 var strokeWidth = d3.scaleLinear().range([3,50]);
 
-d3.json("assets/data.json", function(error, data) { 
+d3.json("assets/data2.json", function(error, data) { 
 
     var jsonData = data.paths;        
 
@@ -33,6 +33,7 @@ d3.json("assets/data.json", function(error, data) {
                     nodes.forEach(function(n){
                         if(n.id==p.pageid){
                             n.cnt = n.cnt + 1;
+                            n.highlight = n.highlight || p.highlight;
                         }
                     })
                 }
@@ -51,6 +52,7 @@ d3.json("assets/data.json", function(error, data) {
                    nodes.forEach(function(n){
                         if(n.id==p.decisionid){
                             n.cnt = n.cnt + 1;
+                            n.highlight = n.highlight || p.highlight;
                         }
                     })
                 }
@@ -58,6 +60,7 @@ d3.json("assets/data.json", function(error, data) {
             }else if(p.type == "exit"){
                 link.push("exit_"+p.endstatus);
                 p.id = "exit_"+p.endstatus;
+                p.highlight =  p.highlight;
             }                        
         })           
         
@@ -96,7 +99,8 @@ d3.json("assets/data.json", function(error, data) {
                 if(nodesObject[i].map(function(n){return n.id}).includes(l.id)){
                     nodesObject[i].forEach(function(a){
                         if(a.id==l.id){
-                            a.cnt = a.cnt + 1;
+                            a.cnt = a.cnt + 1;                            
+                            a.highlight = a.highlight || l.highlight;
                         }
                     })
                 }else{
@@ -108,6 +112,7 @@ d3.json("assets/data.json", function(error, data) {
                     nodesObject[i].forEach(function(a){
                         if(a.id==l.id){
                             a.cnt = a.cnt + 1;
+                            a.highlight = a.highlight || l.highlight;
                         }
                     })
                 }
@@ -136,13 +141,11 @@ d3.json("assets/data.json", function(error, data) {
    
     var yMax = d3.max(Object.values(nodesObject).map(function(d){return d.length}));
 
-    var height = yMax * minBandY + margin.top * 2;
 
-
-    var svg = d3.select("#main_content").append('svg').attr("width",width).attr("height",height)
+    var svg = d3.select("#main_content").append('svg').attr("width",width).attr("height",(height+margin.top))
      .call(d3.zoom().on("zoom", function () {
     svg.attr("transform", d3.event.transform)
- }))
+ })).on('mousedown.zoom',null)
      .append("g")
     .attr("transform","translate("+margin.top+","+margin.left+")")
 
@@ -171,7 +174,11 @@ d3.json("assets/data.json", function(error, data) {
         var key = findKey(nodesObject,d.to);
         if(nodesObject[key[0]][key[1]].highlight == true){
             return 'link highlight';
-        };
+        }else if(nodesObject[key[0]][key[1]].highlight == false){
+            return 'link dehighlight';
+        }else if(nodesObject[key[0]][key[1]].highlight == undefined){
+            return "link normal";
+        }
         return 'link';
     }).attr("d",function(d){
             var pathData = [];
