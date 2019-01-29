@@ -2,7 +2,7 @@ var margin = {top:50,left:50};
 var nodes = [], linksArray = [],nodeIds = [], links = [],uniqueLinks=[], nodesObject = new Object;
 var height = 800;
 var minBandX = 200;
-var xLevel = 0, yLevel = 0;
+var xLevel = 0, highlightWidth = 3;
 
 var y = [];
 var drawPath = d3.line().curve(d3.curveCardinal );
@@ -121,14 +121,14 @@ d3.json("assets/data.json", function(error, data) {
     })    
     
     var uniqueLinkArray = [];
-    uniqueLinks.forEach(function(ul){
+    uniqueLinks.forEach(function(ul){        
         ul.forEach(function(u,i){
             if(ul[i+1] == undefined){                
             }else{                                
                 var tmp = new Object;
                 tmp['from'] = u;
                 var toIds = uniqueLinkArray.filter(function(d){return d.from == u}).map(function(d){return d.to});                
-                tmp['to'] = ul[i+1];
+                tmp['to'] = ul[i+1];                
                 if(!toIds.includes(tmp['to'])){
                     uniqueLinkArray.push(tmp);
                 }                
@@ -170,10 +170,13 @@ d3.json("assets/data.json", function(error, data) {
     strokeWidth.domain([0,strokeMax]);
 
     var g_links = svg.append("g").attr('class',"g_links");
+
+    var highligthedPaths = [];
+
     g_links.selectAll('.link').data(uniqueLinkArray).enter().append('path').attr('class',function(d){        
         var key = findKey(nodesObject,d.to);
         if(nodesObject[key[0]][key[1]].highlight == true){
-            return 'link highlight';
+            highligthedPaths.push(d);
         }else if(nodesObject[key[0]][key[1]].highlight == false){
             return 'link dehighlight';
         }else if(nodesObject[key[0]][key[1]].highlight == undefined){
@@ -210,6 +213,35 @@ d3.json("assets/data.json", function(error, data) {
             var tmp = nodesObject[key[0]][key[1]].cnt;
             return strokeWidth(tmp);
         });
+
+    g_links.selectAll('.highlight_link').data(highligthedPaths).enter().append('path').attr('class',function(d){        
+        return 'highlight_link highlight';
+    }).attr("d",function(d){
+            var pathData = [];
+            var key = findKey(nodesObject,d.from);
+            var tmp1 = [x(key[0]), y[key[0]](key[1]) + y[key[0]].bandwidth()/2];
+            pathData.push(tmp1);
+
+            key = findKey(nodesObject,d.to);
+            var tmp3 = [x(key[0]),y[key[0]](key[1]) + y[key[0]].bandwidth()/2];
+
+            var tmp2 = [];
+            tmp2[0] = (tmp3[0] - tmp1[0])/2 + tmp1[0];
+
+
+            if(tmp3[1] > tmp1[1]){
+                tmp2[1] = tmp1[1] - (tmp1[1] - tmp3[1])/2 + 30;
+            }else if(tmp3[1] < tmp1[1]){
+                tmp2[1] = tmp1[1] + (tmp3[1] - tmp1[1])/2 - 30;
+            }else{
+                tmp2[1] = tmp1[1] + (tmp3[1] - tmp1[1])/2;
+            }
+            pathData.push(tmp2);
+            pathData.push(tmp3);
+            
+            return drawPath(pathData);
+        })             
+        .attr('stroke-width', highlightWidth);
 
     var g_node = svg.selectAll('.node_g').data(Object.values(nodesObject)).enter().append('g').attr('class',(d,i)=>'node_g g_'+i).attr('transform',function(d,i){return "translate("+x(i)+",0)"});
     g_node.selectAll('.node')
