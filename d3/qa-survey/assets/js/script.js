@@ -139,7 +139,13 @@ d3.json("assets/data3.json", function(error, data) {
     var height = yMax * minBandY + margin.top * 2;
 
 
-    var svg = d3.select("#main_content").append('svg').attr("width",width).attr("height",height).append("g").attr("transform","translate("+margin.top+","+margin.left+")");
+    var svg = d3.select("#main_content").append('svg').attr("width",width).attr("height",height)
+     .call(d3.zoom().on("zoom", function () {
+    svg.attr("transform", d3.event.transform)
+ }))
+     .append("g")
+    .attr("transform","translate("+margin.top+","+margin.left+")")
+
     var x = d3.scaleBand()    
         .range([0, width])
         .paddingInner(0.1);
