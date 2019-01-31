@@ -1,5 +1,5 @@
 var margin = {top:50,left:50};
-var nodes = [], linksArray = [],nodeIds = [], links = [],uniqueLinks=[], nodesObject = new Object;
+var nodes = [], linksArray = [],nodeIds = [], links = [],uniqueLinks=[], nodesObject = new Object, highligthedPaths = [];
 var height = 800;
 var minBandX = 200;
 var xLevel = 0, highlightWidth = 3;
@@ -32,8 +32,7 @@ d3.json("assets/data.json", function(error, data) {
                 }else{
                     nodes.forEach(function(n){
                         if(n.id==p.pageid){
-                            n.cnt = n.cnt + 1;
-                            n.highlight = n.highlight || p.highlight;
+                            n.cnt = n.cnt + 1;                            
                         }
                     })
                 }
@@ -51,8 +50,7 @@ d3.json("assets/data.json", function(error, data) {
                 }else{
                    nodes.forEach(function(n){
                         if(n.id==p.decisionid){
-                            n.cnt = n.cnt + 1;
-                            n.highlight = n.highlight || p.highlight;
+                            n.cnt = n.cnt + 1;                            
                         }
                     })
                 }
@@ -93,26 +91,24 @@ d3.json("assets/data.json", function(error, data) {
     }
 
     newPaths.forEach(function(p){
-        p.forEach(function(l,i){   
+        p.forEach(function(l,i){               
             if(!allIds.includes(l.id)){
                 allIds.push(l.id);
                 if(nodesObject[i].map(function(n){return n.id}).includes(l.id)){
                     nodesObject[i].forEach(function(a){
                         if(a.id==l.id){
-                            a.cnt = a.cnt + 1;                            
-                            a.highlight = a.highlight || l.highlight;
+                            a.cnt = a.cnt + 1;                                                        
                         }
                     })
                 }else{
-                    l.cnt = 1;
+                    l.cnt = 1;                                
                     nodesObject[i].push(l);    
                 }
             }else{
                 if(nodesObject[i].map(function(n){return n.id}).includes(l.id)){
                     nodesObject[i].forEach(function(a){
                         if(a.id==l.id){
-                            a.cnt = a.cnt + 1;
-                            a.highlight = a.highlight || l.highlight;
+                            a.cnt = a.cnt + 1;                            
                         }
                     })
                 }
@@ -120,6 +116,22 @@ d3.json("assets/data.json", function(error, data) {
         })
     })    
     
+    var highlightPaths = Object.values(newPaths).filter(function(d){return d.map(function(l){return l.highlight}).reduce(function(a,b){return a && b;})});
+
+    highlightPaths.forEach(function(path){
+        var ts = path.map(function(d){return d.id});
+        ts.forEach(function(p,i){
+            if(ts[i+1]==undefined){
+
+            }else{                
+                var tmp = new Object;
+                tmp['from'] = ts[i];
+                tmp['to'] = ts[i+1];
+                highligthedPaths.push(tmp);
+            }
+        })
+    })
+
     var uniqueLinkArray = [];
     uniqueLinks.forEach(function(ul){        
         ul.forEach(function(u,i){
@@ -135,6 +147,7 @@ d3.json("assets/data.json", function(error, data) {
             }
         })
     })    
+
     var strokeMax = d3.max(nodes.map(function(n){return n.cnt}));    
 
     var width = Object.keys(nodesObject).length * minBandX + margin.left * 2;
@@ -171,15 +184,15 @@ d3.json("assets/data.json", function(error, data) {
 
     var g_links = svg.append("g").attr('class',"g_links");
 
-    var highligthedPaths = [];
+    
 
     g_links.selectAll('.link').data(uniqueLinkArray).enter().append('path').attr('class',function(d){        
-        var key = findKey(nodesObject,d.to);
-        if(nodesObject[key[0]][key[1]].highlight == true){
-            highligthedPaths.push(d);
-        }else if(nodesObject[key[0]][key[1]].highlight == false){
+        var keyFrom = findKey(nodesObject,d.from);
+        var keyTo = findKey(nodesObject,d.to);
+        if(nodesObject[keyFrom[0]][keyFrom[1]].highlight == true && nodesObject[keyTo[0]][keyTo[1]].highlight == true){            
+        }else if(nodesObject[keyTo[0]][keyTo[1]].highlight == false){
             return 'link dehighlight';
-        }else if(nodesObject[key[0]][key[1]].highlight == undefined){
+        }else if(nodesObject[keyTo[0]][keyTo[1]].highlight == undefined){
             return "link normal";
         }
         return 'link';
@@ -213,7 +226,7 @@ d3.json("assets/data.json", function(error, data) {
             var tmp = nodesObject[key[0]][key[1]].cnt;
             return strokeWidth(tmp);
         });
-
+        
     g_links.selectAll('.highlight_link').data(highligthedPaths).enter().append('path').attr('class',function(d){        
         return 'highlight_link highlight';
     }).attr("d",function(d){

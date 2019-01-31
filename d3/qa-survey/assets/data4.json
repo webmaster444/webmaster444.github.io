@@ -674,26 +674,31 @@
       {
         "type": "event",
         "label": "Page 1 - introduction : This is a generic question with 2 possible answers : This is a generic question with 2 possible answers",
-        "pageid": "a64299c7c5b0905f7512aa006cd85bdd"
+        "pageid": "a64299c7c5b0905f7512aa006cd85bdd",
+        "highlight": true
       },
       {
         "type": "action",
         "label": "Answer 1, this will bring you to the next section (page 2)",
-        "decisionid": "383f2a67a654e6b9c4557e726fcb9e6d"
+        "decisionid": "383f2a67a654e6b9c4557e726fcb9e6d",
+        "highlight": true
       },
       {
         "type": "event",
         "label": "Page 2 - Less points",
-        "pageid": "e392a104c76291c2b9cb124168349418"
+        "pageid": "e392a104c76291c2b9cb124168349418",
+        "highlight": true
       },
       {
         "type": "event",
         "label": "Page 4 - Error exit",
-        "pageid": "6e3f71c21ad1d0ae97230bf31e7f28c4"
+        "pageid": "6e3f71c21ad1d0ae97230bf31e7f28c4",
+        "highlight": true
       },
       {
         "type": "exit",
-        "endstatus": "3"
+        "endstatus": "3",
+        "highlight": true
       }
     ],
     "d3bf07edd725971683183e4cb0e72d3b": [
