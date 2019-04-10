@@ -84,7 +84,7 @@ function draw(data) {
     };
     var background_color = config.background_color;
 
-    // d3.select("body").attr("style", "background:" + background_color);
+    d3.select("body").attr("style", "background:" + background_color);
 
     var enter_from_0 = config.enter_from_0;
     interval_time /= 3;
@@ -101,14 +101,13 @@ function draw(data) {
         .attr('height', height)
         .style('background', function(d, i) {
             if (config.blur_background_image)
-                return 'linear-gradient(rgba(255,255,255,.5), rgba(255,255,255,.5)), url("assets/img/background.png")';
+                return 'linear-gradient(rgba(253, 242, 232, 0.8), rgba(253, 242, 232, 0.8)), url("assets/img/background.png")';
             else
                 return 'url("assets/img/background.png") no-repeat';
         })
-        .style('background-size', '100%')
-        // .style('background-repeat', 'no-repeat')
+        .style('background-size', '100%')        
         .style('-webkit-animation', function(d) {
-            if (config.animate_background_image) return 'slide 620s linear infinite';
+            if (config.animate_background_image) return 'slide 120s linear infinite';
             return null;
 
         });

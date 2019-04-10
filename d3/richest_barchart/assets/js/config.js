@@ -76,7 +76,7 @@ const config = {
   labelx: -10,
  
   // set background color of svg.
-  background_color: "#000000",
+  background_color: "#FDF2E8",
   
   // show x axis ticks
   show_x_tick: true,
@@ -122,7 +122,7 @@ const config = {
 
   player_rank_point_size: 24, //set player rank size at the right of bar
 
-  blur_background_image: false, // set it false if you do not want blurry effect
+  blur_background_image: true, // set it false if you do not want blurry effect
 
   animate_background_image: true // background image moving slowly (affects performance)
 };
