@@ -30,10 +30,12 @@ function draw(data) {
     }
 
     var colorByNames = new Object;
+
+    var colorsArray = ["#FF0000","#000000","#6B7490","#666665", "#3D0048", "#001348", "#004839", "#1F5200", "#5A5700", "#5A0000", "#9C0082", "#47009C", "#00289C", "#006F9C", "#009C6A", "#6A9C00", "#9C5A00","#9C0000","#FF00F0","#8700FF","#001BFF","#00BDFF","#04FF00", "#FFA200"];
     names.forEach(function(name) {
         var tmp1 = new Object;
         name = name.replace(/\s/g, '');
-        colorByNames[name] = getRandomColor();
+        colorByNames[name] = colorsArray[Math.floor(Math.random()*colorsArray.length)];;
     })
     
     var big_value = config.big_value;
@@ -735,6 +737,7 @@ function draw(data) {
     }, baseTime * interval_time);
 }
 
+//get random color 
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
