@@ -22,7 +22,7 @@ const config = {
   format: ",",
 
   // label of postfix.
-  postfix: "",
+  postfix: " billion",
 
   // set the spacing of svg
   left_margin: 280,

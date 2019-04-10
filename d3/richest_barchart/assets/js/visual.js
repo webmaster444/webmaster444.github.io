@@ -453,7 +453,9 @@ function draw(data) {
                 if (config.postfix == "") {
                     var i = d3.interpolate(parseFloat(self.textContent.replace(/,/g, '')), Number(d.value));
                 } else {
-                    var i = d3.interpolate(self.textContent.slice(0 - config.postfix.length), Number(d.value));
+                    // var i = d3.interpolate(self.textContent.slice(0 - config.postfix.length), Number(d.value));
+                    console.log(self.textContent.substring(0, self.textContent.indexOf(config.postfix)));
+                    var i = d3.interpolate(self.textContent.substring(0, self.textContent.indexOf(config.postfix)), Number(d.value));
                 }
 
 
