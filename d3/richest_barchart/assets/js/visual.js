@@ -40,44 +40,21 @@ function draw(data) {
     
     var big_value = config.big_value;
     var divide_by = config.divide_by;
-    var divide_color_by = config.divide_color_by;
-    var name_list = [];
-    
+            
     var baseTime = 3000;
 
-    var showMessage = config.showMessage;
     var allow_up = config.allow_up;
-    var interval_time = config.interval_time;
-    var text_y = config.text_y;
-    var itemLabel = config.itemLabel;
-    var typeLabel = config.typeLabel;
-    // 长度小于display_barInfo的bar将不显示barInfo
-    var display_barInfo = config.display_barInfo;
-    // 显示类型
-    if (config.use_type_info) {
-        var use_type_info = config.use_type_info;
-    } else if (divide_by != "name") {
-        var use_type_info = true;
-    } else {
-        var use_type_info = false;
-    }
-    // 使用计数器
-    var use_counter = config.use_counter;
-    // 每个数据的间隔日期
-    var step = config.step;
-    
+    var interval_time = config.interval_time;    
+                    
     var format = config.format;
     var left_margin = config.left_margin;
     var right_margin = config.right_margin;
     var top_margin = config.top_margin;
     var bottom_margin = config.bottom_margin;
-    var timeFormat = config.timeFormat;
-    var item_x = config.item_x;
+    var timeFormat = config.timeFormat;    
     var max_number = config.max_number;
-    var reverse = config.reverse;
-    var text_x = config.text_x;
-    var offset = config.offset;
-    var animation = config.animation;
+    var reverse = config.reverse;    
+        
     const margin = {
         left: left_margin,
         right: right_margin,
@@ -92,8 +69,7 @@ function draw(data) {
     interval_time /= 3;
     var lastData = [];
     var currentdate = time[0].toString();
-    var currentData = [];
-    var lastname;
+    var currentData = [];    
 
     const width = document.getElementById("chart_wrapper").getBoundingClientRect().width;
     const height = document.getElementById("chart_wrapper").getBoundingClientRect().height;
@@ -188,14 +164,7 @@ function draw(data) {
             return "end";
         })
         .text(currentdate);
-
-    var topLabel = g
-        .insert("text")
-        .attr("class", "topLabel")
-        .attr("font-size", config.champion_name.font_size + 'pt')
-        .attr("x", config.champion_name.x)
-        .attr("y", config.growth_text.text_y);
-
+    
     function dataSort() {
         if (reverse) {
             currentData.sort(function(a, b) {
@@ -277,14 +246,9 @@ function draw(data) {
             .each(change);
         lastData = currentData;
     }
-
-    var lastname;
-    var counter = {
-        value: 1
-    };
-
+      
     var avg = 0;
-    var enter_from_now = true;
+    
     var firstTime = true;
 
     function redraw() {
@@ -348,46 +312,6 @@ function draw(data) {
             return d.name;
         });
 
-        if (showMessage) {
-            // 榜首文字
-            topLabel.data(currentData).text(function(d) {
-                if (lastname == d.name) {
-                    counter.value = counter.value + step;
-                } else {
-                    counter.value = 1;
-                }
-                lastname = d.name;
-                if (d.name.length > 24) return d.name.slice(0, 23) + "...";
-                return d.name;
-            });
-
-            if (use_counter == true) {
-                // 榜首持续时间更新
-                days
-                    .data(currentData)
-                    .transition()
-                    .duration(baseTime * interval_time)
-                    .ease(d3.easeLinear)
-                    .tween("text", function(d) {
-                        var self = this;
-                        var i = d3.interpolate(self.textContent, counter.value),
-                            prec = (counter.value + "").split("."),
-                            round = prec.length > 1 ? Math.pow(10, prec[1].length) : 1;
-
-                        return function(t) {
-                            self.textContent = d3.format(format)(
-                                Math.round(i(t) * round) / round
-                            );
-                        };
-                    });
-            } else if (use_type_info == true) {
-                // 榜首type更新
-                top_type.data(currentData).text(function(d) {
-                    return d["type"];
-                });
-            }
-        }
-
         var barEnter = bar
             .enter()
             .insert("g", ".axis")
@@ -418,30 +342,7 @@ function draw(data) {
             .attr("y", 0)
             .attr("width", d => xScale(xValue(d)))
             .attr("fill-opacity", 1);
-        
-        if (config.display_left_of_the_bar == 'rank' && firstTime == true) {
-            let ranks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
-
-            g.selectAll('.ranks')
-                .data(ranks)
-                .enter()
-                .append("text")
-                .classed('ranks', true)
-                .attr("y", (d, i) => 21 + (i * 55))
-                .attr("id", (d, i) => "rank" + i)
-                .attr("fill-opacity", 0)
-                .style("fill", config.rank_label.color)
-                .attr("fill-opacity", 1)
-                .attr("class", function(d) {
-                    return "label";
-                })
-                .attr("x", config.labelx)
-                .attr("text-anchor", "end")
-                .text(function(d, i) {
-                    return d;
-                });
-        }
-
+                
         if (config.showLabel == true && config.display_left_of_the_bar != 'rank') {
             barEnter
                 .append("text")
@@ -466,54 +367,6 @@ function draw(data) {
                     return d[config.display_left_of_the_bar];                                        
                 });
         }
-
-        // text inside bar
-        var barInfo = barEnter
-            .append("text")
-            .attr("x", function(d) {                
-                if (enter_from_0) {
-                    return 0;
-                } else {
-                    return xScale(currentData[currentData.length - 1].value);
-                }
-            })
-            .attr("stroke", function(d) {
-                name = d.name.replace(/\s/g, '');
-                return colorByNames[name]
-            })
-            .attr("class", function() {
-                return "barInfo";
-            })
-            .attr("y", 10)
-            .attr('font-size', config.player_name_size + 'pt')
-            .attr("stroke-width", "0px")
-            .attr("fill-opacity", 0)
-            .transition()
-            .delay(500 * interval_time)
-            .duration(2490 * interval_time)
-            .text(function(d) {
-                return d[config.display_inside_the_bar];
-            })
-            .attr("x", d => {                
-                return xScale(xValue(d)) - 10;
-            })
-            .attr("fill-opacity", function(d) {
-                if (xScale(xValue(d)) - 10 < display_barInfo) {
-                    return 0;
-                }
-                return 1;
-            })
-            .attr("y", 1.)
-            .attr("dy", "0.97em")
-            .attr("text-anchor", function() {                
-                return "end";
-            })
-            .attr("stroke-width", function(d) {
-                if (xScale(xValue(d)) - 10 < display_barInfo) {
-                    return "0px";
-                }
-                return "0px";
-            });
         
             barEnter
                 .append("text")
@@ -535,12 +388,12 @@ function draw(data) {
                 .tween("text", function(d) {
                     var self = this;
                     
-                    self.textContent = d.value * 0.9;
+                    self.textContent = Number(d.value) * 0.9;
                     var i = d3.interpolate(self.textContent, Number(d.value)),
                         prec = (Number(d.value) + "").split("."),
                         round = prec.length > 1 ? Math.pow(10, prec[1].length) : 1;
                     
-                    return function(t) {
+                    return function(t) {                        
                         self.textContent = d3.format(format)(
                             Math.round(i(t) * round) / round
                         ) + config.postfix;                        
@@ -590,40 +443,13 @@ function draw(data) {
                     return "value";
                 })
                 .attr("width", d => xScale(xValue(d)));
-        
-        barUpdate.select(".barInfo").attr("stroke", function(d) {
-            name = d.name.replace(/\s/g, '');
-            return colorByNames[name]
-        });
-
-        var barInfo = barUpdate
-            .select(".barInfo")
-            .text(function(d) {
-                return d[config.display_inside_the_bar];
-            })
-            .attr("x", d => {                
-                return xScale(xValue(d)) - 10;
-            })
-            .attr("fill-opacity", function(d) {
-                if (xScale(xValue(d)) - 10 < display_barInfo) {
-                    return 0;
-                }
-                return 1;
-            })
-            .attr("stroke-width", function(d) {
-                if (xScale(xValue(d)) - 10 < display_barInfo) {
-                    return "0px";
-                }
-                return "0px";
-            });
-
-
+      
         
             barUpdate
                 .select(".value")
                 .tween("text", function(d) {
                     var self = this;
-
+                    
                     // if postfix is blank, do not slice.
                     if (config.postfix == "") {
                         var i = d3.interpolate(parseFloat(self.textContent.replace(/,/g, '')), Number(d.value));
@@ -631,14 +457,14 @@ function draw(data) {
                         var i = d3.interpolate(self.textContent.slice(0 - config.postfix.length), Number(d.value));
                     }
 
+
                     var prec = (Number(d.value) + "").split("."),
                         round = prec.length > 1 ? Math.pow(10, prec[1].length) : 1;
-                    // d.value = self.textContent
-                    return function(t) {
+                    
+                    return function(t) {                        
                         self.textContent = d3.format(format)(
                             Math.round(i(t) * round) / round
-                        ) + config.postfix;
-                        // d.value = self.textContent
+                        ) + config.postfix;                        
                     };
                 })
                 .duration(2990 * interval_time)
@@ -675,16 +501,7 @@ function draw(data) {
                 .attr("x", () => {
                     return xScale(currentData[currentData.length - 1]["value"]);
                 });
-        
-        barExit
-            .select(".barInfo")
-            .attr("fill-opacity", 0)
-            .attr("stroke-width", function(d) {
-                return "0px";
-            })
-            .attr("x", () => {                
-                return xScale(currentData[currentData.length - 1]["value"]);
-            });
+                
         barExit.select(".label").attr("fill-opacity", 0);
 
         firstTime = false;
@@ -694,18 +511,7 @@ function draw(data) {
         yScale
             .domain(currentData.map(d => d.name).reverse())
             .range([innerHeight, 0]);
-        if (animation == "linear") {
-            g.selectAll(".bar")
-                .data(currentData, function(d) {
-                    return d.name;
-                })
-                .transition("1")
-                .ease(d3.easeLinear)
-                .duration(baseTime * update_rate * interval_time)
-                .attr("transform", function(d) {
-                    return "translate(0," + yScale(yValue(d)) + ")";
-                });
-        } else {
+
             g.selectAll(".bar")
                 .data(currentData, function(d) {
                     return d.name;
@@ -714,8 +520,7 @@ function draw(data) {
                 .duration(baseTime * update_rate * interval_time)
                 .attr("transform", function(d) {
                     return "translate(0," + yScale(yValue(d)) + ")";
-                });
-        }
+                });        
     }
 
     var i = 0;

@@ -14,32 +14,17 @@ const config = {
 
   // set the column name to sort
   divide_by: "name",
-  
-  // left label
-  itemLabel: "No.1",
-
-  // right label
-  typeLabel: "",
-  
-
+     
   //interval time of animation
   interval_time: 2,
 
   // 偏移量
   offset: 0,
-
-  // show the barInfo inside bar
-  display_barInfo: 1,
-
-  // use counter or not
-  use_counter: false,
-
-  step: 1,
-
+  
   // .2f mains keep two decimals.
   format: ",",
 
-  // 
+  // label of postfix.
   postfix: "",
 
   // set the spacing of svg
@@ -48,16 +33,15 @@ const config = {
   top_margin: 80,
   bottom_margin: 40,
 
-  // change datelabel
-  dateLabel_switch: true,
-  // 时间标签坐标。建议x：1000 y：-50开始尝试，默认位置为x:null,y:null
+  // change date label and its position.
+  dateLabel_switch: true,  
   dateLabel_x: null,
   dateLabel_y: null,
 
-  // 允许大于平均值的条消失时上浮。
+  // allow bars to exit to top
   allow_up: false,
 
-  // 设置动画效果，如果为true，则新进入的条目从0开始。
+  // set the initial animation to start from 0 or middle. (bar size increases from 0 or half)
   enter_from_0: false,
 
   // 如果所有数字都很大，导致拉不开差距则开启此项使得坐标原点变换为（最小值）*2-（最大值）
@@ -72,7 +56,7 @@ const config = {
   // show label
   showLabel: true,
 
-  
+  // position of y axis tick text
   labelx: -10,
  
   // set background color of svg.
@@ -88,29 +72,8 @@ const config = {
 
   display_left_of_the_bar: 'type', //possible values: 1.name 2.type 3.rank
 
-  rank_label: {
-    color: '#FFFFF' // set rank label color
-  },
-
   bar_height: 43, //set bar heights
-
-  //set growth text attributes on top
-  growth_text:{
-    font_size: 25, 
-    left_text_x: 1880, 
-    right_text_x: 4870,
-    text_y: 800 // set growth text, champion name and counter y values
-  },
-
-  //set chempion name attributes on top
-  champion_name: {
-    font_size: 0,
-    x: 1755,
-    y: 1000
-  },
-
-  counter_size: 25, //set days count size (y is growth_text.text_y and x is calculated)
-  
+ 
   //set date label attributes on bottom 
   date_label: {
     font_size: 60, 
@@ -118,9 +81,7 @@ const config = {
     y: 0  // positive values -> date goes down, negative values -> date goes up
   },
 
-  player_name_size: 24, //set player name size inside the bar
-
-  player_rank_point_size: 24, //set player rank size at the right of bar
+  player_rank_point_size: 24, //set font size at the right of bar
 
   blur_background_image: true, // set it false if you do not want blurry effect
 
