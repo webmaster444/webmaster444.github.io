@@ -18,9 +18,6 @@ const config = {
   //interval time of animation
   interval_time: 2,
 
-  // 偏移量
-  offset: 0,
-  
   // .2f mains keep two decimals.
   format: ",",
 
@@ -44,7 +41,7 @@ const config = {
   // set the initial animation to start from 0 or middle. (bar size increases from 0 or half)
   enter_from_0: false,
 
-  // 如果所有数字都很大，导致拉不开差距则开启此项使得坐标原点变换为（最小值）*2-（最大值）
+  // change the domain of x when values are too big
   big_value: true,
 
   // set the second of wait.

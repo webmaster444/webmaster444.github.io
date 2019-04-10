@@ -31,30 +31,30 @@ function draw(data) {
 
     var colorByNames = new Object;
 
-    var colorsArray = ["#FF0000","#000000","#6B7490","#666665", "#3D0048", "#001348", "#004839", "#1F5200", "#5A5700", "#5A0000", "#9C0082", "#47009C", "#00289C", "#006F9C", "#009C6A", "#6A9C00", "#9C5A00","#9C0000","#FF00F0","#8700FF","#001BFF","#00BDFF","#04FF00", "#FFA200"];
+    var colorsArray = ["#FF0000", "#000000", "#6B7490", "#666665", "#3D0048", "#001348", "#004839", "#1F5200", "#5A5700", "#5A0000", "#9C0082", "#47009C", "#00289C", "#006F9C", "#009C6A", "#6A9C00", "#9C5A00", "#9C0000", "#FF00F0", "#8700FF", "#001BFF", "#00BDFF", "#04FF00", "#FFA200"];
     names.forEach(function(name) {
         var tmp1 = new Object;
         name = name.replace(/\s/g, '');
-        colorByNames[name] = colorsArray[Math.floor(Math.random()*colorsArray.length)];;
+        colorByNames[name] = colorsArray[Math.floor(Math.random() * colorsArray.length)];;
     })
-    
+
     var big_value = config.big_value;
     var divide_by = config.divide_by;
-            
+
     var baseTime = 3000;
 
     var allow_up = config.allow_up;
-    var interval_time = config.interval_time;    
-                    
+    var interval_time = config.interval_time;
+
     var format = config.format;
     var left_margin = config.left_margin;
     var right_margin = config.right_margin;
     var top_margin = config.top_margin;
     var bottom_margin = config.bottom_margin;
-    var timeFormat = config.timeFormat;    
+    var timeFormat = config.timeFormat;
     var max_number = config.max_number;
-    var reverse = config.reverse;    
-        
+    var reverse = config.reverse;
+
     const margin = {
         left: left_margin,
         right: right_margin,
@@ -69,7 +69,7 @@ function draw(data) {
     interval_time /= 3;
     var lastData = [];
     var currentdate = time[0].toString();
-    var currentData = [];    
+    var currentData = [];
 
     const width = document.getElementById("chart_wrapper").getBoundingClientRect().width;
     const height = document.getElementById("chart_wrapper").getBoundingClientRect().height;
@@ -83,7 +83,7 @@ function draw(data) {
             else
                 return 'url("assets/img/background.png") no-repeat';
         })
-        .style('background-size', '100%')        
+        .style('background-size', '100%')
         .style('-webkit-animation', function(d) {
             if (config.animate_background_image) return 'slide 120s linear infinite';
             return null;
@@ -111,7 +111,7 @@ function draw(data) {
         .attr("y", 100);
 
     var xScale = d3.scaleLinear();
-    
+
     const yScale = d3
         .scaleBand()
         .paddingInner(0.3)
@@ -164,7 +164,7 @@ function draw(data) {
             return "end";
         })
         .text(currentdate);
-    
+
     function dataSort() {
         if (reverse) {
             currentData.sort(function(a, b) {
@@ -246,9 +246,9 @@ function draw(data) {
             .each(change);
         lastData = currentData;
     }
-      
+
     var avg = 0;
-    
+
     var firstTime = true;
 
     function redraw() {
@@ -342,7 +342,7 @@ function draw(data) {
             .attr("y", 0)
             .attr("width", d => xScale(xValue(d)))
             .attr("fill-opacity", 1);
-                
+
         if (config.showLabel == true && config.display_left_of_the_bar != 'rank') {
             barEnter
                 .append("text")
@@ -364,53 +364,53 @@ function draw(data) {
                 .attr("y", 30)
                 .attr("text-anchor", "end")
                 .text(function(d, i) {
-                    return d[config.display_left_of_the_bar];                                        
+                    return d[config.display_left_of_the_bar];
                 });
         }
-        
-            barEnter
-                .append("text")
-                .attr("x", function() {
-                    if (enter_from_0) {
-                        return 0;
-                    } else {
-                        return xScale(currentData[currentData.length - 1].value);
-                    }
-                })
-                .attr("y", 50)
-                .attr("fill-opacity", 0)
-                .style("fill", function(d) {
-                    name = d.name.replace(/\s/g, '');
-                    return colorByNames[name]
-                })
-                .transition()
-                .duration(2990 * interval_time)
-                .tween("text", function(d) {
-                    var self = this;
-                    
-                    self.textContent = Number(d.value) * 0.9;
-                    var i = d3.interpolate(self.textContent, Number(d.value)),
-                        prec = (Number(d.value) + "").split("."),
-                        round = prec.length > 1 ? Math.pow(10, prec[1].length) : 1;
-                    
-                    return function(t) {                        
-                        self.textContent = d3.format(format)(
-                            Math.round(i(t) * round) / round
-                        ) + config.postfix;                        
-                    };
-                })
-                .attr("fill-opacity", 1)
-                .attr("y", 0)
-                .attr("class", function(d) {
-                    return "value";
-                })
-                .attr("x", d => {
-                    return xScale(xValue(d)) + 10;
-                })
-                .attr("y", 32)
-                .attr("font-size", config.player_rank_point_size + 'pt');
 
-        
+        barEnter
+            .append("text")
+            .attr("x", function() {
+                if (enter_from_0) {
+                    return 0;
+                } else {
+                    return xScale(currentData[currentData.length - 1].value);
+                }
+            })
+            .attr("y", 50)
+            .attr("fill-opacity", 0)
+            .style("fill", function(d) {
+                name = d.name.replace(/\s/g, '');
+                return colorByNames[name]
+            })
+            .transition()
+            .duration(2990 * interval_time)
+            .tween("text", function(d) {
+                var self = this;
+
+                self.textContent = Number(d.value) * 0.9;
+                var i = d3.interpolate(self.textContent, Number(d.value)),
+                    prec = (Number(d.value) + "").split("."),
+                    round = prec.length > 1 ? Math.pow(10, prec[1].length) : 1;
+
+                return function(t) {
+                    self.textContent = d3.format(format)(
+                        Math.round(i(t) * round) / round
+                    ) + config.postfix;
+                };
+            })
+            .attr("fill-opacity", 1)
+            .attr("y", 0)
+            .attr("class", function(d) {
+                return "value";
+            })
+            .attr("x", d => {
+                return xScale(xValue(d)) + 10;
+            })
+            .attr("y", 32)
+            .attr("font-size", config.player_rank_point_size + 'pt');
+
+
 
         var barUpdate = bar
             .transition("2")
@@ -436,41 +436,40 @@ function draw(data) {
                 }) //1. colorScale(d.name)
                 .attr("width", d => xScale(xValue(d)));
         }
-        
-            barUpdate
-                .select(".value")
-                .attr("class", function(d) {
-                    return "value";
-                })
-                .attr("width", d => xScale(xValue(d)));
-      
-        
-            barUpdate
-                .select(".value")
-                .tween("text", function(d) {
-                    var self = this;
-                    
-                    // if postfix is blank, do not slice.
-                    if (config.postfix == "") {
-                        var i = d3.interpolate(parseFloat(self.textContent.replace(/,/g, '')), Number(d.value));
-                    } else {
-                        var i = d3.interpolate(self.textContent.slice(0 - config.postfix.length), Number(d.value));
-                    }
+
+        barUpdate
+            .select(".value")
+            .attr("class", function(d) {
+                return "value";
+            })
+            .attr("width", d => xScale(xValue(d)));
+
+        barUpdate
+            .select(".value")
+            .tween("text", function(d) {
+                var self = this;
+
+                // if postfix is blank, do not slice.
+                if (config.postfix == "") {
+                    var i = d3.interpolate(parseFloat(self.textContent.replace(/,/g, '')), Number(d.value));
+                } else {
+                    var i = d3.interpolate(self.textContent.slice(0 - config.postfix.length), Number(d.value));
+                }
 
 
-                    var prec = (Number(d.value) + "").split("."),
-                        round = prec.length > 1 ? Math.pow(10, prec[1].length) : 1;
-                    
-                    return function(t) {                        
-                        self.textContent = d3.format(format)(
-                            Math.round(i(t) * round) / round
-                        ) + config.postfix;                        
-                    };
-                })
-                .duration(2990 * interval_time)
-                .attr("x", d => xScale(xValue(d)) + 10);
+                var prec = (Number(d.value) + "").split("."),
+                    round = prec.length > 1 ? Math.pow(10, prec[1].length) : 1;
 
-        
+                return function(t) {
+                    self.textContent = d3.format(format)(
+                        Math.round(i(t) * round) / round
+                    ) + config.postfix;
+                };
+            })
+            .duration(2990 * interval_time)
+            .attr("x", d => xScale(xValue(d)) + 10);
+
+
         avg =
             (Number(currentData[0]["value"]) +
                 Number(currentData[currentData.length - 1]["value"])) /
@@ -494,14 +493,14 @@ function draw(data) {
             .select("rect")
             .attr("fill-opacity", 0)
             .attr("width", xScale(currentData[currentData.length - 1]["value"]));
-        
-            barExit
-                .select(".value")
-                .attr("fill-opacity", 0)
-                .attr("x", () => {
-                    return xScale(currentData[currentData.length - 1]["value"]);
-                });
-                
+
+        barExit
+            .select(".value")
+            .attr("fill-opacity", 0)
+            .attr("x", () => {
+                return xScale(currentData[currentData.length - 1]["value"]);
+            });
+
         barExit.select(".label").attr("fill-opacity", 0);
 
         firstTime = false;
@@ -512,22 +511,21 @@ function draw(data) {
             .domain(currentData.map(d => d.name).reverse())
             .range([innerHeight, 0]);
 
-            g.selectAll(".bar")
-                .data(currentData, function(d) {
-                    return d.name;
-                })
-                .transition("1")
-                .duration(baseTime * update_rate * interval_time)
-                .attr("transform", function(d) {
-                    return "translate(0," + yScale(yValue(d)) + ")";
-                });        
+        g.selectAll(".bar")
+            .data(currentData, function(d) {
+                return d.name;
+            })
+            .transition("1")
+            .duration(baseTime * update_rate * interval_time)
+            .attr("transform", function(d) {
+                return "translate(0," + yScale(yValue(d)) + ")";
+            });
     }
 
     var i = 0;
     var p = config.wait;
     var update_rate = config.update_rate;
-    var inter = setInterval(function next() {
-        // 空过p回合
+    var inter = setInterval(function next() {        
         while (p) {
             p -= 1;
             return;
