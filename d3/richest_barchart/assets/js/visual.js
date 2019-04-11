@@ -539,7 +539,7 @@ function draw(data) {
         if (i >= time.length) {
             window.clearInterval(inter);
         }
-    }, baseTime * interval_time);
+    }, baseTime * interval_time + config.pauseDuration);
 }
 
 //get random color 

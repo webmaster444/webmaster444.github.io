@@ -17,7 +17,7 @@ const config = {
      
   //interval time of animation
   interval_time: 2,
-
+  pauseDuration: 1000, // 1 sec pause
   // .2f mains keep two decimals.
   format: ",",
 
