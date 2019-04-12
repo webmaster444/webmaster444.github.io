@@ -6,7 +6,7 @@ if (!Array.prototype.remove) {
 }
 
 d3.csv("assets/data/richest_people.csv").then(function(data) {
-    draw(data)
+    draw(data)    
 });
 
 
@@ -28,7 +28,7 @@ function draw(data) {
     } else {
         var time = date;
     }
-
+    
     var colorByNames = new Object;
 
     var colorsArray = ["#FF0000", "#000000", "#6B7490", "#666665", "#3D0048", "#001348", "#004839", "#1F5200", "#5A5700", "#5A0000", "#9C0082", "#47009C", "#00289C", "#006F9C", "#009C6A", "#6A9C00", "#9C5A00", "#9C0000", "#FF00F0", "#8700FF", "#001BFF", "#00BDFF", "#04FF00", "#FFA200"];
@@ -274,9 +274,13 @@ function draw(data) {
                 .ease(d3.easeLinear)
                 .tween("text", function(d) {
                     var self = this;
+
+                    var tmp = new Date(d.date);
+                    var nextDay = new Date(d.date);
+                    nextDay.setDate(tmp.getDate()+1);
                     var i = d3.interpolateDate(
                         new Date(self.textContent),
-                        new Date(d.date)
+                        nextDay
                     );
                     return function(t) {
                         var dateformat = d3.timeFormat(timeFormat);
@@ -452,9 +456,7 @@ function draw(data) {
                 // if postfix is blank, do not slice.
                 if (config.postfix == "") {
                     var i = d3.interpolate(parseFloat(self.textContent.replace(/,/g, '')), Number(d.value));
-                } else {
-                    // var i = d3.interpolate(self.textContent.slice(0 - config.postfix.length), Number(d.value));
-                    console.log(self.textContent.substring(0, self.textContent.indexOf(config.postfix)));
+                } else {                                       
                     var i = d3.interpolate(self.textContent.substring(0, self.textContent.indexOf(config.postfix)), Number(d.value));
                 }
 
