@@ -42,7 +42,7 @@ const config = {
   enter_from_0: false,
 
   // change the domain of x when values are too big
-  big_value: true,
+  big_value: false,
 
   // set the second of wait.
   wait: 0,
