@@ -171,8 +171,27 @@ d3.json("assets/data.json").then(function(data) {
 	}
 
 	function dragged(d) {		
-	  	d3.select(this).attr("cx", d.x = d3.event.x).attr("cy", d.y = d3.event.y);	  
-	  	d3.select(this.parentNode).select('text').attr('x',d.x = d3.event.x).attr('y',d.y=d3.event.y);
+		var xPos;
+		if((d3.event.x + radius) > x(d.place) + x.bandwidth()){
+			xPos = x(d.place) + x.bandwidth() - radius;
+		}else if((d3.event.x - radius)< x(d.place)){
+			xPos = x(d.place) + radius;
+		}else{
+			xPos = d3.event.x;
+		}
+
+		var yPos;
+
+		if((d3.event.y - radius) < 50){
+			yPos = 50 + radius;
+		}else if(d3.event.y + radius > height){
+			yPos = height - radius;
+		}else{
+			yPos = d3.event.y;
+		}
+
+	  	d3.select(this).attr("cx", d.x = xPos).attr("cy", d.y = yPos);	  
+	  	d3.select(this.parentNode).select('text').attr('x',d.x = xPos).attr('y',d.y=yPos);
 	}
 
 	function dragended(d) {
