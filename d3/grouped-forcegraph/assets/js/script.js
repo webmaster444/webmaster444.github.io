@@ -1,4 +1,4 @@
-var width = 800,
+var wrapperWidth = $("#chart_wrapper").width(),
     height = 800,
     margin = {
         left: 50,
@@ -7,6 +7,7 @@ var width = 800,
         bottom: 20
     };
 
+var width = wrapperWidth - margin.left - margin.right;
 var radius = 30; // Node circle radius;
 
 var myColor = d3.scaleSequential().interpolator(d3.interpolateViridis);
@@ -15,6 +16,23 @@ var svg = d3.select("#chart_wrapper").append('svg').attr("width", width + margin
 
 d3.json("assets/data.json").then(function(data) {
     console.log(data);
+    
+	  var zoom = d3.zoom()
+    .scaleExtent([1, 40])
+    .translateExtent([
+      [-100, -100],
+      [width + 90, height + 100]
+    ])
+    .on("zoom", zoomed);
+
+      svg.call(zoom);
+ 
+  function zoomed() {
+    svg.attr("transform", d3.event.transform);
+    // gX.call(xAxis.scale(d3.event.transform.rescaleX(x)));
+    // gY.call(yAxis.scale(d3.event.transform.rescaleY(y)));
+  }
+
     var nodes = data.nodes;
     var links = data.links;
     var places = [];
@@ -74,7 +92,12 @@ d3.json("assets/data.json").then(function(data) {
 
     var node_wrapper = svg.selectAll('g.node_wrapper').data(nodes).enter().append('g').attr('class', (d) => 'node_wrapper node_' + d.id);
 
-    node_wrapper.append('circle').attr('cx',(d)=>x(d.place)+x.bandwidth()/2).attr('cy',(d)=>y(d.nth)+y.bandwidth()/2).attr('r',radius).attr('fill','white');
+    node_wrapper.append('circle').attr('cx',(d)=>x(d.place)+x.bandwidth()/2).attr('cy',(d)=>y(d.nth)+y.bandwidth()/2).attr('r',radius).attr('fill','white')
+    .call(d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended));
+    
     node_wrapper.append('text').attr('x',(d)=>x(d.place)+x.bandwidth()/2).attr('y',(d)=>y(d.nth)+y.bandwidth()/2).text((d)=>d.name).attr('text-anchor','middle');
 
 
@@ -141,6 +164,21 @@ d3.json("assets/data.json").then(function(data) {
     .append("path")
     .attr("d", "M 0 0 12 6 0 12 3 6")
     .style("fill", "#f4b185");
+
+    function dragstarted(d) {
+	  d3.select(this).raise().classed("active", true);
+	  d3.select(this.parentNode).select('text').raise();
+	}
+
+	function dragged(d) {		
+	  	d3.select(this).attr("cx", d.x = d3.event.x).attr("cy", d.y = d3.event.y);	  
+	  	d3.select(this.parentNode).select('text').attr('x',d.x = d3.event.x).attr('y',d.y=d3.event.y);
+	}
+
+	function dragended(d) {
+	  d3.select(this).classed("active", false);
+	}
+
 });
 
 function getNodeById(nodes,id){
