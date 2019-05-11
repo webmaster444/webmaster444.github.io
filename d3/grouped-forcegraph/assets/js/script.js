@@ -1,0 +1,178 @@
+var width = 800,
+    height = 800,
+    margin = {
+        left: 50,
+        right: 50,
+        top: 50,
+        bottom: 20
+    };
+
+var radius = 30; // Node circle radius;
+
+var myColor = d3.scaleSequential().interpolator(d3.interpolateViridis);
+
+var svg = d3.select("#chart_wrapper").append('svg').attr("width", width + margin.left + margin.right).attr('height', height + margin.top + margin.bottom).append('g').attr("transform", "translate(" + margin.left + ',' + margin.top + ')');
+
+d3.json("assets/data.json").then(function(data) {
+    console.log(data);
+    var nodes = data.nodes;
+    var links = data.links;
+    var places = [];
+    nodes.map(function(n) {
+        return n.place;
+    }).forEach(function(d) {
+        if (!places.includes(d)) {
+            places.push(d);
+        }
+    })
+
+    places.sort();
+
+    var x = d3.scaleBand()
+        .rangeRound([0, width]);
+
+    x.domain(places);
+
+    myColor.domain(d3.extent(places));
+    var place_wrapper = svg.selectAll('.place_wrapper').data(places).enter().append('g').attr("class", (d) => 'place_wrapper place_' + d).attr("transform", function(d) {
+        return "translate(" + (x(d)) + ',0)';
+    });
+
+    place_wrapper.append('rect').attr('x', 0).attr("y", 0).attr("width", x.bandwidth()).attr('height', height).attr("fill", (d) => myColor(d));
+    place_wrapper.append('rect').attr('x', 0).attr("y", 0).attr("width", x.bandwidth()).attr('height', 50).attr("fill", 'black').attr('fill-opacity', '0.3');
+    place_wrapper.append('text').attr('x', x.bandwidth() / 2).attr("y", 30).text((d) => '"place":' + d).attr('text-anchor', 'middle').attr('class', 'place_title').attr('fill', 'white');
+
+    var nodesByPlace = d3.nest()
+        .key(function(d) {
+            return d.place;
+        })
+        .entries(nodes);
+
+    nodesByPlace.map((d) => d.values).forEach(function(d) {
+        d.forEach(function(node, i) {
+            if (nodes.includes(node)) {
+                var index = nodes.indexOf(node);
+                nodes[index]['nth'] = i;
+            }
+        });
+    })
+
+    console.log(nodes);
+
+    var yMax = d3.max(nodesByPlace.map(function(d) {
+        return d.values.length
+    }));
+
+    var y = d3.scaleBand().rangeRound([0, height]);
+
+    var yDomain = [];
+    for (var i = 0; i < yMax; i++) {
+        yDomain.push(i);
+    }
+
+    y.domain(yDomain);
+
+    var node_wrapper = svg.selectAll('g.node_wrapper').data(nodes).enter().append('g').attr('class', (d) => 'node_wrapper node_' + d.id);
+
+    node_wrapper.append('circle').attr('cx',(d)=>x(d.place)+x.bandwidth()/2).attr('cy',(d)=>y(d.nth)+y.bandwidth()/2).attr('r',radius).attr('fill','white');
+    node_wrapper.append('text').attr('x',(d)=>x(d.place)+x.bandwidth()/2).attr('y',(d)=>y(d.nth)+y.bandwidth()/2).text((d)=>d.name).attr('text-anchor','middle');
+
+
+    var link_wrapper = svg.selectAll('g.link_wrapper').data(links).enter().append('g').attr('class',(d)=>'link_wrapper link');
+    link_wrapper.append('line').attr('class','link').attr('link_from',(d)=>d.source).attr('link_to',(d)=>d.target).attr('x1',function(d){
+    	var source = getNodeById(nodes,d.source);
+    	var target = getNodeById(nodes,d.target);
+
+    	var direction = checkLtR(x(source.place), x(target.place));
+
+    	if(direction == 0)
+    		return x(source.place) + x.bandwidth()/2;
+    	else if(direction == 1)
+    		return x(source.place) + x.bandwidth()/2 + radius;
+    	else if(direction == -1)
+    		return x(source.place) + x.bandwidth()/2 - radius;
+    }).attr('y1',function(d){
+    	var source = getNodeById(nodes,d.source);
+    	var target = getNodeById(nodes,d.target);
+
+    	var direction = checkBtT(y(source.nth), y(target.nth));
+
+    	if(direction == 0)
+    		return y(source.nth) + y.bandwidth()/2;
+    	else if(direction == 1)
+    		return y(source.nth) + y.bandwidth()/2 + radius;
+    	else if(direction == -1)
+    		return y(source.nth) + y.bandwidth()/2 - radius;
+    }).attr('x2',function(d){
+    	var source = getNodeById(nodes,d.source);
+    	var target = getNodeById(nodes,d.target);
+
+    	var direction = checkLtR(x(source.place), x(target.place));
+
+    	if(direction == 0)
+    		return x(target.place) + x.bandwidth()/2;
+    	else if(direction == 1)
+    		return x(target.place) + x.bandwidth()/2 - radius;
+    	else if(direction == -1)
+    		return x(target.place) + x.bandwidth()/2 + radius;
+    }).attr('y2',function(d){
+    	var source = getNodeById(nodes,d.source);
+    	var target = getNodeById(nodes,d.target);
+
+    	var direction = checkBtT(y(source.nth), y(target.nth));
+
+    	if(direction == 0)
+    		return y(target.nth) + y.bandwidth()/2;
+    	else if(direction == 1)
+    		return y(target.nth) + y.bandwidth()/2 - radius;
+    	else if(direction == -1)
+    		return y(target.nth) + y.bandwidth()/2 + radius;
+    }).attr('stroke','#f4b185')
+    .attr('stroke-width','2px')
+    .attr("marker-end", "url(#triangle)");
+
+    svg.append("svg:defs").append("svg:marker")
+    .attr("id", "triangle")
+    .attr("refX", 6)
+    .attr("refY", 6)
+    .attr("markerWidth", 12)
+    .attr("markerHeight", 12)
+    .attr("orient", "auto")
+    .append("path")
+    .attr("d", "M 0 0 12 6 0 12 3 6")
+    .style("fill", "#f4b185");
+});
+
+function getNodeById(nodes,id){
+	var res;
+	nodes.forEach(function(n){		
+		if(n.id == id){		
+			res = n;
+		}
+	})
+
+	return res;
+}
+
+
+//get the direction of link (left to right)
+function checkLtR(x1,x2){
+	if(x1==x2){
+		return 0;
+	}else if(x2>x1){
+		return 1;
+	}else if(x2<x1){
+		return -1;
+	}
+}
+
+//get the direction of link (bottom to top)
+function checkBtT(y1,y2){
+	if(y1==y2){
+		return 0;
+	}else if(y1>y2){
+		return -1;
+	}else if(y1<y2){
+		return 1;
+	}
+}
