@@ -88,6 +88,64 @@ d3.json("assets/data.json").then(function(data) {
 
     y.domain(yDomain);
 
+var link_wrapper = svg.selectAll('g.link_wrapper').data(links).enter().append('g').attr('class',(d)=>'link_wrapper link');
+    link_wrapper.append('line').attr('class','link').attr('link_from',(d)=>d.source).attr('link_to',(d)=>d.target).attr('x1',function(d){
+    	var source = getNodeById(nodes,d.source);
+    	var target = getNodeById(nodes,d.target);
+
+    	var direction = checkLtR(x(source.place), x(target.place));
+
+    	// if(direction == 0)
+    	// 	return x(source.place) + x.bandwidth()/2;
+    	// else if(direction == 1)
+    	// 	return x(source.place) + x.bandwidth()/2 + radius;
+    	// else if(direction == -1)
+    	// 	return x(source.place) + x.bandwidth()/2 - radius;
+    	return x(source.place) + x.bandwidth()/2;
+    }).attr('y1',function(d){
+    	var source = getNodeById(nodes,d.source);
+    	var target = getNodeById(nodes,d.target);
+
+    	var direction = checkBtT(y(source.nth), y(target.nth));
+
+    	// if(direction == 0)
+    	// 	return y(source.nth) + y.bandwidth()/2;
+    	// else if(direction == 1)
+    	// 	return y(source.nth) + y.bandwidth()/2 + radius;
+    	// else if(direction == -1)
+    	// 	return y(source.nth) + y.bandwidth()/2 - radius;
+
+    	return y(source.nth) + y.bandwidth()/2;
+    }).attr('x2',function(d){
+    	var source = getNodeById(nodes,d.source);
+    	var target = getNodeById(nodes,d.target);
+
+    	var direction = checkLtR(x(source.place), x(target.place));
+
+    	// if(direction == 0)
+    	// 	return x(target.place) + x.bandwidth()/2;
+    	// else if(direction == 1)
+    	// 	return x(target.place) + x.bandwidth()/2 - radius;
+    	// else if(direction == -1)
+    	// 	return x(target.place) + x.bandwidth()/2 + radius;
+    	return x(target.place) + x.bandwidth()/2;
+    }).attr('y2',function(d){
+    	var source = getNodeById(nodes,d.source);
+    	var target = getNodeById(nodes,d.target);
+
+    	var direction = checkBtT(y(source.nth), y(target.nth));
+
+    	// if(direction == 0)
+    	// 	return y(target.nth) + y.bandwidth()/2;
+    	// else if(direction == 1)
+    	// 	return y(target.nth) + y.bandwidth()/2 - radius;
+    	// else if(direction == -1)
+    	// 	return y(target.nth) + y.bandwidth()/2 + radius;
+    	return y(target.nth) + y.bandwidth()/2;
+    }).attr('stroke','#f4b185')
+    .attr('stroke-width','2px')
+    // .attr("marker-end", "url(#triangle)");
+
     var node_wrapper = svg.selectAll('g.node_wrapper').data(nodes).enter().append('g').attr('class', (d) => 'node_wrapper node_' + d.id);
 
     node_wrapper.append('circle').attr('cx',(d)=>x(d.place)+x.bandwidth()/2).attr('cy',(d)=>y(d.nth)+y.bandwidth()/2).attr('r',radius).attr('fill','white').attr('node-id',(d)=>d.id)
@@ -97,60 +155,6 @@ d3.json("assets/data.json").then(function(data) {
         .on("end", dragended));
     
     node_wrapper.append('text').attr('x',(d)=>x(d.place)+x.bandwidth()/2).attr('y',(d)=>y(d.nth)+y.bandwidth()/2).text((d)=>d.name).attr('text-anchor','middle');
-
-
-    var link_wrapper = svg.selectAll('g.link_wrapper').data(links).enter().append('g').attr('class',(d)=>'link_wrapper link');
-    link_wrapper.append('line').attr('class','link').attr('link_from',(d)=>d.source).attr('link_to',(d)=>d.target).attr('x1',function(d){
-    	var source = getNodeById(nodes,d.source);
-    	var target = getNodeById(nodes,d.target);
-
-    	var direction = checkLtR(x(source.place), x(target.place));
-
-    	if(direction == 0)
-    		return x(source.place) + x.bandwidth()/2;
-    	else if(direction == 1)
-    		return x(source.place) + x.bandwidth()/2 + radius;
-    	else if(direction == -1)
-    		return x(source.place) + x.bandwidth()/2 - radius;
-    }).attr('y1',function(d){
-    	var source = getNodeById(nodes,d.source);
-    	var target = getNodeById(nodes,d.target);
-
-    	var direction = checkBtT(y(source.nth), y(target.nth));
-
-    	if(direction == 0)
-    		return y(source.nth) + y.bandwidth()/2;
-    	else if(direction == 1)
-    		return y(source.nth) + y.bandwidth()/2 + radius;
-    	else if(direction == -1)
-    		return y(source.nth) + y.bandwidth()/2 - radius;
-    }).attr('x2',function(d){
-    	var source = getNodeById(nodes,d.source);
-    	var target = getNodeById(nodes,d.target);
-
-    	var direction = checkLtR(x(source.place), x(target.place));
-
-    	if(direction == 0)
-    		return x(target.place) + x.bandwidth()/2;
-    	else if(direction == 1)
-    		return x(target.place) + x.bandwidth()/2 - radius;
-    	else if(direction == -1)
-    		return x(target.place) + x.bandwidth()/2 + radius;
-    }).attr('y2',function(d){
-    	var source = getNodeById(nodes,d.source);
-    	var target = getNodeById(nodes,d.target);
-
-    	var direction = checkBtT(y(source.nth), y(target.nth));
-
-    	if(direction == 0)
-    		return y(target.nth) + y.bandwidth()/2;
-    	else if(direction == 1)
-    		return y(target.nth) + y.bandwidth()/2 - radius;
-    	else if(direction == -1)
-    		return y(target.nth) + y.bandwidth()/2 + radius;
-    }).attr('stroke','#f4b185')
-    .attr('stroke-width','2px')
-    // .attr("marker-end", "url(#triangle)");
 
     svg.append("svg:defs").append("svg:marker")
     .attr("id", "triangle")
@@ -193,15 +197,19 @@ d3.json("assets/data.json").then(function(data) {
 
 	  	$('[link_from='+d.id+']').each(function(e){
 	  		d3.select(this).attr('x1',xPos).attr('y1',yPos);
+	  		d3.select(this).raise();
 	  	});
 
 	  	$('[link_to='+d.id+']').each(function(e){
 	  		d3.select(this).attr('x2',xPos).attr('y2',yPos);
+	  		d3.select(this).raise();
 	  	});
 	}
 
 	function dragended(d) {
 	  d3.select(this).classed("active", false);
+	  d3.select(this).raise().classed("active", true);
+  	  d3.select(this.parentNode).select('text').raise();
 	}
 
 });
