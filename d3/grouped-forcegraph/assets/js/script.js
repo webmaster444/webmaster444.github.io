@@ -29,8 +29,6 @@ d3.json("assets/data.json").then(function(data) {
  
   function zoomed() {
     svg.attr("transform", d3.event.transform);
-    // gX.call(xAxis.scale(d3.event.transform.rescaleX(x)));
-    // gY.call(yAxis.scale(d3.event.transform.rescaleY(y)));
   }
 
     var nodes = data.nodes;
@@ -92,7 +90,7 @@ d3.json("assets/data.json").then(function(data) {
 
     var node_wrapper = svg.selectAll('g.node_wrapper').data(nodes).enter().append('g').attr('class', (d) => 'node_wrapper node_' + d.id);
 
-    node_wrapper.append('circle').attr('cx',(d)=>x(d.place)+x.bandwidth()/2).attr('cy',(d)=>y(d.nth)+y.bandwidth()/2).attr('r',radius).attr('fill','white')
+    node_wrapper.append('circle').attr('cx',(d)=>x(d.place)+x.bandwidth()/2).attr('cy',(d)=>y(d.nth)+y.bandwidth()/2).attr('r',radius).attr('fill','white').attr('node-id',(d)=>d.id)
     .call(d3.drag()
         .on("start", dragstarted)
         .on("drag", dragged)
@@ -152,7 +150,7 @@ d3.json("assets/data.json").then(function(data) {
     		return y(target.nth) + y.bandwidth()/2 + radius;
     }).attr('stroke','#f4b185')
     .attr('stroke-width','2px')
-    .attr("marker-end", "url(#triangle)");
+    // .attr("marker-end", "url(#triangle)");
 
     svg.append("svg:defs").append("svg:marker")
     .attr("id", "triangle")
@@ -192,6 +190,14 @@ d3.json("assets/data.json").then(function(data) {
 
 	  	d3.select(this).attr("cx", d.x = xPos).attr("cy", d.y = yPos);	  
 	  	d3.select(this.parentNode).select('text').attr('x',d.x = xPos).attr('y',d.y=yPos);
+
+	  	$('[link_from='+d.id+']').each(function(e){
+	  		d3.select(this).attr('x1',xPos).attr('y1',yPos);
+	  	});
+
+	  	$('[link_to='+d.id+']').each(function(e){
+	  		d3.select(this).attr('x2',xPos).attr('y2',yPos);
+	  	});
 	}
 
 	function dragended(d) {
