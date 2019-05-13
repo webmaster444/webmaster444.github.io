@@ -3,8 +3,8 @@ var wrapperWidth = $("#chart_wrapper").width(),
     margin = {
         left: 50,
         right: 50,
-        top: 50,
-        bottom: 20
+        top: 100,
+        bottom: 50
     };
 
 var width = wrapperWidth - margin.left - margin.right;
@@ -44,7 +44,8 @@ d3.csv("assets/bubble2.csv").then(function(data) {
 
     console.log(myColor.domain());
     x.domain(d3.extent(data, function(d) { return parseTime(d.date); }));
-    y.domain([0, d3.max(data.map(function(d){return d[yOption]}))]);
+    y.domain([0, d3.max(data.map(function(d){return parseFloat(d[yOption])}))]);   
+    console.log(d3.max(data.map(function(d){return parseFloat(d[yOption])})));
     radius.domain([0, d3.max(data.map(function(d){return parseFloat(d[rOption])}))]);
 
     // console.log(d3.max(data.map(function(d){return parseFloat(d[rOption])})));
@@ -73,7 +74,7 @@ d3.csv("assets/bubble2.csv").then(function(data) {
             d3.select('.description').html('');
         });
 
-    wrapper.append('text').attr("x",(d)=>x(parseTime(d.date))).attr('y',(d)=>y(d[yOption]) - radius(d[rOption]) - 5).text((d)=>d.name).attr('text-anchor','middle').attr('class','hide');
+    wrapper.append('text').attr("x",(d)=>x(parseTime(d.date))).attr('y',(d)=>y(parseFloat(d[yOption]) + radius(d[rOption]) + 5)).text((d)=>d.name).attr('text-anchor','middle').attr('class','hide');
 
 
 });
