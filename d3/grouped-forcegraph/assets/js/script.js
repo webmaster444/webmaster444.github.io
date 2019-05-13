@@ -89,62 +89,94 @@ d3.json("assets/data.json").then(function(data) {
     y.domain(yDomain);
 
 var link_wrapper = svg.selectAll('g.link_wrapper').data(links).enter().append('g').attr('class',(d)=>'link_wrapper link');
-    link_wrapper.append('line').attr('class','link').attr('link_from',(d)=>d.source).attr('link_to',(d)=>d.target).attr('x1',function(d){
-    	var source = getNodeById(nodes,d.source);
-    	var target = getNodeById(nodes,d.target);
+    link_wrapper.append('path').attr('class','link')
+    .attr('link_from',(d)=>d.source)
+    .attr('link_to',(d)=>d.target)
+    .attr('d',function(d){
+        var source = getNodeById(nodes,d.source);
+        var target = getNodeById(nodes,d.target);
 
-    	var direction = checkLtR(x(source.place), x(target.place));
+        var path = "M "+(x(source.place)+x.bandwidth()/2) + ' ' + (y(source.nth)+y.bandwidth()/2) + ' L '+ (x(source.place)+x.bandwidth()/2 + x(target.place)+x.bandwidth()/2) / 2 + ' '+(y(source.nth)+y.bandwidth()/2 + y(target.nth)+y.bandwidth()/2) / 2 + ' L ' + (x(target.place) + x.bandwidth()/2) + ' ' + (y(target.nth)+y.bandwidth()/2);
 
-    	// if(direction == 0)
-    	// 	return x(source.place) + x.bandwidth()/2;
-    	// else if(direction == 1)
-    	// 	return x(source.place) + x.bandwidth()/2 + radius;
-    	// else if(direction == -1)
-    	// 	return x(source.place) + x.bandwidth()/2 - radius;
-    	return x(source.place) + x.bandwidth()/2;
-    }).attr('y1',function(d){
-    	var source = getNodeById(nodes,d.source);
-    	var target = getNodeById(nodes,d.target);
+        return path;        
+    })    
+    .attr('startX',function(d){
+        var source = getNodeById(nodes,d.source);
+        var target = getNodeById(nodes,d.target);
+        return (x(source.place)+x.bandwidth()/2);
+    })
+    .attr('startY',function(d){
+        var source = getNodeById(nodes,d.source);
+        var target = getNodeById(nodes,d.target);        
+        return (y(source.nth)+y.bandwidth()/2);
+    })
+    .attr('endX',function(d){
+        var source = getNodeById(nodes,d.source);
+        var target = getNodeById(nodes,d.target);        
+        return x(target.place) + x.bandwidth()/2;
+    })
+    .attr('endY',function(d){
+        var source = getNodeById(nodes,d.source);
+        var target = getNodeById(nodes,d.target);        
+        return (y(target.nth) + y.bandwidth()/2);
+    })
+    // .attr('x1',function(d){
+    // 	var source = getNodeById(nodes,d.source);
+    // 	var target = getNodeById(nodes,d.target);
 
-    	var direction = checkBtT(y(source.nth), y(target.nth));
+    // 	var direction = checkLtR(x(source.place), x(target.place));
 
-    	// if(direction == 0)
-    	// 	return y(source.nth) + y.bandwidth()/2;
-    	// else if(direction == 1)
-    	// 	return y(source.nth) + y.bandwidth()/2 + radius;
-    	// else if(direction == -1)
-    	// 	return y(source.nth) + y.bandwidth()/2 - radius;
+    // 	// if(direction == 0)
+    // 	// 	return x(source.place) + x.bandwidth()/2;
+    // 	// else if(direction == 1)
+    // 	// 	return x(source.place) + x.bandwidth()/2 + radius;
+    // 	// else if(direction == -1)
+    // 	// 	return x(source.place) + x.bandwidth()/2 - radius;
+    // 	return x(source.place) + x.bandwidth()/2;
+    // }).attr('y1',function(d){
+    // 	var source = getNodeById(nodes,d.source);
+    // 	var target = getNodeById(nodes,d.target);
 
-    	return y(source.nth) + y.bandwidth()/2;
-    }).attr('x2',function(d){
-    	var source = getNodeById(nodes,d.source);
-    	var target = getNodeById(nodes,d.target);
+    // 	var direction = checkBtT(y(source.nth), y(target.nth));
 
-    	var direction = checkLtR(x(source.place), x(target.place));
+    // 	// if(direction == 0)
+    // 	// 	return y(source.nth) + y.bandwidth()/2;
+    // 	// else if(direction == 1)
+    // 	// 	return y(source.nth) + y.bandwidth()/2 + radius;
+    // 	// else if(direction == -1)
+    // 	// 	return y(source.nth) + y.bandwidth()/2 - radius;
 
-    	// if(direction == 0)
-    	// 	return x(target.place) + x.bandwidth()/2;
-    	// else if(direction == 1)
-    	// 	return x(target.place) + x.bandwidth()/2 - radius;
-    	// else if(direction == -1)
-    	// 	return x(target.place) + x.bandwidth()/2 + radius;
-    	return x(target.place) + x.bandwidth()/2;
-    }).attr('y2',function(d){
-    	var source = getNodeById(nodes,d.source);
-    	var target = getNodeById(nodes,d.target);
+    // 	return y(source.nth) + y.bandwidth()/2;
+    // }).attr('x2',function(d){
+    // 	var source = getNodeById(nodes,d.source);
+    // 	var target = getNodeById(nodes,d.target);
 
-    	var direction = checkBtT(y(source.nth), y(target.nth));
+    // 	var direction = checkLtR(x(source.place), x(target.place));
 
-    	// if(direction == 0)
-    	// 	return y(target.nth) + y.bandwidth()/2;
-    	// else if(direction == 1)
-    	// 	return y(target.nth) + y.bandwidth()/2 - radius;
-    	// else if(direction == -1)
-    	// 	return y(target.nth) + y.bandwidth()/2 + radius;
-    	return y(target.nth) + y.bandwidth()/2;
-    }).attr('stroke','#f4b185')
+    // 	// if(direction == 0)
+    // 	// 	return x(target.place) + x.bandwidth()/2;
+    // 	// else if(direction == 1)
+    // 	// 	return x(target.place) + x.bandwidth()/2 - radius;
+    // 	// else if(direction == -1)
+    // 	// 	return x(target.place) + x.bandwidth()/2 + radius;
+    // 	return x(target.place) + x.bandwidth()/2;
+    // }).attr('y2',function(d){
+    // 	var source = getNodeById(nodes,d.source);
+    // 	var target = getNodeById(nodes,d.target);
+
+    // 	var direction = checkBtT(y(source.nth), y(target.nth));
+
+    // 	// if(direction == 0)
+    // 	// 	return y(target.nth) + y.bandwidth()/2;
+    // 	// else if(direction == 1)
+    // 	// 	return y(target.nth) + y.bandwidth()/2 - radius;
+    // 	// else if(direction == -1)
+    // 	// 	return y(target.nth) + y.bandwidth()/2 + radius;
+    // 	return y(target.nth) + y.bandwidth()/2;
+    // })
+    .attr('stroke','#f4b185')
     .attr('stroke-width','2px')
-    // .attr("marker-end", "url(#triangle)");
+    .attr("marker-mid", "url(#triangle)");
 
     var node_wrapper = svg.selectAll('g.node_wrapper').data(nodes).enter().append('g').attr('class', (d) => 'node_wrapper node_' + d.id);
 
@@ -196,13 +228,25 @@ var link_wrapper = svg.selectAll('g.link_wrapper').data(links).enter().append('g
 	  	d3.select(this.parentNode).select('text').attr('x',d.x = xPos).attr('y',d.y=yPos);
 
 	  	$('[link_from='+d.id+']').each(function(e){
-	  		d3.select(this).attr('x1',xPos).attr('y1',yPos);
-	  		d3.select(this).raise();
+	  		// d3.select(this).attr('x1',xPos).attr('y1',yPos);
+            d3.select(this).attr('startX',xPos);
+            d3.select(this).attr("startY",yPos);
+
+            var endX = d3.select(this).attr('endX');
+            var endY = d3.select(this).attr('endY');
+            var path = "M "+xPos + ' ' + yPos + ' L '+ (Number(xPos) + Number(endX)) / 2 + ' '+(Number(yPos) + Number(endY)) / 2 + ' L ' + endX + ' ' + endY;
+            d3.select(this).attr('d',path);	  	
 	  	});
 
 	  	$('[link_to='+d.id+']').each(function(e){
-	  		d3.select(this).attr('x2',xPos).attr('y2',yPos);
-	  		d3.select(this).raise();
+	  		// d3.select(this).attr('x2',xPos).attr('y2',yPos);
+            d3.select(this).attr('endX',xPos);
+            d3.select(this).attr("endY",yPos);
+            
+            var startX = d3.select(this).attr('startX');
+            var startY = d3.select(this).attr('startY');
+            var path = "M "+startX + ' ' + startY + ' L '+ (Number(xPos) + Number(startX)) / 2 + ' '+(Number(yPos) + Number(startY)) / 2 + ' L ' + xPos + ' ' + yPos;
+            d3.select(this).attr('d',path);	  		
 	  	});
 	}
 
