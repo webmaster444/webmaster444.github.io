@@ -10,7 +10,10 @@ var wrapperWidth = $("#chart_wrapper").width(),
 var width = wrapperWidth - margin.left - margin.right;
 var radius = 30; // Node circle radius;
 
-var myColor = d3.scaleSequential().interpolator(d3.interpolateViridis);
+var colors = ['#F2F2F2', '#D3D3D3', '#BDBDBD', '#E4E4E4', '#C5C5C5C5'];
+
+// Do not include a domain
+var myColor = d3.scaleOrdinal().range(colors);
 
 var svg = d3.select("#chart_wrapper").append('svg').attr("width", width + margin.left + margin.right).attr('height', height + margin.top + margin.bottom).append('g').attr("transform", "translate(" + margin.left + ',' + margin.top + ')');
 
@@ -54,7 +57,7 @@ d3.json("assets/data.json").then(function(data) {
         return "translate(" + (x(d)) + ',0)';
     });
 
-    place_wrapper.append('rect').attr('x', 0).attr("y", 0).attr("width", x.bandwidth()).attr('height', height).attr("fill", (d) => myColor(d));
+    place_wrapper.append('rect').attr('x', 0).attr("y", 0).attr("width", x.bandwidth()).attr('height', height).attr("fill", (d)=>myColor(d)).attr('stroke','white');
     place_wrapper.append('rect').attr('x', 0).attr("y", 0).attr("width", x.bandwidth()).attr('height', 50).attr("fill", 'black').attr('fill-opacity', '0.3');
     place_wrapper.append('text').attr('x', x.bandwidth() / 2).attr("y", 30).text((d) => '"place":' + d).attr('text-anchor', 'middle').attr('class', 'place_title').attr('fill', 'white');
 
