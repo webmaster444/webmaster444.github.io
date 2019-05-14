@@ -2,7 +2,7 @@ var wrapperWidth = $("#chart_wrapper").width(),
     height = 500,
     margin = {
         left: 50,
-        right: 250,
+        right: 300,
         top: 100,
         bottom: 50
     };
@@ -84,9 +84,11 @@ d3.csv("assets/bubble2.csv").then(function(data) {
 
     wrapper.append('text').attr('class','node_text hide').attr("x",(d)=>x(parseTime(d.date))).attr('y',(d)=>y(parseFloat(d[yOption])) - radius(d[rOption]) - 5).text((d)=>d.name).attr('text-anchor','middle');
 
-    var legend_wrapper = svg.append('g').attr('class','legend_wrapper').attr("transform","translate("+(wrapperWidth - 250) + ',0)');
+    var legend_wrapper = svg.append('g').attr('class','legend_wrapper').attr("transform","translate("+(wrapperWidth - 300) + ',0)');
+    legend_wrapper.append('text').attr('x',0).attr('y', 20).text('X axis : Time');
+    legend_wrapper.append('text').attr('class','y_axis_legend').attr('x',0).attr('y', 40).text('Y axis : ' + changeText(yOption));
     var legend = legend_wrapper.selectAll('.legend').data(industries).enter().append('g').attr('class','legend').attr('transform',function(d,i){
-        return "translate(0," + (i * 30) + ")";
+        return "translate(0," + ((i+2) * 30) + ")";
     });
     legend.append('circle').attr('cx', 0).attr('cy',10).attr('r', 10).attr("fill",(d)=>myColor(d));
     legend.append('text').attr('x', 15).attr('y',15).text((d)=>d);
@@ -135,6 +137,8 @@ function updateChart(yOption, rOption){
     svg.selectAll('.node_text').transition().duration(500).attr('y',(d)=>y(parseFloat(d[yOption])) - radius(parseFloat(d[rOption])) - 5);
 
     svg.select('.y_label_text').text(changeText(yOption));
+
+    svg.select('.y_axis_legend').text('Y axis : ' + changeText(yOption));
 }
 
 
