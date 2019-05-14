@@ -55,15 +55,21 @@
         button{
             margin-right: 30px;
         }
+
+        .y.axis path.domain{
+            display: none;
+        }
+        .line_path{
+            fill: none;
+            stroke-width:2px;
+        }
     </style>    
 </head>
 
 <body>
-    <h2>Bubble</h2>    
-    <button id="swap_btn">Change</button>
+    <h2>Alpha / Dispersion</h2>    
     <div id="chart_wrapper">    
-        <div class="description">    
-        </div>
+                
     </div>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://d3js.org/d3.v5.min.js"></script>

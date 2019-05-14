@@ -1,9 +1,9 @@
 var wrapperWidth = $("#chart_wrapper").width(),
-    height = 500,
+    height = 700,
     margin = {
-        left: 50,
-        right: 250,
-        top: 100,
+        left: 150,
+        right: 550,
+        top: 50,
         bottom: 50
     };
 
@@ -17,37 +17,34 @@ var svg = d3.select("#chart_wrapper").append('svg').attr("width", width + margin
 var x = d3.scaleTime().rangeRound([0, width]);
 var x_axis = d3.axisBottom(x);
 
-var parseTime = d3.timeParse("%d-%b-%Y");
-var xFormat = "%d-%b-%Y";
+var parseTime = d3.timeParse("%M-%d-%Y");
+var xFormat = "%Y";
 
-var y = d3.scaleLinear().rangeRound([height,0]);
-var y_axis = d3.axisLeft(y);
+var y = d3.scaleBand().rangeRound([height * 3 / 4,0]);
 
-var yOption = 'revenue';
-var rOption = 'finance';
 var jsonData;
-d3.csv("assets/bubble2.csv").then(function(data) {
-    var industries = [];
+var yLine = d3.scaleLinear().rangeRound([height / 4,0]);
 
-    data.forEach(function(d){
-        if(!industries.includes(d['Industry Focus'])){
-            industries.push(d['Industry Focus']);
-        }
-        d['group'] = d['Industry Focus'];
-        d['finance'] = parseFloat(d['Last Financing Size (in mm)']);
-        d['revenue'] = parseFloat(d['Revenue (in mm)']);
-        d['name'] = d['Company Name'];
-        d['date'] = d['Year Founded'];
-        d['description'] = d['Description'];
+var industries = ["fund","idxa","idxb"];
+var categoreis = ["fund","idxa","idxb", "dispersion", 'correlation'];
+d3.json("assets/data.json").then(function(data) {
+    data.forEach(function(d){      
+        d['startDate'] = Date.parse(d['date']);
+        var t = new Date(Date.parse(d['date']));
+        t.setMonth(t.getMonth()+1); 
+        d['endDate'] = Date.parse(t);
     })
 
+    data.sort((a, b) => (a.startDate > b.startDate) ? 1 : -1);
+
+    console.log(data);
     jsonData = data;
 
-    myColor.domain(industries);
+    myColor.domain(categoreis);
     
     x.domain(d3.extent(data, function(d) { return parseTime(d.date); }));
-    y.domain([0, d3.max(data.map(function(d){return parseFloat(d[yOption])}))]);       
-    radius.domain([0, d3.max(data.map(function(d){return parseFloat(d[rOption])}))]);
+    y.domain(industries);       
+    // radius.domain([0, d3.max(data.map(function(d){return parseFloat(d[rOption])}))]);
 
     // console.log(d3.max(data.map(function(d){return parseFloat(d[rOption])})));
     // Add the X Axis
@@ -58,90 +55,45 @@ d3.csv("assets/bubble2.csv").then(function(data) {
     // Add the Y Axis
     svg.append("g")
         .attr('class','y axis')
-        .call(d3.axisLeft(y));
-
-    svg
-        .append("text").attr('class','y_label_text')
-        .attr("transform", "translate(-35," +  (height+margin.bottom)/2 + ") rotate(-90)")
-        .text(changeText(yOption));
-
-    var wrapper = svg.selectAll('.circle_wrapper').data(data).enter().append('g').attr('class','circle_wrapper');
-
-    wrapper.append('circle')
-        .attr('class','node_circle')
-        .attr('cx',(d)=>x(parseTime(d.date)))
-        .attr('cy',(d)=>y(d[yOption]))
-        .attr('r',(d)=>radius(d[rOption]))
-        .attr('fill',(d)=>myColor(d['group']))
-        .on('mouseover',function(d) {
-            d3.select(this.parentNode).select('text').classed('hide',false);
-            d3.select('.description').html(d.description);
-        })
-        .on('mouseout',function () {
-            d3.select(this.parentNode).select('text').classed('hide',true);
-            d3.select('.description').html('');
-        });
-
-    wrapper.append('text').attr('class','node_text hide').attr("x",(d)=>x(parseTime(d.date))).attr('y',(d)=>y(parseFloat(d[yOption])) - radius(d[rOption]) - 5).text((d)=>d.name).attr('text-anchor','middle');
-
-    var legend_wrapper = svg.append('g').attr('class','legend_wrapper').attr("transform","translate("+(wrapperWidth - 250) + ',0)');
-    var legend = legend_wrapper.selectAll('.legend').data(industries).enter().append('g').attr('class','legend').attr('transform',function(d,i){
-        return "translate(0," + (i * 30) + ")";
-    });
-    legend.append('circle').attr('cx', 0).attr('cy',10).attr('r', 10).attr("fill",(d)=>myColor(d));
-    legend.append('text').attr('x', 15).attr('y',15).text((d)=>d);
-});
-
-$("#swap_btn").click(function(){
-    if(yOption == "revenue"){
-        yOption = 'finance';
-    }else{
-        yOption = 'revenue';
-    }
-
-    if(rOption == 'finance'){
-        rOption = 'revenue';
-    }else{
-        rOption = 'finance';
-    }
-
-    // if(yOption == 'finance'){
-    //     $('.yoption_span').html("Last Financing Size (in mm)");        
-    // }else{
-    //     $('.yoption_span').html("Revenue (in mm)");        
-    // }
+        .call(d3.axisLeft(y).tickSize(-width - 30).tickSizeOuter(0).tickFormat((d)=>changeText(d)));
     
-    // if(rOption == 'finance'){
-    //     $('.roption_span').html("Last Financing Size (in mm)");        
-    // }else{
-    //     $('.roption_span').html("Revenue (in mm)");        
-    // }
+    industries.forEach(function(industry){
+        var y1 = d3.scaleLinear().rangeRound([y.bandwidth(),0]);
+        var iMax = d3.max(data,(d)=>Math.abs(d[industry]));
+        y1.domain([-iMax, iMax]);
 
-    updateChart(yOption, rOption);
+        var g_wrapper = svg.append('g').attr('class','g_'+industry).attr('transform','translate(0,'+y(industry)+')');
+
+        g_wrapper.selectAll('.bar').data(data).enter().append('rect').attr('class','bar').attr('x',(d)=>x(d.startDate)).attr("y",(d)=>y1(Math.max(0, d[industry]))).attr("width",(d)=>x(d.endDate) - x(d.startDate)).attr("height", (d)=>Math.abs(y1(d[industry]) - y1(0))).attr('fill',(d)=>myColor(industry));
+    });
+
+    yLine.domain([d3.min([d3.min(data.map(function(o) { return o.dispersion; })),d3.min(data.map(function(o) { return o.correlation; }))]), d3.max([Math.max.apply(Math, data.map(function(o) { return o.dispersion; })),Math.max.apply(Math, data.map(function(o) { return o.correlation; }))])]);
+    
+    var dispersionLine = d3.line()
+    .curve(d3.curveBasis)
+    .x(function(d) { return x(d.startDate); })
+    .y(function(d) { return yLine(d.dispersion); });
+
+    var correlationLine = d3.line()
+    .curve(d3.curveBasis)
+    .x(function(d) { return x(d.startDate); })
+    .y(function(d) { return yLine(d.correlation); });
+
+    var line_wrapper = svg.append('g').attr('class','line_wrapper').attr("transform","translate(0,"+height * 3 / 4 +")");
+    line_wrapper.append('path').attr('d',dispersionLine(data)).attr('stroke', myColor('dispersion')).attr('class','line_path');
+    line_wrapper.append('path').attr('d',correlationLine(data)).attr('stroke', myColor('correlation')).attr('class','line_path');
 });
-
-function updateChart(yOption, rOption){
-    y.domain([0, d3.max(jsonData.map(function(d){return parseFloat(d[yOption])}))]);
-
-    svg.select(".y.axis")
-        .transition()
-        .duration(500)
-        .call(y_axis);
-
-    radius.domain([0, d3.max(jsonData.map(function(d){return parseFloat(d[rOption])}))]);
-
-
-    svg.selectAll('.node_circle').transition().duration(500).attr('r',(d)=>radius(d[rOption])).attr('cy',(d)=>y(parseFloat(d[yOption])));
-    svg.selectAll('.node_text').transition().duration(500).attr('y',(d)=>y(parseFloat(d[yOption])) - radius(parseFloat(d[rOption])) - 5);
-
-    svg.select('.y_label_text').text(changeText(yOption));
-}
-
 
 function changeText(text){
-    if(text == "revenue"){
-        return "Revenue (in mm)";       
-    }else if(text == "finance"){
-        return "Last Financing Size (in mm)";
+    if(text == "idxa"){
+        return "IDX A Alpha";       
+    }else if(text == "idxb"){
+        return "IDX B Alpha";
+    }else if(text == "fund"){
+        return "Fund Alpha";
+    }else if(text == "correlation"){
+        return "Correlation";
+    }else if(text == "dispersion"){
+        return "Dispersion";
     }
 }
