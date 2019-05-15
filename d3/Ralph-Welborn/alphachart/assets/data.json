@@ -1,722 +1,722 @@
 [
   {
-    "date": "07-01-2006",
-    "idxa": 39,
-    "idxb": -5,
-    "fund": 339.1128,
-    "correlation": 49,
-    "dispersion": -85.9952
-  },
-  {
-    "date": "05-01-2010",
-    "idxa": 50,
-    "idxb": 41,
-    "fund": -16.0753,
-    "correlation": 3,
-    "dispersion": -55.3913
-  },
-  {
-    "date": "11-01-2008",
-    "idxa": -8,
-    "idxb": 32,
-    "fund": 410.8864,
-    "correlation": 33,
-    "dispersion": -35.8579
-  },
-  {
-    "date": "09-01-2015",
-    "idxa": -37,
-    "idxb": 21,
-    "fund": 557.6725,
-    "correlation": -27,
-    "dispersion": -86.1301
-  },
-  {
-    "date": "07-01-2000",
-    "idxa": -37,
-    "idxb": 39,
-    "fund": 389.3558,
-    "correlation": 27,
-    "dispersion": -45.6635
-  },
-  {
-    "date": "02-01-2013",
-    "idxa": 25,
-    "idxb": 34,
-    "fund": 858.6261,
-    "correlation": -28,
-    "dispersion": -25.7539
-  },
-  {
-    "date": "08-01-2009",
-    "idxa": -7,
-    "idxb": -45,
-    "fund": 668.5889,
-    "correlation": 27,
-    "dispersion": -21.1037
-  },
-  {
-    "date": "05-01-2014",
-    "idxa": -10,
-    "idxb": 47,
-    "fund": -84.3311,
-    "correlation": 17,
-    "dispersion": -45.5088
-  },
-  {
-    "date": "11-01-2017",
-    "idxa": 15,
-    "idxb": -17,
-    "fund": 279.8634,
-    "correlation": -35,
-    "dispersion": 72.2805
-  },
-  {
-    "date": "11-01-2008",
-    "idxa": 31,
-    "idxb": -45,
-    "fund": 922.0018,
-    "correlation": 21,
-    "dispersion": 98.424
-  },
-  {
-    "date": "07-01-2009",
-    "idxa": 39,
-    "idxb": -21,
-    "fund": -386.3418,
-    "correlation": 18,
-    "dispersion": 26.6004
-  },
-  {
-    "date": "10-01-2011",
+    "date": "11/01/2005",
     "idxa": 41,
-    "idxb": -12,
-    "fund": 436.1587,
-    "correlation": 10,
-    "dispersion": 90.4308
-  },
-  {
-    "date": "06-01-2014",
-    "idxa": -43,
-    "idxb": 37,
-    "fund": 590.0076,
-    "correlation": 36,
-    "dispersion": -76.759
-  },
-  {
-    "date": "12-01-2016",
-    "idxa": -27,
-    "idxb": -16,
-    "fund": 981.789,
-    "correlation": 9,
-    "dispersion": -14.3535
-  },
-  {
-    "date": "09-01-1999",
-    "idxa": 36,
-    "idxb": 45,
-    "fund": -139.7529,
-    "correlation": -38,
-    "dispersion": -17.5781
-  },
-  {
-    "date": "05-01-2014",
-    "idxa": 25,
-    "idxb": 3,
-    "fund": 201.1495,
-    "correlation": -5,
-    "dispersion": -83.7626
-  },
-  {
-    "date": "01-01-2001",
-    "idxa": 47,
-    "idxb": 41,
-    "fund": -427.1044,
-    "correlation": -43,
-    "dispersion": -54.6158
-  },
-  {
-    "date": "04-01-2015",
-    "idxa": -9,
-    "idxb": -47,
-    "fund": 753.248,
-    "correlation": 0,
-    "dispersion": -91.8873
-  },
-  {
-    "date": "08-01-2012",
-    "idxa": 43,
-    "idxb": -13,
-    "fund": 704.6936,
-    "correlation": 42,
-    "dispersion": -46.8778
-  },
-  {
-    "date": "01-01-2008",
-    "idxa": 30,
-    "idxb": 47,
-    "fund": -264.881,
-    "correlation": -44,
-    "dispersion": 95.0583
-  },
-  {
-    "date": "11-01-2004",
-    "idxa": -40,
-    "idxb": 28,
-    "fund": 21.988,
-    "correlation": -9,
-    "dispersion": 0.2657
-  },
-  {
-    "date": "11-01-2016",
-    "idxa": -6,
-    "idxb": -44,
-    "fund": 35.5431,
-    "correlation": 40,
-    "dispersion": -5.4466
-  },
-  {
-    "date": "01-01-2015",
-    "idxa": -35,
-    "idxb": 46,
-    "fund": 504.232,
-    "correlation": -39,
-    "dispersion": -14.5317
-  },
-  {
-    "date": "09-01-2001",
-    "idxa": -18,
-    "idxb": 34,
-    "fund": 892.8979,
-    "correlation": 22,
-    "dispersion": 50.7637
-  },
-  {
-    "date": "11-01-2010",
-    "idxa": 38,
-    "idxb": -4,
-    "fund": 968.1612,
-    "correlation": 18,
-    "dispersion": -45.0903
-  },
-  {
-    "date": "08-01-2011",
-    "idxa": -11,
-    "idxb": 26,
-    "fund": 925.8919,
-    "correlation": -1,
-    "dispersion": -80.1655
-  },
-  {
-    "date": "11-01-2010",
-    "idxa": 9,
-    "idxb": 34,
-    "fund": 763.0742,
-    "correlation": -37,
-    "dispersion": -82.7556
-  },
-  {
-    "date": "04-01-2009",
-    "idxa": -16,
-    "idxb": -38,
-    "fund": 64.5337,
-    "correlation": 26,
-    "dispersion": -61.103
-  },
-  {
-    "date": "01-01-2003",
-    "idxa": -19,
-    "idxb": -13,
-    "fund": -368.0588,
-    "correlation": 16,
-    "dispersion": 93.589
-  },
-  {
-    "date": "05-01-2007",
-    "idxa": -25,
-    "idxb": -33,
-    "fund": 755.5213,
-    "correlation": -44,
-    "dispersion": -38.9392
-  },
-  {
-    "date": "02-01-2017",
-    "idxa": 32,
-    "idxb": 43,
-    "fund": 31.8351,
-    "correlation": -17,
-    "dispersion": -31.8552
-  },
-  {
-    "date": "06-01-2004",
-    "idxa": -21,
-    "idxb": 10,
-    "fund": -139.1269,
-    "correlation": -25,
-    "dispersion": -13.2436
-  },
-  {
-    "date": "03-01-2017",
-    "idxa": 50,
-    "idxb": 38,
-    "fund": 673.7863,
-    "correlation": -14,
-    "dispersion": 76.106
-  },
-  {
-    "date": "07-01-2015",
-    "idxa": 12,
-    "idxb": 37,
-    "fund": 457.4061,
-    "correlation": 45,
-    "dispersion": 12.2708
-  },
-  {
-    "date": "04-01-2015",
-    "idxa": 25,
-    "idxb": -25,
-    "fund": -347.6771,
-    "correlation": 45,
-    "dispersion": -50.0488
-  },
-  {
-    "date": "09-01-2005",
-    "idxa": -20,
-    "idxb": -44,
-    "fund": 103.5178,
-    "correlation": 9,
-    "dispersion": -28.0407
-  },
-  {
-    "date": "04-01-2009",
-    "idxa": 26,
-    "idxb": -26,
-    "fund": -413.9864,
-    "correlation": 13,
-    "dispersion": 36.1411
-  },
-  {
-    "date": "01-01-2018",
-    "idxa": 16,
-    "idxb": -37,
-    "fund": 369.5604,
-    "correlation": -39,
-    "dispersion": 35.2316
-  },
-  {
-    "date": "04-01-2002",
-    "idxa": 26,
-    "idxb": -14,
-    "fund": 565.1698,
-    "correlation": 30,
-    "dispersion": 37.8057
-  },
-  {
-    "date": "06-01-2015",
-    "idxa": -48,
-    "idxb": -30,
-    "fund": -144.1083,
-    "correlation": -7,
-    "dispersion": 20.2857
-  },
-  {
-    "date": "02-01-2008",
-    "idxa": 19,
-    "idxb": -23,
-    "fund": -133.8995,
-    "correlation": -50,
-    "dispersion": 57.8884
-  },
-  {
-    "date": "12-01-2000",
-    "idxa": 40,
-    "idxb": 6,
-    "fund": 248.5649,
-    "correlation": -39,
-    "dispersion": 73.8539
-  },
-  {
-    "date": "03-01-2018",
-    "idxa": 13,
-    "idxb": -14,
-    "fund": 72.491,
-    "correlation": 46,
-    "dispersion": -54.767
-  },
-  {
-    "date": "08-01-2001",
-    "idxa": -24,
-    "idxb": -13,
-    "fund": -264.4121,
-    "correlation": 30,
-    "dispersion": -12.4895
-  },
-  {
-    "date": "05-01-2011",
-    "idxa": -28,
-    "idxb": -24,
-    "fund": -392.5636,
-    "correlation": 29,
-    "dispersion": -26.93
-  },
-  {
-    "date": "11-01-2010",
-    "idxa": 40,
-    "idxb": -29,
-    "fund": 688.7329,
-    "correlation": 6,
-    "dispersion": -45.2517
-  },
-  {
-    "date": "06-01-2016",
-    "idxa": 10,
-    "idxb": -49,
-    "fund": 930.7408,
-    "correlation": -23,
-    "dispersion": -99.6415
-  },
-  {
-    "date": "04-01-2018",
-    "idxa": -41,
-    "idxb": -36,
-    "fund": -33.2044,
-    "correlation": -27,
-    "dispersion": -10.765
-  },
-  {
-    "date": "12-01-2004",
-    "idxa": -45,
-    "idxb": 29,
-    "fund": -414.0029,
-    "correlation": 37,
-    "dispersion": 74.6951
-  },
-  {
-    "date": "01-01-2006",
-    "idxa": 49,
-    "idxb": 20,
-    "fund": 67.4485,
-    "correlation": -48,
-    "dispersion": 0.202
-  },
-  {
-    "date": "04-01-2015",
-    "idxa": -41,
-    "idxb": 37,
-    "fund": 434.2242,
-    "correlation": -50,
-    "dispersion": -48.921
-  },
-  {
-    "date": "11-01-2012",
-    "idxa": -25,
-    "idxb": -17,
-    "fund": 268.3813,
-    "correlation": 24,
-    "dispersion": 84.6939
-  },
-  {
-    "date": "04-01-2007",
-    "idxa": -10,
-    "idxb": -4,
-    "fund": -105.1963,
-    "correlation": -42,
-    "dispersion": -83.1123
-  },
-  {
-    "date": "06-01-2017",
-    "idxa": -39,
-    "idxb": -48,
-    "fund": -166.2806,
-    "correlation": -29,
-    "dispersion": 82.4851
-  },
-  {
-    "date": "12-01-2003",
-    "idxa": -45,
-    "idxb": 17,
-    "fund": 289.6697,
-    "correlation": -8,
-    "dispersion": 4.7974
-  },
-  {
-    "date": "03-01-2002",
-    "idxa": -9,
-    "idxb": -26,
-    "fund": 527.9985,
-    "correlation": -37,
-    "dispersion": -97.7555
-  },
-  {
-    "date": "06-01-2011",
-    "idxa": -42,
-    "idxb": 20,
-    "fund": 2.4986,
-    "correlation": -45,
-    "dispersion": 73.3243
-  },
-  {
-    "date": "09-01-2010",
-    "idxa": -8,
-    "idxb": -47,
-    "fund": 10.0696,
-    "correlation": -26,
-    "dispersion": -6.111
-  },
-  {
-    "date": "12-01-2015",
-    "idxa": 38,
-    "idxb": -45,
-    "fund": 20.3767,
-    "correlation": 25,
-    "dispersion": 80.1802
-  },
-  {
-    "date": "06-01-2009",
-    "idxa": 19,
-    "idxb": -7,
-    "fund": -15.9552,
-    "correlation": -10,
-    "dispersion": -88.5116
-  },
-  {
-    "date": "09-01-2003",
-    "idxa": 3,
-    "idxb": 37,
-    "fund": -102.4187,
-    "correlation": -31,
-    "dispersion": -43.7077
-  },
-  {
-    "date": "11-01-2009",
-    "idxa": -31,
-    "idxb": -21,
-    "fund": 35.5157,
-    "correlation": 32,
-    "dispersion": 97.0291
-  },
-  {
-    "date": "10-01-2013",
-    "idxa": 29,
-    "idxb": -23,
-    "fund": -395.2795,
-    "correlation": -1,
-    "dispersion": 36.1055
-  },
-  {
-    "date": "06-01-2007",
-    "idxa": 20,
-    "idxb": -42,
-    "fund": -172.121,
-    "correlation": 12,
-    "dispersion": -29.7191
-  },
-  {
-    "date": "12-01-2000",
-    "idxa": 45,
-    "idxb": -50,
-    "fund": 594.495,
-    "correlation": -40,
-    "dispersion": 97.0252
-  },
-  {
-    "date": "02-01-2001",
-    "idxa": -27,
-    "idxb": 30,
-    "fund": 128.7657,
-    "correlation": -14,
-    "dispersion": -47.4761
-  },
-  {
-    "date": "08-01-2017",
-    "idxa": -34,
-    "idxb": -19,
-    "fund": -153.9292,
-    "correlation": 47,
-    "dispersion": 46.8508
-  },
-  {
-    "date": "05-01-2014",
-    "idxa": 49,
-    "idxb": 34,
-    "fund": 603.9682,
-    "correlation": -26,
-    "dispersion": 85.079
-  },
-  {
-    "date": "04-01-2003",
-    "idxa": 30,
-    "idxb": 14,
-    "fund": 725.1108,
-    "correlation": -46,
-    "dispersion": -32.3663
-  },
-  {
-    "date": "06-01-2018",
-    "idxa": 33,
-    "idxb": -35,
-    "fund": 799.1502,
-    "correlation": 9,
-    "dispersion": 46.218
-  },
-  {
-    "date": "03-01-2007",
-    "idxa": -20,
-    "idxb": 18,
-    "fund": 275.9159,
-    "correlation": 20,
-    "dispersion": 70.3927
-  },
-  {
-    "date": "04-01-2002",
-    "idxa": -26,
-    "idxb": 32,
-    "fund": 646.5609,
-    "correlation": 0,
-    "dispersion": 97.1887
-  },
-  {
-    "date": "05-01-2000",
-    "idxa": 1,
-    "idxb": 34,
-    "fund": 117.1797,
-    "correlation": -23,
-    "dispersion": -48.6499
-  },
-  {
-    "date": "06-01-2007",
-    "idxa": -30,
     "idxb": 36,
-    "fund": 633.3267,
-    "correlation": 44,
-    "dispersion": 33.439
+    "fund": 560.9999,
+    "correlation": -31,
+    "dispersion": -30.5135
   },
   {
-    "date": "11-01-2016",
-    "idxa": 39,
-    "idxb": -10,
-    "fund": -293.4729,
-    "correlation": 2,
-    "dispersion": -51.3069
-  },
-  {
-    "date": "12-01-2010",
-    "idxa": -32,
+    "date": "11/01/2016",
+    "idxa": -6,
     "idxb": 19,
-    "fund": -443.3281,
-    "correlation": -6,
-    "dispersion": -53.6329
+    "fund": 49.1364,
+    "correlation": 32,
+    "dispersion": 93.9024
   },
   {
-    "date": "11-01-2010",
-    "idxa": -5,
-    "idxb": 7,
-    "fund": -340.1298,
-    "correlation": 31,
-    "dispersion": -46.7614
+    "date": "01/01/2014",
+    "idxa": -50,
+    "idxb": -37,
+    "fund": 675.7648,
+    "correlation": 24,
+    "dispersion": -33.7923
   },
   {
-    "date": "03-01-2009",
-    "idxa": 18,
+    "date": "08/01/2005",
+    "idxa": 46,
+    "idxb": 19,
+    "fund": 149.6336,
+    "correlation": 29,
+    "dispersion": -70.8683
+  },
+  {
+    "date": "11/01/2006",
+    "idxa": -30,
+    "idxb": 48,
+    "fund": 185.6854,
+    "correlation": 33,
+    "dispersion": 83.323
+  },
+  {
+    "date": "03/01/2010",
+    "idxa": 41,
+    "idxb": -6,
+    "fund": -91.1949,
+    "correlation": 7,
+    "dispersion": 23.6253
+  },
+  {
+    "date": "08/01/2005",
+    "idxa": 36,
+    "idxb": 24,
+    "fund": -21.2552,
+    "correlation": -42,
+    "dispersion": -95.4172
+  },
+  {
+    "date": "07/01/2007",
+    "idxa": 46,
+    "idxb": 12,
+    "fund": -161.2484,
+    "correlation": 1,
+    "dispersion": 73.9945
+  },
+  {
+    "date": "08/01/2006",
+    "idxa": -26,
+    "idxb": -18,
+    "fund": 410.4013,
+    "correlation": 6,
+    "dispersion": -70.8311
+  },
+  {
+    "date": "05/01/2016",
+    "idxa": -20,
     "idxb": -24,
-    "fund": -67.1486,
-    "correlation": -40,
-    "dispersion": -80.6873
+    "fund": 111.1121,
+    "correlation": -22,
+    "dispersion": -45.4159
   },
   {
-    "date": "10-01-2002",
-    "idxa": -41,
-    "idxb": 17,
-    "fund": 73.4244,
-    "correlation": -29,
-    "dispersion": -83.3399
-  },
-  {
-    "date": "02-01-2017",
-    "idxa": -18,
-    "idxb": -23,
-    "fund": -268.275,
-    "correlation": -47,
-    "dispersion": -29.6047
-  },
-  {
-    "date": "11-01-2007",
-    "idxa": 4,
-    "idxb": 17,
-    "fund": 483.944,
-    "correlation": 17,
-    "dispersion": 2.1099
-  },
-  {
-    "date": "10-01-2008",
-    "idxa": -10,
-    "idxb": -31,
-    "fund": -400.2513,
-    "correlation": -9,
-    "dispersion": -8.6246
-  },
-  {
-    "date": "02-01-2013",
-    "idxa": 10,
-    "idxb": -15,
-    "fund": 965.084,
-    "correlation": 35,
-    "dispersion": 18.2546
-  },
-  {
-    "date": "07-01-2018",
+    "date": "07/01/2007",
     "idxa": -3,
+    "idxb": -5,
+    "fund": -122.1168,
+    "correlation": -21,
+    "dispersion": -52.185
+  },
+  {
+    "date": "06/01/2011",
+    "idxa": 35,
+    "idxb": -41,
+    "fund": -13.4368,
+    "correlation": 17,
+    "dispersion": 10.3299
+  },
+  {
+    "date": "07/01/2008",
+    "idxa": 38,
+    "idxb": -11,
+    "fund": 230.2655,
+    "correlation": 6,
+    "dispersion": -5.0049
+  },
+  {
+    "date": "08/01/2005",
+    "idxa": -12,
+    "idxb": 19,
+    "fund": 30.259,
+    "correlation": -26,
+    "dispersion": -52.1366
+  },
+  {
+    "date": "02/01/2014",
+    "idxa": 11,
+    "idxb": 10,
+    "fund": -434.4116,
+    "correlation": 43,
+    "dispersion": -21.8294
+  },
+  {
+    "date": "11/01/2012",
+    "idxa": -29,
+    "idxb": 47,
+    "fund": -181.629,
+    "correlation": -2,
+    "dispersion": -80.8297
+  },
+  {
+    "date": "02/01/2018",
+    "idxa": 42,
+    "idxb": -47,
+    "fund": -466.8624,
+    "correlation": -22,
+    "dispersion": -56.4563
+  },
+  {
+    "date": "12/01/2010",
+    "idxa": 15,
+    "idxb": 3,
+    "fund": 601.2831,
+    "correlation": -49,
+    "dispersion": 72.1611
+  },
+  {
+    "date": "04/01/2008",
+    "idxa": -48,
+    "idxb": 45,
+    "fund": 397.4769,
+    "correlation": 31,
+    "dispersion": 3.714
+  },
+  {
+    "date": "06/01/2018",
+    "idxa": 49,
+    "idxb": 13,
+    "fund": 385.7936,
+    "correlation": 35,
+    "dispersion": -6.4599
+  },
+  {
+    "date": "04/01/2000",
+    "idxa": -38,
+    "idxb": -15,
+    "fund": 35.6105,
+    "correlation": 28,
+    "dispersion": 23.5592
+  },
+  {
+    "date": "11/01/2007",
+    "idxa": 33,
     "idxb": 33,
-    "fund": -86.8084,
-    "correlation": 16,
-    "dispersion": -51.8529
+    "fund": -443.4879,
+    "correlation": 30,
+    "dispersion": -70.6817
   },
   {
-    "date": "08-01-2011",
-    "idxa": -19,
-    "idxb": -3,
-    "fund": -66.8168,
-    "correlation": 48,
-    "dispersion": -60.2236
+    "date": "10/01/2015",
+    "idxa": -6,
+    "idxb": 11,
+    "fund": 761.7654,
+    "correlation": -43,
+    "dispersion": 29.1005
   },
   {
-    "date": "12-01-2013",
-    "idxa": -5,
-    "idxb": 27,
-    "fund": 858.6082,
-    "correlation": -23,
-    "dispersion": 73.1711
+    "date": "11/01/2006",
+    "idxa": -50,
+    "idxb": 7,
+    "fund": 442.7189,
+    "correlation": 27,
+    "dispersion": -85.0748
   },
   {
-    "date": "10-01-2005",
-    "idxa": -45,
-    "idxb": 46,
-    "fund": -79.3952,
-    "correlation": -3,
-    "dispersion": -62.3236
+    "date": "07/01/2012",
+    "idxa": -48,
+    "idxb": -1,
+    "fund": 46.33,
+    "correlation": -29,
+    "dispersion": -43.386
   },
   {
-    "date": "06-01-2007",
-    "idxa": -19,
-    "idxb": -44,
-    "fund": 304.8154,
-    "correlation": -12,
-    "dispersion": -48.6716
-  },
-  {
-    "date": "02-01-2012",
+    "date": "04/01/2016",
     "idxa": -43,
-    "idxb": 20,
-    "fund": 526.0462,
-    "correlation": 3,
-    "dispersion": 66.6481
+    "idxb": -26,
+    "fund": -176.3114,
+    "correlation": -9,
+    "dispersion": -18.9678
   },
   {
-    "date": "04-01-2000",
-    "idxa": 29,
-    "idxb": -36,
-    "fund": 778.4861,
+    "date": "09/01/2017",
+    "idxa": 26,
+    "idxb": -29,
+    "fund": -122.881,
     "correlation": 2,
-    "dispersion": -97.5395
+    "dispersion": -74.5025
+  },
+  {
+    "date": "03/01/2015",
+    "idxa": 8,
+    "idxb": -16,
+    "fund": 248.3962,
+    "correlation": -9,
+    "dispersion": -4.8852
+  },
+  {
+    "date": "12/01/2003",
+    "idxa": 31,
+    "idxb": -34,
+    "fund": 31.0823,
+    "correlation": 17,
+    "dispersion": 11.9918
+  },
+  {
+    "date": "12/01/2017",
+    "idxa": 30,
+    "idxb": -39,
+    "fund": 966.704,
+    "correlation": 18,
+    "dispersion": -51.9643
+  },
+  {
+    "date": "10/01/2016",
+    "idxa": -49,
+    "idxb": -1,
+    "fund": 302.3716,
+    "correlation": -11,
+    "dispersion": 60.8383
+  },
+  {
+    "date": "06/01/2018",
+    "idxa": -40,
+    "idxb": -9,
+    "fund": 950.9161,
+    "correlation": 5,
+    "dispersion": 97.4506
+  },
+  {
+    "date": "06/01/1999",
+    "idxa": -32,
+    "idxb": 22,
+    "fund": -294.6944,
+    "correlation": -45,
+    "dispersion": -64.8078
+  },
+  {
+    "date": "01/01/2004",
+    "idxa": 27,
+    "idxb": 16,
+    "fund": 368.718,
+    "correlation": -17,
+    "dispersion": -33.4444
+  },
+  {
+    "date": "02/01/2000",
+    "idxa": 31,
+    "idxb": -32,
+    "fund": 838.9137,
+    "correlation": -12,
+    "dispersion": -73.7302
+  },
+  {
+    "date": "05/01/2005",
+    "idxa": 17,
+    "idxb": 47,
+    "fund": 838.3538,
+    "correlation": 47,
+    "dispersion": -37.1157
+  },
+  {
+    "date": "05/01/2014",
+    "idxa": 38,
+    "idxb": -31,
+    "fund": 759.8533,
+    "correlation": 19,
+    "dispersion": 57.126
+  },
+  {
+    "date": "02/01/1999",
+    "idxa": 40,
+    "idxb": -26,
+    "fund": -388.5028,
+    "correlation": 28,
+    "dispersion": -41.7603
+  },
+  {
+    "date": "10/01/2011",
+    "idxa": 26,
+    "idxb": -20,
+    "fund": 937.9808,
+    "correlation": -14,
+    "dispersion": 61.3193
+  },
+  {
+    "date": "09/01/2006",
+    "idxa": -50,
+    "idxb": -48,
+    "fund": 188.6406,
+    "correlation": -16,
+    "dispersion": -14.0461
+  },
+  {
+    "date": "02/01/2013",
+    "idxa": 18,
+    "idxb": -29,
+    "fund": 756.7754,
+    "correlation": 11,
+    "dispersion": 28.0988
+  },
+  {
+    "date": "12/01/2008",
+    "idxa": -32,
+    "idxb": 16,
+    "fund": -35.0928,
+    "correlation": -19,
+    "dispersion": -54.1124
+  },
+  {
+    "date": "07/01/2014",
+    "idxa": 25,
+    "idxb": -14,
+    "fund": 39.429,
+    "correlation": -42,
+    "dispersion": -64.0308
+  },
+  {
+    "date": "10/01/2013",
+    "idxa": -41,
+    "idxb": 9,
+    "fund": 529.7242,
+    "correlation": 10,
+    "dispersion": -18.4049
+  },
+  {
+    "date": "11/01/2007",
+    "idxa": -30,
+    "idxb": 2,
+    "fund": 326.4303,
+    "correlation": 22,
+    "dispersion": 61.6861
+  },
+  {
+    "date": "03/01/2005",
+    "idxa": 24,
+    "idxb": 36,
+    "fund": 13.8653,
+    "correlation": -50,
+    "dispersion": -89.0331
+  },
+  {
+    "date": "05/01/2015",
+    "idxa": -4,
+    "idxb": -25,
+    "fund": 418.3391,
+    "correlation": -13,
+    "dispersion": 96.0105
+  },
+  {
+    "date": "09/01/2000",
+    "idxa": -25,
+    "idxb": 25,
+    "fund": 274.3163,
+    "correlation": 4,
+    "dispersion": -75.9977
+  },
+  {
+    "date": "01/01/2014",
+    "idxa": 33,
+    "idxb": -37,
+    "fund": 764.2816,
+    "correlation": 48,
+    "dispersion": -39.9821
+  },
+  {
+    "date": "08/01/2015",
+    "idxa": -30,
+    "idxb": 24,
+    "fund": -356.6704,
+    "correlation": 15,
+    "dispersion": -58.1779
+  },
+  {
+    "date": "03/01/2011",
+    "idxa": -15,
+    "idxb": 44,
+    "fund": 54.4816,
+    "correlation": 49,
+    "dispersion": 73.8686
+  },
+  {
+    "date": "03/01/2011",
+    "idxa": 3,
+    "idxb": -27,
+    "fund": -370.5297,
+    "correlation": -40,
+    "dispersion": 62.4466
+  },
+  {
+    "date": "12/01/2009",
+    "idxa": 41,
+    "idxb": -2,
+    "fund": -129.6417,
+    "correlation": -49,
+    "dispersion": -76.6041
+  },
+  {
+    "date": "02/01/2003",
+    "idxa": 0,
+    "idxb": -41,
+    "fund": -448.4147,
+    "correlation": -7,
+    "dispersion": -65.8744
+  },
+  {
+    "date": "07/01/2009",
+    "idxa": 41,
+    "idxb": -9,
+    "fund": -98.3225,
+    "correlation": 42,
+    "dispersion": -17.6938
+  },
+  {
+    "date": "05/01/2002",
+    "idxa": -4,
+    "idxb": 20,
+    "fund": 272.3623,
+    "correlation": 30,
+    "dispersion": 16.9044
+  },
+  {
+    "date": "06/01/2012",
+    "idxa": -45,
+    "idxb": -29,
+    "fund": 738.956,
+    "correlation": -17,
+    "dispersion": -68.6337
+  },
+  {
+    "date": "08/01/2014",
+    "idxa": 43,
+    "idxb": -7,
+    "fund": -471.8772,
+    "correlation": -46,
+    "dispersion": -92.898
+  },
+  {
+    "date": "08/01/2005",
+    "idxa": 38,
+    "idxb": 46,
+    "fund": 923.2384,
+    "correlation": 14,
+    "dispersion": -21.6533
+  },
+  {
+    "date": "03/01/2008",
+    "idxa": -7,
+    "idxb": 8,
+    "fund": 590.7538,
+    "correlation": 25,
+    "dispersion": 8.3687
+  },
+  {
+    "date": "04/01/2005",
+    "idxa": 32,
+    "idxb": 21,
+    "fund": 13.7035,
+    "correlation": -15,
+    "dispersion": -25.4789
+  },
+  {
+    "date": "02/01/1999",
+    "idxa": -43,
+    "idxb": -44,
+    "fund": 771.353,
+    "correlation": 33,
+    "dispersion": 87.998
+  },
+  {
+    "date": "07/01/2016",
+    "idxa": 8,
+    "idxb": 33,
+    "fund": 716.9564,
+    "correlation": 24,
+    "dispersion": 62.4693
+  },
+  {
+    "date": "09/01/2010",
+    "idxa": -50,
+    "idxb": 5,
+    "fund": -282.4837,
+    "correlation": 50,
+    "dispersion": 72.7532
+  },
+  {
+    "date": "06/01/2000",
+    "idxa": -46,
+    "idxb": -25,
+    "fund": -209.5947,
+    "correlation": -23,
+    "dispersion": -99.4953
+  },
+  {
+    "date": "02/01/2017",
+    "idxa": 5,
+    "idxb": 19,
+    "fund": 898.8373,
+    "correlation": 11,
+    "dispersion": 3.1456
+  },
+  {
+    "date": "03/01/1999",
+    "idxa": -32,
+    "idxb": -11,
+    "fund": 100.9811,
+    "correlation": 50,
+    "dispersion": -68.6768
+  },
+  {
+    "date": "10/01/1999",
+    "idxa": 17,
+    "idxb": -35,
+    "fund": -344.0677,
+    "correlation": 37,
+    "dispersion": 85.7238
+  },
+  {
+    "date": "06/01/2006",
+    "idxa": 39,
+    "idxb": 24,
+    "fund": -220.0016,
+    "correlation": 31,
+    "dispersion": -16.1348
+  },
+  {
+    "date": "03/01/2001",
+    "idxa": -42,
+    "idxb": -32,
+    "fund": 812.5383,
+    "correlation": 29,
+    "dispersion": 12.946
+  },
+  {
+    "date": "11/01/2016",
+    "idxa": -37,
+    "idxb": 3,
+    "fund": 923.0198,
+    "correlation": -23,
+    "dispersion": -0.466
+  },
+  {
+    "date": "04/01/2017",
+    "idxa": 31,
+    "idxb": -49,
+    "fund": -8.8249,
+    "correlation": -35,
+    "dispersion": 27.2725
+  },
+  {
+    "date": "03/01/2011",
+    "idxa": 38,
+    "idxb": -47,
+    "fund": -349.4301,
+    "correlation": 38,
+    "dispersion": -93.1092
+  },
+  {
+    "date": "03/01/2002",
+    "idxa": -18,
+    "idxb": -8,
+    "fund": 543.3515,
+    "correlation": -31,
+    "dispersion": 46.3846
+  },
+  {
+    "date": "12/01/2000",
+    "idxa": -4,
+    "idxb": 45,
+    "fund": 935.074,
+    "correlation": 40,
+    "dispersion": 51.1473
+  },
+  {
+    "date": "04/01/2015",
+    "idxa": -10,
+    "idxb": -14,
+    "fund": 730.433,
+    "correlation": 8,
+    "dispersion": -31.1768
+  },
+  {
+    "date": "01/01/2006",
+    "idxa": -15,
+    "idxb": -23,
+    "fund": 895.0938,
+    "correlation": -29,
+    "dispersion": 91.1668
+  },
+  {
+    "date": "02/01/2001",
+    "idxa": -32,
+    "idxb": -30,
+    "fund": 845.5109,
+    "correlation": 45,
+    "dispersion": 33.3694
+  },
+  {
+    "date": "01/01/2001",
+    "idxa": 41,
+    "idxb": -4,
+    "fund": 326.917,
+    "correlation": -38,
+    "dispersion": 38.0527
+  },
+  {
+    "date": "11/01/2016",
+    "idxa": 41,
+    "idxb": -41,
+    "fund": -371.2674,
+    "correlation": 19,
+    "dispersion": -94.5482
+  },
+  {
+    "date": "04/01/2001",
+    "idxa": -12,
+    "idxb": 14,
+    "fund": 354.9084,
+    "correlation": -14,
+    "dispersion": 39.8619
+  },
+  {
+    "date": "04/01/2006",
+    "idxa": -20,
+    "idxb": -6,
+    "fund": 791.2861,
+    "correlation": 9,
+    "dispersion": -30.7475
+  },
+  {
+    "date": "07/01/2007",
+    "idxa": 2,
+    "idxb": -24,
+    "fund": 130.1243,
+    "correlation": 29,
+    "dispersion": -79.9047
+  },
+  {
+    "date": "07/01/2001",
+    "idxa": 21,
+    "idxb": -21,
+    "fund": 118.5711,
+    "correlation": -34,
+    "dispersion": -19.4476
+  },
+  {
+    "date": "04/01/2000",
+    "idxa": -50,
+    "idxb": 3,
+    "fund": 55.6936,
+    "correlation": -3,
+    "dispersion": -42.7736
+  },
+  {
+    "date": "12/01/2013",
+    "idxa": 16,
+    "idxb": -2,
+    "fund": -109.7671,
+    "correlation": 27,
+    "dispersion": 99.3048
+  },
+  {
+    "date": "01/01/2002",
+    "idxa": 34,
+    "idxb": -26,
+    "fund": -125.1265,
+    "correlation": -20,
+    "dispersion": 86.1755
+  },
+  {
+    "date": "06/01/2015",
+    "idxa": -28,
+    "idxb": 46,
+    "fund": 268.6047,
+    "correlation": -46,
+    "dispersion": 47.2489
+  },
+  {
+    "date": "02/01/2005",
+    "idxa": 46,
+    "idxb": -50,
+    "fund": 967.923,
+    "correlation": 9,
+    "dispersion": 6.4749
+  },
+  {
+    "date": "08/01/2008",
+    "idxa": -10,
+    "idxb": -48,
+    "fund": -71.8808,
+    "correlation": -16,
+    "dispersion": 19.1629
   }
 ]

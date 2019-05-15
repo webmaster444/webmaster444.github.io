@@ -23,7 +23,7 @@ var svg = d3.select("#chart_wrapper").append('svg').attr("width", wrapperWidth).
 var x = d3.scaleTime().rangeRound([0, width]);
 var x_axis = d3.axisBottom(x);
 
-var parseTime = d3.timeParse("%M-%d-%Y");
+var parseTime = d3.timeParse("%M/%d/%Y");
 var xFormat = "%Y";
 
 var y = d3.scaleBand().rangeRound([height * 3 / 4,0]);
@@ -45,8 +45,7 @@ d3.json("assets/data.json").then(function(data) {
     })
 
     data.sort((a, b) => (a.startDate > b.startDate) ? 1 : -1);
-
-    console.log(data);
+    
     jsonData = data;
 
     myColor.domain(categoreis);    
@@ -74,7 +73,7 @@ d3.json("assets/data.json").then(function(data) {
         .attr("y",(d)=>y1(Math.max(0, d[industry])))
         .attr("width",(d)=>x(d.endDate) - x(d.startDate))
         .attr("height", (d)=>Math.abs(y1(d[industry]) - y1(0)))
-        .attr('fill',(d)=>myColor(industry)).attr('attr-date', (d)=>d.date)        
+        .attr('fill',(d)=>myColor(industry)).attr('attr-date', (d)=>d.startDate)        
         .on('mouseover',function(d) {
             var str = $(this).attr('attr-date');
             var selector = '[attr-date=' + str + ']';            
@@ -107,7 +106,7 @@ d3.json("assets/data.json").then(function(data) {
 
     line_wrapper.selectAll('.dispersion_circle').data(data).enter().append('circle').attr('class','dispersion_circle')
     .attr('cx',(d)=>x(d.startDate)).attr('cy',(d)=>yLine(d.dispersion)).attr('fill',myColor('dispersion')).attr('r',5)
-    .attr('attr-date', (d)=>d.date)
+    .attr('attr-date', (d)=>d.startDate)
         .on('mouseover',function(d) {
             var str = $(this).attr('attr-date');
             var selector = '[attr-date=' + str + ']';            
@@ -125,7 +124,7 @@ d3.json("assets/data.json").then(function(data) {
     line_wrapper.append('text').attr('x',-10).attr('y',height / 8 + 8).attr('text-anchor','end').text("Dispersion ");
     line_wrapper.selectAll('.correlation_circle').data(data).enter().append('circle').attr('class','correlation_circle')
     .attr('cx',(d)=>x(d.startDate)).attr('cy',(d)=>yLine(d.correlation)).attr('fill',myColor('correlation')).attr('r',5)
-    .attr('attr-date', (d)=>d.date)
+    .attr('attr-date', (d)=>d.startDate)
         .on('mouseover',function(d) {
             var str = $(this).attr('attr-date');
             var selector = '[attr-date=' + str + ']';
@@ -155,7 +154,7 @@ d3.json("assets/data.json").then(function(data) {
     matrix_wrapper.append('text').attr("transform", "translate("+(matrixWrapperWidth / 2 - 5) +","+  height /2 + ") rotate(-90)").text("Dispersion");
 
     matrix_wrapper.selectAll('.circle').data(data).enter().append('circle').attr('class','circle').attr('cx',(d)=>matrixX(d.correlation))
-        .attr('cy',(d)=>matrixY(d.dispersion)).attr('r',5).attr('fill',myColor('idxb')).attr('attr-date', (d)=>d.date)
+        .attr('cy',(d)=>matrixY(d.dispersion)).attr('r',5).attr('fill',myColor('idxb')).attr('attr-date', (d)=>d.startDate)
         .on('mouseover',function(d) {
             var str = $(this).attr('attr-date');
             var selector = '[attr-date=' + str + ']';            
@@ -192,11 +191,11 @@ d3.json("assets/data.json").then(function(data) {
     function updateLegend(date){
         var elObj;
         data.forEach(function(d){
-            if(d.date == date){
+            if(d.startDate == date){
                 elObj = d;
             }
         })
-
+        
         d3.select('.fund_value').text(elObj.fund);
         d3.select('.idxb_value').text(elObj.idxb);
         d3.select('.idxa_value').text(elObj.idxa);
