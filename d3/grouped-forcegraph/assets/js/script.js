@@ -58,8 +58,8 @@ d3.json("assets/data.json").then(function(data) {
     });
 
     place_wrapper.append('rect').attr('x', 0).attr("y", 0).attr("width", x.bandwidth()).attr('height', height).attr("fill", (d)=>myColor(d)).attr('stroke','white');
-    place_wrapper.append('rect').attr('x', 0).attr("y", 0).attr("width", x.bandwidth()).attr('height', 50).attr("fill", 'black').attr('fill-opacity', '0.3');
-    place_wrapper.append('text').attr('x', x.bandwidth() / 2).attr("y", 30).text((d) => '"place":' + d).attr('text-anchor', 'middle').attr('class', 'place_title').attr('fill', 'white');
+    // place_wrapper.append('rect').attr('x', 0).attr("y", 0).attr("width", x.bandwidth()).attr('height', 50).attr("fill", 'black').attr('fill-opacity', '0.3');
+    // place_wrapper.append('text').attr('x', x.bandwidth() / 2).attr("y", 30).text((d) => '"place":' + d).attr('text-anchor', 'middle').attr('class', 'place_title').attr('fill', 'white');
 
     var nodesByPlace = d3.nest()
         .key(function(d) {
@@ -209,23 +209,23 @@ var link_wrapper = svg.selectAll('g.link_wrapper').data(links).enter().append('g
 
 	function dragged(d) {		
 		var xPos;
-		if((d3.event.x + radius) > x(d.place) + x.bandwidth()){
-			xPos = x(d.place) + x.bandwidth() - radius;
-		}else if((d3.event.x - radius)< x(d.place)){
-			xPos = x(d.place) + radius;
-		}else{
+		// if((d3.event.x + radius) > x(d.place) + x.bandwidth()){
+		// 	xPos = x(d.place) + x.bandwidth() - radius;
+		// }else if((d3.event.x - radius)< x(d.place)){
+		// 	xPos = x(d.place) + radius;
+		// }else{
 			xPos = d3.event.x;
-		}
+		// }
 
 		var yPos;
 
-		if((d3.event.y - radius) < 50){
-			yPos = 50 + radius;
-		}else if(d3.event.y + radius > height){
-			yPos = height - radius;
-		}else{
+		// if((d3.event.y - radius) < 50){
+		// 	yPos = 50 + radius;
+		// }else if(d3.event.y + radius > height){
+		// 	yPos = height - radius;
+		// }else{
 			yPos = d3.event.y;
-		}
+		// }
 
 	  	d3.select(this).attr("cx", d.x = xPos).attr("cy", d.y = yPos);	  
 	  	d3.select(this.parentNode).select('text').attr('x',d.x = xPos).attr('y',d.y=yPos);
