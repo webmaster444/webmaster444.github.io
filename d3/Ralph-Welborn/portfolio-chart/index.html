@@ -111,8 +111,11 @@
         .form-group{
             margin-bottom: 15px;
         }
-        #filter_radio_section input{
-            width: 100%;
+        .tag{
+            display: inline-block;
+            padding:5px;
+            background: lightgray;
+            margin: 5px;
         }
     </style>    
 </head>
@@ -126,11 +129,11 @@
     <div id="sidebar_wrapper">
         <div class="form-group">
             <label>View By Percentage of:</label>
-            <input type="radio" name="viewby" checked="checked" /> Business Unit
-            <input type="radio" name="viewby" /> Department
+            <input type="radio" name="viewby" checked="checked" value="Business Unit" /> Business Unit
+            <input type="radio" name="viewby" value="Department" /> Department
             <select id="viewBySelect"></select>
-            <input type="radio" name="sizeby" /> Time
-            <input type="radio" name="sizeby" checked="checked"/> Cost
+            <input type="radio" name="sizeby" value="sumByTime" /> Time
+            <input type="radio" name="sizeby" checked="checked" value="sumByCost" /> Cost
         </div>
         <div class="form-group">
             <label>Filters</label>
@@ -140,7 +143,7 @@
         </div>
         <div class="form-group">
             <label>Tags</label>
-            <select id="tagsSelect"><option selected="selected" value='Capabilities'>Capabilities</option></select>
+            <select id="tagsSelect"><option selected="selected" value='Capability'>Capabilities</option></select>
             <div id="tags_section">
             </div>
         </div>
