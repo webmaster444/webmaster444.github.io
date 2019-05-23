@@ -8,10 +8,10 @@ var margin = {
     bottom: 50
 };
 
-var optionData,csvData;
+var optionData, csvData;
 var width = wrapperWidth - margin.left - margin.right;
 var height = wrapperHeight - margin.top - margin.bottom;
-var svg = d3.select("#chart_wrapper").append('svg').attr("width", wrapperWidth).attr("height", wrapperHeight).append("g").attr("transform", 'translate('+margin.left+',' + margin.top + ')')
+var svg = d3.select("#chart_wrapper").append('svg').attr("width", wrapperWidth).attr("height", wrapperHeight).append("g").attr("transform", 'translate(' + margin.left + ',' + margin.top + ')')
 var fader = function(color) {
         return d3.interpolateRgb(color, "#fff")(0.2);
     },
@@ -32,48 +32,63 @@ function sumByTime(d) {
 
 var x = d3.scaleLinear().range([0, width]);
 var x_axis = d3.axisBottom(x);
+
 d3.csv("assets/changed-data.csv").then(function(data) {
-d3.json("assets/filter-data.json").then(function(option){
+    d3.json("assets/filter-data.json").then(function(option) {
 
-    csvData = data;
-    optionData = option;
+        //initalize global variables 
+        csvData = data;
+        optionData = option;
 
-    var viewby = $("input[name='viewby']:checked").val();
+        var viewby = $("input[name='viewby']:checked").val();
+        viewBySelectUpdate();
 
+        var filters = option.filters.map(function(d) {
+            return d.name
+        });
 
-    viewBySelectUpdate();
+        filters.forEach(function(opt) {
+            var html = '<option value="' + opt + '">' + opt + '</option>';
+            $("#filterbySelect").append(html);
+        })
 
-    var filters = option.filters.map(function(d){return d.name});
+        getSubFilters();
+        selectOne("filter");
 
-    filters.forEach(function(opt){
-        var html = '<option value="'+opt+'">'+opt+'</option>';
-        $("#filterbySelect").append(html);
+        getColorGroups();
+        var newData = getData();
+
+        getTags(newData);
+        drawChart(newData);
     })
-
-
-    getSubFilters();
-    selectOne("filter");
-
-    getColorGroups();
-    var newData = getData(viewby, $("#viewBySelect").val(), data);
-
-    getTags(newData);
-    drawChart(newData);
-})
 })
 
-function getData(viewby, viewValue, data){
-    return data.filter(function(d){return d[viewby] == viewValue});
+//get filtered data by sidebar options
+function getData() {
+    var viewby = $("input[name='viewby']:checked").val(),
+        viewValue = $("#viewBySelect").val();
+
+    return csvData.filter(function(d) {
+        return d[viewby] == viewValue
+    });
 }
 
-function drawChart(data){
+//draw chart from new data with sidebar options
+function drawChart(data) {
     var viewby = $("input[name='viewby']:checked").val(),
-    sizeby = $("input[name='sizeby']:checked").val(),
-    viewValue = $("#viewBySelect").val();
+        sizeby = $("input[name='sizeby']:checked").val(),
+        viewValue = $("#viewBySelect").val();
+
+    var groupby = "";
+    if (viewby == "Business Unit") {
+        groupby = "Department";
+    } else if (viewby == "Department") {
+        groupby = 'Business Unit';
+    }
 
     var businessUnitData = d3.nest()
         .key(function(d) {
-            return d["Department"];
+            return d[groupby];
         })
         .rollup(function(v) {
             return d3.sum(v, function(d) {
@@ -99,33 +114,39 @@ function drawChart(data){
 
     var units_g = svg.selectAll('.unit_g').data(businessUnitData).enter().append('g').attr('class', (d, i) => 'unit_g unit_' + i).attr('transform', (d) => "translate(" + x(d.startX) + ",0)");
     units_g.append('rect').attr('x', 0).attr("width", (d) => x(d.value)).attr("y", -50).attr("height", 50)
-    // .attr('fill', (d)=>color(d.key))
-    .attr('fill', 'black')
-    .attr('fill-opacity', 0.7);
+        // .attr('fill', (d)=>color(d.key))
+        .attr('fill', 'black')
+        .attr('fill-opacity', 0.7);
     units_g.append('text').attr("x", 10).attr('y', -20).text((d) => d.key).attr("fill", 'white');
 
     businessUnitData.forEach(function(d, i) {
-        
+
         var newData = data.filter(function(datum) {
-            return datum['Department'] == d.key
+            return datum[groupby] == d.key
         });
 
         var departmentData = d3.nest()
             .key(function(d) {
-                return d['Department'];
+                return d[groupby];
             })
-            .entries(newData);        
+            .entries(newData);
 
         var newObj = new Object;
-        newObj['name'] = d.key;
-        newObj['children'] = departmentData[0].values;
-        
+        newObj["name"] = d.key;
+        newObj["children"] = departmentData[0].values;
+
+        var sum;
+        if (sizeby == "Cost") {
+            sum = sumByCost;
+        } else if (sizeby == "Time") {
+            sum = sumByTime;
+        }
         var root = d3.hierarchy(newObj)
             .eachBefore(function(d) {
                 d.data.id = (d.parent ? d.parent.data.id + "." : "") + d.data.name;
             })
-            .sum(sumByCost)
-            .sort(function(a, b) {                
+            .sum(sum)
+            .sort(function(a, b) {
                 return b.height - a.height || b.value - a.value;
             });
 
@@ -171,8 +192,8 @@ function drawChart(data){
             .attr("x", (d) => (d.x1 - d.x0) / 2)
             .attr("y", (d) => (d.y1 - d.y0) / 2)
             .attr('text-anchor', 'middle')
-            .text(function(d) {                
-                return d.data.Capability ;
+            .text(function(d) {
+                return d.data.Capability;
             });
 
         cell.append("title")
@@ -183,95 +204,113 @@ function drawChart(data){
     })
 }
 
-function selectOne(name){
-    $('input[name="'+name + '"]').first().prop('checked',true);
+//set initial value of radio button
+function selectOne(name) {
+    $('input[name="' + name + '"]').first().prop('checked', true);
 }
 
-function getTags(data){
+//get unduplicated tags
+function getTags(data) {
     var tags = [];
 
     var tag = $("#tagsSelect").val();
 
-    data.map(function(d){return d[tag]}).forEach(function(d){
-        if(!tags.includes(d)){
+    data.map(function(d) {
+        return d[tag]
+    }).forEach(function(d) {
+        if (!tags.includes(d)) {
             tags.push(d);
         }
     });
 
     $("#tags_section").html("");
-    tags.forEach(function(t){
-        var html = '<span class="tag">'+t+'</span>';
+    tags.forEach(function(t) {
+        var html = '<span class="tag">' + t + '</span>';
         $("#tags_section").append(html);
     })
 }
 
-function getColorGroups(){    
+// get options from filter
+function getColorGroups() {
     var filterV = $("#filterbySelect").val();
     var subfilter = $("input[name='filter']:checked").val();
-        
+
     var colorGroups = [];
-    optionData.filters.forEach(function(opt){
-        if(opt.name == filterV){
-            opt.children.forEach(function(o){
-                if(o.name == subfilter){
+    optionData.filters.forEach(function(opt) {
+        if (opt.name == filterV) {
+            opt.children.forEach(function(o) {
+                if (o.name == subfilter) {
                     colorGroups = o.children;
                 }
             })
         }
     });
-    
+
     return colorGroups;
 }
 
-$(document).on('change','input[name="viewby"]',function(){
+//trigger events when sidebar options changed
+$(document).on('change', 'input[name="viewby"]', function() {
     viewBySelectUpdate();
-    var newData = getData($("input[name='viewby']:checked").val(), $("#viewBySelect").val(), csvData);
+    var newData = getData();
+    drawChart(newData);
     getTags(newData);
 });
 
-$(document).on('change','input[name="filter"]',function(){
+$(document).on('change', 'input[name="sizeby"]', function() {
+    var newData = getData();
+    drawChart(newData);
+});
+
+$(document).on('change', 'input[name="filter"]', function() {
     getColorGroups();
 });
 
-$(document).on('change','#viewBySelect',function(){
-    var newData = getData($("input[name='viewby']:checked").val(), $("#viewBySelect").val(), csvData);
-    drawChart(newData);    
+$(document).on('change', '#viewBySelect', function() {
+    var newData = getData();
+    drawChart(newData);
     getTags(newData);
 });
 
-$(document).on('change','#filterbySelect',function(){
+$(document).on('change', '#filterbySelect', function() {
     getSubFilters();
     selectOne("filter");
     getColorGroups();
 });
 
-function getSubFilters(){
+//get sub filter from "Lense, Lens, button"
+function getSubFilters() {
     var selectedFilter = $("#filterbySelect").val();
 
     $("#filter_radio_section").html("");
-    optionData.filters.forEach(function(opt){
-        if(opt.name == selectedFilter){
-            opt.children.map(function(o){return o.name}).forEach(function(n){
-                var html = '<input type="radio" name="filter" value="'+n +'"/>' + n;
+    optionData.filters.forEach(function(opt) {
+        if (opt.name == selectedFilter) {
+            opt.children.map(function(o) {
+                return o.name
+            }).forEach(function(n) {
+                var html = '<input type="radio" name="filter" value="' + n + '"/>' + n;
                 $("#filter_radio_section").append(html);
             })
-        }        
+        }
     })
 }
 
-function viewBySelectUpdate(){
-    var viewby = $("input[name='viewby']:checked").val();    
+//get option values of View By Select element.
+function viewBySelectUpdate() {
+    var viewby = $("input[name='viewby']:checked").val();
 
     var viewbyOptions = [];
 
-    csvData.map(function(d){return d[viewby]}).forEach(function(d){
-        if(!viewbyOptions.includes(d)){
+    csvData.map(function(d) {
+        return d[viewby]
+    }).forEach(function(d) {
+        if (!viewbyOptions.includes(d)) {
             viewbyOptions.push(d);
         }
     })
     $("#viewBySelect").html('');
-    viewbyOptions.forEach(function(opt){
-        var html = '<option value="'+opt+'">'+opt+'</option>';
+    viewbyOptions.forEach(function(opt) {
+        var html = '<option value="' + opt + '">' + opt + '</option>';
         $("#viewBySelect").append(html);
     })
 }
