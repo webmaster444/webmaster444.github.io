@@ -58,7 +58,7 @@ d3.json("assets/filter-data.json").then(function(option){
     var newData = getData(viewby, $("#viewBySelect").val(), data);
 
     getTags(newData);
-    drawChart(viewby, 'Cost', $("#viewBySelect").val(), newData);
+    drawChart(newData);
 })
 })
 
@@ -66,7 +66,11 @@ function getData(viewby, viewValue, data){
     return data.filter(function(d){return d[viewby] == viewValue});
 }
 
-function drawChart(viewby, sizeby, viewValue, data){
+function drawChart(data){
+    var viewby = $("input[name='viewby']:checked").val(),
+    sizeby = $("input[name='sizeby']:checked").val(),
+    viewValue = $("#viewBySelect").val();
+
     var businessUnitData = d3.nest()
         .key(function(d) {
             return d["Department"];
@@ -231,7 +235,7 @@ $(document).on('change','input[name="filter"]',function(){
 
 $(document).on('change','#viewBySelect',function(){
     var newData = getData($("input[name='viewby']:checked").val(), $("#viewBySelect").val(), csvData);
-    drawChart($("input[name='viewby']:checked").val(), 'Cost', $("#viewBySelect").val(), newData);    
+    drawChart(newData);    
     getTags(newData);
 });
 
