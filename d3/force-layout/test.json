@@ -83,6 +83,15 @@
       "width":"2"
    },
    {
+      "from":"Proxmox 4.x",
+      "status":null,
+      "business_impact":"low",
+      "classification":"CI.NONE",
+      "to":"SRV27",
+      "color":"",
+      "width":"2"
+   },
+   {
       "from":"M-02",
       "status":"online",
       "business_impact":"low",
@@ -102,30 +111,6 @@
       ],
       "from":"M-02",
       "to":"M-02",
-      "color":"steelblue",
-      "width":"2"
-   },   
-   {
-      "id":"e0161e2e-7882-11e338-88d9-623837633865",
-      "status":"online",
-      "business_impact":"low",
-      "classification":[
-         "CI.NONE"
-      ],
-      "from":"NV-GW-1",
-      "to":"NV-GW-1",
-      "color":"steelblue",
-      "width":"2"
-   },   
-   {
-      "id":"e016132e-7882-11e338-88d9-623837633865",
-      "status":"online",
-      "business_impact":"low",
-      "classification":[
-         "CI.NONE"
-      ],
-      "from":"\u05e1\u05dc\u05e7\u05d5\u05dd",
-      "to":"\u05e1\u05dc\u05e7\u05d5\u05dd",
       "color":"steelblue",
       "width":"2"
    },
@@ -171,18 +156,6 @@
       ],
       "from":"\u05e1\u05dc\u05e7\u05d5\u05dd \u05e8\u05d0\u05e9 \u05d4\u05e2\u05d9\u05df",
       "to":"\u05e1\u05dc\u05e7\u05d5\u05dd \u05e8\u05d0\u05e9 \u05d4\u05e2\u05d9\u05df",
-      "color":"steelblue",
-      "width":"2"
-   },   
-   {
-      "id":"adbc2c9c-93a9e-479e-9650-f702b8f68d5f",
-      "status":"online",
-      "business_impact":"low",
-      "classification":[
-         "CI.NONE"
-      ],
-      "from":"(IL) Israel - Asia",
-      "to":"(IL) Israel - Asia",
       "color":"steelblue",
       "width":"2"
    },
@@ -245,20 +218,6 @@
       "to":"Allprobe microservice Web Cluster",
       "color":"steelblue",
       "width":"2"
-   },   
-   {
-      "id":"43deef386-7886-11e9-a4cc-373730323066",
-      "status":"online",
-      "business_impact":[
-         "medium"
-      ],
-      "classification":[
-         "CI.BUSINESSPROCESS"
-      ],
-      "from":"Redis 2.x",
-      "to":"Redis 2.x",
-      "color":"steelblue",
-      "width":"2"
    },
    {
       "from":"APR-GRID1-WEB-1",
@@ -304,6 +263,15 @@
       "from":"SRV28",
       "to":"SRV28",
       "color":"steelblue",
+      "width":"2"
+   },
+   {
+      "from":"Proxmox 4.x",
+      "status":null,
+      "business_impact":"low",
+      "classification":"CI.NONE",
+      "to":"SRV28",
+      "color":"",
       "width":"2"
    },
    {
@@ -381,17 +349,6 @@
       ],
       "from":"APR-GRID1-WEB-2",
       "to":"APR-GRID1-WEB-2",
-      "color":"steelblue",
-      "width":"2"
-   },   {
-      "id":"3cb285be-66ad-11e9-89b8-343632663031",
-      "status":"online",
-      "business_impact":"low",
-      "classification":[
-         "CI.NONE"
-      ],
-      "from":"8 (Jessie)",
-      "to":"8 (Jessie)",
       "color":"steelblue",
       "width":"2"
    },
@@ -504,42 +461,6 @@
       "to":"HA-PROXY1",
       "color":"steelblue",
       "width":"2"
-   },      
-   {
-      "id":"3cb28b7c-66ad-11e9-92b3-333662396263",
-      "status":"online",
-      "business_impact":"low",
-      "classification":[
-         "CI.NONE"
-      ],
-      "from":"PHP 5.x",
-      "to":"PHP 5.x",
-      "color":"steelblue",
-      "width":"2"
-   },   
-   {
-      "id":"3cb28b7c-66ad-11e9-92b3-333662396263",
-      "status":"online",
-      "business_impact":"low",
-      "classification":[
-         "CI.NONE"
-      ],
-      "from":"Nginx 1.x",
-      "to":"Nginx 1.x",
-      "color":"steelblue",
-      "width":"2"
-   },   
-   {
-      "id":"3cb28b7c-66ad-11e9-92b3-333662396263",
-      "status":"online",
-      "business_impact":"low",
-      "classification":[
-         "CI.NONE"
-      ],
-      "from":"BASH 5.x",
-      "to":"BASH 5.x",
-      "color":"steelblue",
-      "width":"2"
    },
    {
       "from":"M-02",
@@ -599,17 +520,6 @@
       ],
       "from":"RR-CAS1",
       "to":"RR-CAS1",
-      "color":"steelblue",
-      "width":"2"
-   },   {
-      "id":"d29727338-6c334d-11e9-95dd-356131313931",
-      "status":"online",
-      "business_impact":"low",
-      "classification":[
-         "CI.NONE"
-      ],
-      "from":"RR - Cas-1 Crons",
-      "to":"RR - Cas-1 Crons",
       "color":"steelblue",
       "width":"2"
    },
@@ -681,17 +591,6 @@
       "to":"RR-CAS3",
       "color":"steelblue",
       "width":"2"
-   },   {
-      "id":"d2972878-6c94d-11e9-b906-353863613762",
-      "status":"online",
-      "business_impact":"low",
-      "classification":[
-         "CI.NONE"
-      ],
-      "from":"RR - Cas-3 Crons",
-      "to":"RR - Cas-3 Crons",
-      "color":"steelblue",
-      "width":"2"
    },
    {
       "from":"RR - Cas-3 Crons",
@@ -759,28 +658,6 @@
       ],
       "from":"RR-CAS2",
       "to":"RR-CAS2",
-      "color":"steelblue",
-      "width":"2"
-   },   {
-      "id":"d297312e-6c34d-11e9-9391-663630393536",
-      "status":"online",
-      "business_impact":"low",
-      "classification":[
-         "CI.NONE"
-      ],
-      "from":"Proxmox 5.x",
-      "to":"Proxmox 5.x",
-      "color":"steelblue",
-      "width":"2"
-   },{
-      "id":"d297312e-6c34d-190e9-9391-663630393536",
-      "status":"online",
-      "business_impact":"low",
-      "classification":[
-         "CI.NONE"
-      ],
-      "from":"RR - Cas-2 Crons",
-      "to":"RR - Cas-2 Crons",
       "color":"steelblue",
       "width":"2"
    },
@@ -854,20 +731,6 @@
       ],
       "from":"Allprobe microservice Cache",
       "to":"Allprobe microservice Cache",
-      "color":"steelblue",
-      "width":"2"
-   },   
-   {
-      "id":"43d0f202a-7886-11e9-a7d4-643433613932",
-      "status":"online",
-      "business_impact":[
-         "medium"
-      ],
-      "classification":[
-         "CI.BUSINESSPROCESS"
-      ],
-      "from":"Cassandra 2.x",
-      "to":"Cassandra 2.x",
       "color":"steelblue",
       "width":"2"
    },
