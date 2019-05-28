@@ -11,54 +11,52 @@ var margin = {
 var optionData, csvData;
 var width = wrapperWidth - margin.left - margin.right;
 var height = wrapperHeight - margin.top - margin.bottom;
-var svg = d3.select("#chart_wrapper").append('svg').attr("width", wrapperWidth).attr("height", wrapperHeight).append("g").attr("transform", 'translate(' + margin.left + ',' + margin.top + ')')
-var fader = function(color) {
-        return d3.interpolateRgb(color, "#fff")(0.2);
-    },
-    color = d3.scaleOrdinal(d3.schemeCategory10.map(fader)),
-    format = d3.format(",d");
+var svg = d3.select("#chart_wrapper").append('svg')
+.attr("width", wrapperWidth).attr("height", wrapperHeight).append("g")
+.attr("transform", 'translate(' + margin.left + ',' + margin.top + ')'),
+format = d3.format(",d");
 
+var colorScale;
+
+var colorOptions = [];
 var treemap = d3.treemap()
     .padding(1)
     .round(true);
 
-function sumByCost(d) {
-    return d['Cost'];
+function sumByTime(d) {
+    return d['Investment in'];
 }
 
-function sumByTime(d) {
-    return d['Time'];
+function sumByCost(d) {
+    return d['Revenue'];
 }
 
 var x = d3.scaleLinear().range([0, width]);
 var x_axis = d3.axisBottom(x);
 
-d3.csv("assets/changed-data.csv").then(function(data) {
-    d3.json("assets/filter-data.json").then(function(option) {
+d3.csv("assets/box2.csv").then(function(data) {
+    d3.json("filter-data.json").then(function(option) {
+
+        var maxColorCnt = d3.max(option.filters[0].children, function(d) {
+            return d.children.length
+        });
+
+        colorScale = d3.scaleOrdinal(d3.schemeBlues[maxColorCnt]);
+
+        option.filters[0].children.forEach(function(d) {
+            if (d.name == $("input[name='colorby']:checked").val()) {
+                colorOptions = d.children;
+            }
+        });
+
+        colorScale.domain(colorOptions);
+        drawLengeds();
 
         //initalize global variables 
         csvData = data;
         optionData = option;
 
-        var viewby = $("input[name='viewby']:checked").val();
-        viewBySelectUpdate();
-
-        var filters = option.filters.map(function(d) {
-            return d.name
-        });
-
-        filters.forEach(function(opt) {
-            var html = '<option value="' + opt + '">' + opt + '</option>';
-            $("#filterbySelect").append(html);
-        })
-
-        getSubFilters();
-        selectOne("filter");
-
-        getColorGroups();
-        var newData = getData();
-
-        getTags(newData);
+        var newData = getData();        
         drawChart(newData);
     })
 })
@@ -68,9 +66,15 @@ function getData() {
     var viewby = $("input[name='viewby']:checked").val(),
         viewValue = $("#viewBySelect").val();
 
-    return csvData.filter(function(d) {
-        return d[viewby] == viewValue
+    csvData.forEach(function(datum) {
+        colorOptions.forEach((color) => {
+            if (datum[color] == "x") {
+                datum['color'] = color;
+            }
+        })
     });
+
+    return csvData;
 }
 
 //draw chart from new data with sidebar options
@@ -78,13 +82,7 @@ function drawChart(data) {
     var viewby = $("input[name='viewby']:checked").val(),
         sizeby = $("input[name='sizeby']:checked").val(),
         viewValue = $("#viewBySelect").val();
-
-    var groupby = "";
-    if (viewby == "Business Unit") {
-        groupby = "Department";
-    } else if (viewby == "Department") {
-        groupby = 'Business Unit';
-    }
+    var groupby = "Portfolio";
 
     var businessUnitData = d3.nest()
         .key(function(d) {
@@ -114,17 +112,16 @@ function drawChart(data) {
 
     var units_g = svg.selectAll('.unit_g').data(businessUnitData).enter().append('g').attr('class', (d, i) => 'unit_g unit_' + i).attr('transform', (d) => "translate(" + x(d.startX) + ",0)");
     units_g.append('rect').attr('x', 0).attr("width", (d) => x(d.value)).attr("y", -50).attr("height", 50)
-        // .attr('fill', (d)=>color(d.key))
         .attr('fill', 'black')
         .attr('fill-opacity', 0.7);
     units_g.append('text').attr("x", 10).attr('y', -20).text((d) => d.key).attr("fill", 'white');
 
     businessUnitData.forEach(function(d, i) {
-
         var newData = data.filter(function(datum) {
             return datum[groupby] == d.key
         });
 
+        // var newData = data;
         var departmentData = d3.nest()
             .key(function(d) {
                 return d[groupby];
@@ -136,9 +133,9 @@ function drawChart(data) {
         newObj["children"] = departmentData[0].values;
 
         var sum;
-        if (sizeby == "Cost") {
+        if (sizeby == "Revenue") {
             sum = sumByCost;
-        } else if (sizeby == "Time") {
+        } else if (sizeby == "Investment in") {
             sum = sumByTime;
         }
         var root = d3.hierarchy(newObj)
@@ -163,6 +160,7 @@ function drawChart(data) {
             });
 
         cell.append("rect")
+            .attr("class", "tree-rect")
             .attr("id", function(d) {
                 return d.data.id;
             })
@@ -172,9 +170,9 @@ function drawChart(data) {
             .attr("height", function(d) {
                 return d.y1 - d.y0;
             })
-            .attr("fill", function(d) {
-                return color(d.parent.data.id);
-            });
+            .attr('fill', function(d) {
+                return colorScale(d.data.color);
+            })
 
         cell.append("clipPath")
             .attr("id", function(d) {
@@ -189,74 +187,32 @@ function drawChart(data) {
             .attr("clip-path", function(d) {
                 return "url(#clip-" + d.data.id.replace(/\s+/g, '-').toLowerCase() + ")";
             })
-            .attr("x", (d) => 0)
+            .attr("x", (d) => 5)
             .attr("y", (d) => 15)
             .attr("dy", ".1em")
             .attr('text-anchor', 'start')
             .text(function(d) {
-                return d.data.Capability;
-            }).call(wrap,100);
-
-        // cell.selectAll("text").call(wrap, );
+                return d.data.Company;
+            }).call(wrap, 100);
+        
         cell.append("title")
             .text(function(d) {
-                return d.data.Capability + "\n" + format(d.value);
+                return d.data.Company + " - " + $("input[name='sizeby']:checked").val() + " : " + format(d.value);
             });
 
     })
 }
 
-//set initial value of radio button
-function selectOne(name) {
-    $('input[name="' + name + '"]').first().prop('checked', true);
-}
-
-//get unduplicated tags
-function getTags(data) {
-    var tags = [];
-
-    var tag = $("#tagsSelect").val();
-
-    data.map(function(d) {
-        return d[tag]
-    }).forEach(function(d) {
-        if (!tags.includes(d)) {
-            tags.push(d);
-        }
-    });
-
-    $("#tags_section").html("");
-    tags.forEach(function(t) {
-        var html = '<span class="tag">' + t + '</span>';
-        $("#tags_section").append(html);
-    })
-}
-
-// get options from filter
-function getColorGroups() {
-    var filterV = $("#filterbySelect").val();
-    var subfilter = $("input[name='filter']:checked").val();
-
-    var colorGroups = [];
-    optionData.filters.forEach(function(opt) {
-        if (opt.name == filterV) {
-            opt.children.forEach(function(o) {
-                if (o.name == subfilter) {
-                    colorGroups = o.children;
-                }
-            })
-        }
-    });
-
-    return colorGroups;
-}
-
 //trigger events when sidebar options changed
-$(document).on('change', 'input[name="viewby"]', function() {
-    viewBySelectUpdate();
-    var newData = getData();
-    drawChart(newData);
-    getTags(newData);
+$(document).on('change', 'input[name="colorby"]', function() {
+    optionData.filters[0].children.forEach(function(d) {
+        if (d.name == $("input[name='colorby']:checked").val()) {
+            colorOptions = d.children;
+        }
+    });
+    colorScale = d3.scaleOrdinal(d3.schemeBlues[colorOptions.length]);
+    colorScale.domain(colorOptions);
+    updateColor();
 });
 
 $(document).on('change', 'input[name="sizeby"]', function() {
@@ -264,21 +220,6 @@ $(document).on('change', 'input[name="sizeby"]', function() {
     drawChart(newData);
 });
 
-$(document).on('change', 'input[name="filter"]', function() {
-    getColorGroups();
-});
-
-$(document).on('change', '#viewBySelect', function() {
-    var newData = getData();
-    drawChart(newData);
-    getTags(newData);
-});
-
-$(document).on('change', '#filterbySelect', function() {
-    getSubFilters();
-    selectOne("filter");
-    getColorGroups();
-});
 
 //get sub filter from "Lense, Lens, button"
 function getSubFilters() {
@@ -300,7 +241,6 @@ function getSubFilters() {
 //get option values of View By Select element.
 function viewBySelectUpdate() {
     var viewby = $("input[name='viewby']:checked").val();
-
     var viewbyOptions = [];
 
     csvData.map(function(d) {
@@ -318,43 +258,62 @@ function viewBySelectUpdate() {
 }
 
 function wrap(text, width) {
-text.each(function() {
+    text.each(function() {
+        var breakChars = ['/', '&', '-'],
+            text = d3.select(this),
+            textContent = text.text(),
+            spanContent;
 
-    var breakChars = ['/', '&', '-'],
-      text = d3.select(this),
-      textContent = text.text(),
-      spanContent;
+        breakChars.forEach(char => {
+            // Add a space after each break char for the function to use to determine line breaks
+            textContent = textContent.replace(char, char + ' ');
+        });
 
-    breakChars.forEach(char => {
-      // Add a space after each break char for the function to use to determine line breaks
-      textContent = textContent.replace(char, char + ' ');
+        var words = textContent.split(/\s+/).reverse(),
+            word,
+            line = [],
+            lineNumber = 0,
+            lineHeight = 1.1, // ems
+            x = text.attr('x'),
+            y = text.attr('y'),
+            dy = parseFloat(text.attr('dy') || 0),
+            tspan = text.text(null).append('tspan').attr('x', x).attr('y', y).attr('dy', dy + 'em');
+
+        while (word = words.pop()) {
+            line.push(word);
+            tspan.text(line.join(' '));
+            if (tspan.node().getComputedTextLength() > width) {
+                line.pop();
+                spanContent = line.join(' ');
+                breakChars.forEach(char => {
+                    // Remove spaces trailing breakChars that were added above
+                    spanContent = spanContent.replace(char + ' ', char);
+                });
+                tspan.text(spanContent);
+                line = [word];
+                tspan = text.append('tspan').attr('x', x).attr('y', y).attr('dy', ++lineNumber * lineHeight + dy + 'em').text(word);
+            }
+        }
     });
 
-    var words = textContent.split(/\s+/).reverse(),
-      word,
-      line = [],
-      lineNumber = 0,
-      lineHeight = 1.1, // ems
-      x = text.attr('x'),
-      y = text.attr('y'),
-      dy = parseFloat(text.attr('dy') || 0),
-      tspan = text.text(null).append('tspan').attr('x', x).attr('y', y).attr('dy', dy + 'em');
+}
 
-    while (word = words.pop()) {
-      line.push(word);
-      tspan.text(line.join(' '));
-      if (tspan.node().getComputedTextLength() > width) {
-        line.pop();
-        spanContent = line.join(' ');
-        breakChars.forEach(char => {
-          // Remove spaces trailing breakChars that were added above
-          spanContent = spanContent.replace(char + ' ', char);
-        });
-        tspan.text(spanContent);
-        line = [word];
-        tspan = text.append('tspan').attr('x', x).attr('y', y).attr('dy', ++lineNumber * lineHeight + dy + 'em').text(word);
-      }
-    }
-  });
+function updateColor() {
+    drawLengeds();
+    d3.selectAll(".tree-rect")
+        .transition().duration(500)
+        .attr('fill', function(d) {
+            return colorScale(d.data.color);
+        })
+}
+
+function drawLengeds() {
+    d3.select("#legends_wrapper").html('');
+    var leg_svg = d3.select("#legends_wrapper").append('svg').attr("width", 300).attr("height", 300).append("g").attr("transform", 'translate(20,30)');
+    var leg_wrapper = leg_svg.selectAll('g').data(colorOptions).enter().append('g').attr("transform", (d, i) => {
+        return "translate(0," + 30 * i + ")";
+    });
+    leg_wrapper.append('rect').attr('x', 0).attr('y', 0).attr('width', 20).attr('height', 20).attr('fill', (d) => colorScale(d));
+    leg_wrapper.append('text').attr('x', 30).attr('y', 15).text((d) => d);
 
 }

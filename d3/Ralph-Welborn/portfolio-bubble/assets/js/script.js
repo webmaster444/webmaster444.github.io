@@ -35,6 +35,13 @@ const div = d3
 
 var circlesWrapper;
 
+function setToolTip(d){
+    if(d[rOption] == parseInt(d[rOption])){
+        return d['name'] + " : " + d[rOption];
+    }else{
+        return d['name'] + " : " + parseFloat(d[rOption]).toFixed(1);
+    }
+}
 d3.csv("assets/bubble-data.csv").then(function(data) {
     var colorGroup = [];
 
@@ -142,7 +149,13 @@ d3.csv("assets/bubble-data.csv").then(function(data) {
                 .duration(200)
                 .style('opacity', 0.9);
             div
-                .html(d['name'] + " : " + d[rOption])
+                .html(function(){
+    if(d[rOption] == parseInt(d[rOption])){
+        return d['name'] + " : " + d[rOption];
+    }else{
+        return d['name'] + " : " + parseFloat(d[rOption]).toFixed(1);
+    }
+})
                 .style('left', (d3.event.layerX) + 'px')
                 .style('top', (d3.event.layerY - 28) + 'px');
         })
@@ -186,7 +199,14 @@ function updateChart(newData) {
                 .duration(200)
                 .style('opacity', 0.9);
             div
-                .html(d['name'] + " : " + d[rOption])
+                .html(function(){
+
+    if(d[rOption] == parseInt(d[rOption])){
+        return d['name'] + " : " + d[rOption];
+    }else{
+        return d['name'] + " : " + parseFloat(d[rOption]).toFixed(1);
+    }
+                })
                 .style('left', (d3.event.layerX) + 'px')
                 .style('top', (d3.event.layerY - 28) + 'px');
         })
