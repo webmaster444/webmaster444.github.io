@@ -16,7 +16,7 @@ var svg = d3.select("#chart_wrapper").append('svg').attr("width", wrapperWidth).
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
 var simulation = d3.forceSimulation()
-    .force("link", d3.forceLink().id(function(d) { return d.id; }).distance(20).strength(1))
+    .force("link", d3.forceLink().id(function(d) { return d.id; }).distance(50).strength(0.1))
     .force("charge", d3.forceManyBody())
     .force("center", d3.forceCenter(width / 2, height / 2))
 
@@ -79,12 +79,13 @@ d3.json("newjson.json", function(error, data) {
   var node = svg.append("g")
       .attr("class", "nodes")
     .selectAll("g")
-    .data(graph.nodes)
+    .data(graph.nodes.filter(function(d){return d.group !=1}))
     .enter().append("g")
     
   var circles = node.append("circle")
-      .attr("r", 5)
-      .attr("fill", function(d) { return color(d.group); })
+      .attr("r", 15)
+      // .attr("fill", function(d) { return color(d.group); })
+      .attr("fill", "steelblue")
       .call(d3.drag()
           .on("start", dragstarted)
           .on("drag", dragged)
@@ -107,6 +108,36 @@ d3.json("newjson.json", function(error, data) {
   simulation.force("link")
       .links(graph.links);
 
+  var rectNode = svg.append("g")
+      .attr("class", "nodes")
+    .selectAll("g")
+    .data(graph.nodes.filter(function(d){return d.group == 1}))
+    .enter().append("g")
+    
+  var circles = rectNode.append("rect")
+      .attr("x",-15)
+      .attr("y",-15)
+      .attr("width", 30)
+      .attr("height", 30)
+      .attr("rx", 3)
+      .attr("ry", 3)
+      // .attr("fill", function(d) { return color(d.group); })
+      .attr("fill", "steelblue")
+      .call(d3.drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended));
+
+  var lables = rectNode.append("text")
+      .text(function(d) {
+        return d.id;
+      })
+      .attr('x', 6)
+      .attr('y', 3);
+
+  rectNode.append("title")
+      .text(function(d) { return d.id; });
+
   function ticked() {
     link
         .attr("x1", function(d) { return d.source.x; })
@@ -115,6 +146,11 @@ d3.json("newjson.json", function(error, data) {
         .attr("y2", function(d) { return d.target.y; });
 
     node
+        .attr("transform", function(d) {
+          return "translate(" + d.x + "," + d.y + ")";
+        })    
+
+    rectNode
         .attr("transform", function(d) {
           return "translate(" + d.x + "," + d.y + ")";
         })
