@@ -47,66 +47,60 @@ function drawChartfromJson(data) {
         }).attr("fill", "white").attr("stroke", "black");
 
     d3.selectAll(".node.WTW")
-        .append('polygon').attr("points", d => {
-            var pointsA = [];
-            var x = d._draw_[1].rect[0] - d._draw_[1].rect[2];
-            var y = d._draw_[1].rect[1];
-            var tmp1 = [],
-                tmp2 = [],
-                tmp3 = [],
-                tmp4 = [];
-            tmp1.push(x);
-            tmp1.push(y);
-
-            tmp2.push(d._draw_[1].rect[0]);
-            tmp2.push(d._draw_[1].rect[1] - d._draw_[1].rect[3]);
-
-            tmp3.push(d._draw_[1].rect[0] + d._draw_[1].rect[2]);
-            tmp3.push(y);
-
-            tmp4.push(d._draw_[1].rect[0]);
-            tmp4.push(d._draw_[1].rect[1] + d._draw_[1].rect[3]);
-
-            pointsA.push(tmp1);
-            pointsA.push(tmp2);
-            pointsA.push(tmp3);
-            pointsA.push(tmp4);
-
-            return pointsA;
-        }).attr("fill", "none").attr("stroke", "black");
+        .append("svg:image")
+        .attr('x', d=>d._draw_[1].rect[0] - d._draw_[1].rect[2])
+        .attr('y', d=>d._draw_[1].rect[1] - d._draw_[1].rect[3])
+        .attr('width', d=>d._draw_[1].rect[2] * 2)
+        .attr('height', d=>d._draw_[1].rect[2])
+        .attr("xlink:href", "images/WTW.png");        
 
     d3.selectAll(".node.SRES")
-        .append('polygon').attr("points", d => {
-            var pointsA = [];
-            var x = d._draw_[1].rect[0] - d._draw_[1].rect[2];
-            var y = d._draw_[1].rect[1] - d._draw_[1].rect[3];
-            var tmp1 = [],
-                tmp2 = [],
-                tmp3 = [],
-                tmp4 = [],
-                tmp5 = [];
-            tmp1.push(x);
-            tmp1.push(y);
+            .append("svg:image")
+        .attr('x', d=>d._draw_[1].rect[0] - d._draw_[1].rect[2] )
+        .attr('y', d=>d._draw_[1].rect[1] - d._draw_[1].rect[3])
+        .attr('width', d=>d._draw_[1].rect[2] * 2)
+        .attr('height', d=>d._draw_[1].rect[2])
+        .attr("xlink:href", "images/SRES.png");  
 
-            tmp2.push(d._draw_[1].rect[0]);
-            tmp2.push(d._draw_[1].rect[1] - d._draw_[1].rect[3] - 5);
+    d3.selectAll(".node.WPS")
+            .append("svg:image")
+        .attr('x', d=>d._draw_[1].rect[0] - d._draw_[1].rect[2] * 2)
+        .attr('y', d=>d._draw_[1].rect[1])
+        .attr('width', d=>d._draw_[1].rect[2] * 2)
+        .attr('height', d=>d._draw_[1].rect[2])
+        .attr("xlink:href", "images/WPS.png");
 
-            tmp3.push(d._draw_[1].rect[0] + d._draw_[1].rect[2]);
-            tmp3.push(y);
+        // .append('polygon').attr("points", d => {
+        //     var pointsA = [];
+        //     var x = d._draw_[1].rect[0] - d._draw_[1].rect[2];
+        //     var y = d._draw_[1].rect[1] - d._draw_[1].rect[3];
+        //     var tmp1 = [],
+        //         tmp2 = [],
+        //         tmp3 = [],
+        //         tmp4 = [],
+        //         tmp5 = [];
+        //     tmp1.push(x);
+        //     tmp1.push(y);
 
-            tmp4.push(d._draw_[1].rect[0] + d._draw_[1].rect[2]);
-            tmp4.push(d._draw_[1].rect[1] + d._draw_[1].rect[3]);
+        //     tmp2.push(d._draw_[1].rect[0]);
+        //     tmp2.push(d._draw_[1].rect[1] - d._draw_[1].rect[3] - 5);
 
-            tmp5.push(x);
-            tmp5.push(d._draw_[1].rect[1] + d._draw_[1].rect[3]);
-            pointsA.push(tmp1);
-            pointsA.push(tmp2);
-            pointsA.push(tmp3);
-            pointsA.push(tmp4);
-            pointsA.push(tmp5);
+        //     tmp3.push(d._draw_[1].rect[0] + d._draw_[1].rect[2]);
+        //     tmp3.push(y);
 
-            return pointsA;
-        }).attr("fill", "none").attr("stroke", "black");
+        //     tmp4.push(d._draw_[1].rect[0] + d._draw_[1].rect[2]);
+        //     tmp4.push(d._draw_[1].rect[1] + d._draw_[1].rect[3]);
+
+        //     tmp5.push(x);
+        //     tmp5.push(d._draw_[1].rect[1] + d._draw_[1].rect[3]);
+        //     pointsA.push(tmp1);
+        //     pointsA.push(tmp2);
+        //     pointsA.push(tmp3);
+        //     pointsA.push(tmp4);
+        //     pointsA.push(tmp5);
+
+        //     return pointsA;
+        // }).attr("fill", "none").attr("stroke", "black");
 
 
     node.append('text').attr('x', (d) => {
