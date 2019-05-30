@@ -11,7 +11,7 @@
       "color":"steelblue",
       "width":"2",
       "size":"3",
-      "shape":"circle"
+      "shape":"triangle"
    },
    {
       "from":"\u05e1\u05dc\u05e7\u05d5\u05dd \u05e8\u05d0\u05e9 \u05d4\u05e2\u05d9\u05df",
@@ -24,7 +24,7 @@
       "color":"red",
       "width":"5",
       "size":"2",
-      "shape":"round"
+      "shape":"diamond"
    },
    {
       "id":"adbc2c9c-9f9e-479e-9650-f702b8f68d5f",
@@ -65,7 +65,7 @@
       "color":"green",
       "width":"2",
       "size":"3",
-      "shape":"square"
+      "shape":"triangle"
    },
    {
       "from":"SRV20",
@@ -425,7 +425,7 @@
       "color":"steelblue",
       "width":"2",
       "size":"2",
-      "shape":"round"
+      "shape":"triangle"
    },
    {
       "from":"APR-CAS1",
@@ -438,7 +438,7 @@
       "color":"steelblue",
       "width":"2",
       "size":"2",
-      "shape":"round"
+      "shape":"triangle"
    },
    {
       "from":"GW-2",
@@ -533,7 +533,7 @@
       "color":"steelblue",
       "width":"2",
       "size":"3",
-      "shape":"square"
+      "shape":"diamond"
    },
    {
       "from":"APR-GRID1-WEB-1",
@@ -560,7 +560,7 @@
       "color":"grey",
       "width":"2",
       "size":"3",
-      "shape":"square"
+      "shape":"diamond"
    },
    {
       "from":"Allprobe microservice Web Cluster",
@@ -575,7 +575,7 @@
       "color":"steelblue",
       "width":"5",
       "size":"2",
-      "shape":"round"
+      "shape":"diamond"
    },
    {
       "from":"probecules IL_D1-S3",
@@ -588,7 +588,7 @@
       "color":"lightgreen",
       "width":"2",
       "size":"2",
-      "shape":"round"
+      "shape":"diamond"
    },
    {
       "from":"Storage-1",
@@ -1087,7 +1087,7 @@
       "color":"steelblue",
       "width":"2",
       "size":"2",
-      "shape":"round"
+      "shape":"diamond"
    },
    {
       "from":"RR-ELS-1",
@@ -1178,7 +1178,7 @@
       "color":"steelblue",
       "width":"2",
       "size":"2",
-      "shape":"circle"
+      "shape":"triangle"
    },
    {
       "from":"RR-SQL-3",
@@ -1191,7 +1191,7 @@
       "color":"steelblue",
       "width":"2",
       "size":"2",
-      "shape":"circle"
+      "shape":"triangle"
    },
    {
       "from":"RR-SQL-10",
@@ -1217,7 +1217,7 @@
       "color":"steelblue",
       "width":"2",
       "size":"2",
-      "shape":"square"
+      "shape":"diamond"
    },
    {
       "from":"RR-ELS-7",

@@ -103,8 +103,8 @@ d3.json('newdata2.json', (error, data) => {
             .attr('refX',20)
             .attr('refY',0)
             .attr('orient','auto')
-            .attr('markerWidth',7)
-            .attr('markerHeight',7)
+            .attr('markerWidth',4)
+            .attr('markerHeight',4)
             .attr('xoverflow','visible')
         .append('svg:path')
         .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
@@ -123,7 +123,8 @@ d3.json('newdata2.json', (error, data) => {
         .style('stroke-width', '2px')
         .attr("marker-end", "url(#triangle)");
 
-    const node_g = svg.selectAll('.node_g').data(nodes).enter().append('g').attr('class', (d)=>'node_g ' + d.shape)        .on('mousedown', function(d){            
+    const node_g = svg.selectAll('.node_g').data(nodes).enter().append('g').attr('class', (d)=>'node_g ' + d.shape)
+        .on('mousedown', function(d){                        
             $("#container-menu").toggle(100)
                 .css({
                     top: event.pageY + "px",
@@ -132,31 +133,31 @@ d3.json('newdata2.json', (error, data) => {
 
             $("#empty-menuitem").on('click',function(){
                 $("#container-menu").hide(100);
-                showDiv(d);
+                showDiv(d, event.pageY, event.pageX);
             })
         })
         .on('mouseover',function(d){
             d3.selectAll('.link').classed('inactive',true);
             d3.selectAll('.link').classed('active',false);
-            d3.selectAll('circle').classed('inactive',true);
-            d3.selectAll('circle').classed('active',false);
+            d3.selectAll('g.node_g').classed('inactive',true);
+            d3.selectAll('g.node_g').classed('active',false);
             d3.select(this).classed('active',true);
             $("[attr-from='"+d.id + "']").each(function(){
                 $(this).addClass('active');
                 var toId = $(this).attr('attr-to');
-                $('[attr-id="'+toId + '"]').addClass('active');
+                $('[attr-id="'+toId + '"]').parent().addClass('active');
             })
             $("[attr-to='"+d.id + "']").each(function(){
                 $(this).addClass('active');                                
                 var fromId = $(this).attr('attr-from');
-                $('[attr-id="'+fromId + '"]').addClass('active');
+                $('[attr-id="'+fromId + '"]').parent().addClass('active');
             })
         })
         .on('mouseout',function(d){
             d3.selectAll('.link').classed('inactive',false);
             d3.selectAll('.link').classed('active',true);
-            d3.selectAll('circle').classed('inactive',false);
-            d3.selectAll('circle').classed('active',true);
+            d3.selectAll('g.node_g').classed('inactive',false);
+            d3.selectAll('g.node_g').classed('active',true);
         })
         .call(d3.drag()
             .on("start", dragstarted)
@@ -190,6 +191,14 @@ d3.json('newdata2.json', (error, data) => {
         .attr('height', d=>d.size * 10)
         .attr('attr-id', d=>d.id)
         // .attr('fill', d => z(d.cluster))      
+        .attr('fill', d=>d.color);
+
+    const diamond = d3.selectAll('.diamond').append('polygon')
+        .attr("points", d=>[[-d.size*5, 0],[0,-d.size*5],[d.size*5, 0],[0,d.size*5]])                
+        .attr('fill', d=>d.color);
+
+    const triangle = d3.selectAll('.diamond').append('polygon')
+        .attr("points", d=>[[-d.size*5, 0],[0,-d.size*5],[d.size*5, 0],[0,d.size*5]])                
         .attr('fill', d=>d.color);
 
     node_g.append('text').attr('x', -10).attr("y", 5)
@@ -327,8 +336,16 @@ function makeNodes(data){
 }
 
 
-function showDiv(d){
-    $('.modal-title').html(d.id + ' - detail');
+function showDiv(d, top, left){
+    // $('.modal-title').html(d.id + ' - detail');
     $("#modal-body").html('<h3>'+d.id+'</h3>');
-    $("#node-detail-modal").modal('show');    
+    $("#node-detail-modal").css({
+                    top: (top  - 100)+ "px",
+                    left: (left - 100)+ "px"
+    }).show();    
 }
+
+$('.close').on('click',function(){
+    console.log('aaa');
+    $("#node-detail-modal").hide();
+})

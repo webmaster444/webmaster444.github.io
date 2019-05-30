@@ -19,6 +19,8 @@ var lineFunction = d3.line()
 function drawChartfromJson(data) {
     var jsonData = JSON.parse(data);
 
+    console.log(jsonData.objects);
+    console.log(jsonData.edges);
     var array = jsonData.bb.split(',');
     array[2] = parseFloat(array[2]) + 10;
     array[3] = parseFloat(array[3]) + 30;
@@ -31,9 +33,33 @@ function drawChartfromJson(data) {
         .attr("viewBox", newviewBox)
         .append('g').attr("transform", "translate(0, 15)")
 
-    var node = svg.selectAll('g.node').data(jsonData.objects).enter().append('g').attr('class', d => 'node ' + d.type);
-
-
+    var node = svg.selectAll('g.node').data(jsonData.objects).enter().append('g')
+    .attr('class', d => 'node ' + d.type)
+    .attr("node-id", d=>d._gvid)
+    .on('mousedown',function(d){
+        if($('.clicked').length == 0){
+            $(this).addClass('clicked');
+            $(".node").addClass('inactive');
+            $(".edge").addClass('inactive');
+            $('[node-id="'+d._gvid+'"]').addClass('active');
+            $('[edge-from="'+d._gvid+'"]').each(function(){
+                $(this).addClass('active');
+                var id = $(this).attr('edge-to');
+                $('[node-id="'+id+'"]').addClass('active');
+            })
+            $('[edge-to="'+d._gvid+'"]').each(function(){
+                $(this).addClass('active');
+                var id = $(this).attr('edge-from');
+                $('[node-id="'+id+'"]').addClass('active');
+            });
+        }else{
+            $('.clicked').removeClass('clicked');
+            $(".node").removeClass('inactive');
+            $(".edge").removeClass('inactive');
+            $(".node").removeClass('active');
+            $(".edge").removeClass('active');    
+        }        
+    })
 
     d3.selectAll(".node.FMZ")
         .append('rect').attr('x', (d) => {
@@ -109,7 +135,10 @@ function drawChartfromJson(data) {
         return d._ldraw_[2].pt[1] + 7;
     }).attr("text-anchor", "middle").text(d => d._ldraw_[2].text);
 
-    var edge = svg.selectAll('g.edge').data(jsonData.edges).enter().append('g').attr('class', 'edge');
+    var edge = svg.selectAll('g.edge').data(jsonData.edges).enter().append('g')
+    .attr('class', 'edge')
+    .attr('edge-from', d=>d.tail)
+    .attr('edge-to', d=>d.head);
 
     edge.append('path').attr('d', d => {        
         var pointsA;
