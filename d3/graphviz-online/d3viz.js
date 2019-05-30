@@ -111,14 +111,44 @@ function drawChartfromJson(data) {
 
     var edge = svg.selectAll('g.edge').data(jsonData.edges).enter().append('g').attr('class', 'edge');
 
-    edge.append('path').attr('d', d => {
-            var pointsA = d._draw_[1].points;
+    edge.append('path').attr('d', d => {        
+        var pointsA;
+            if(d._draw_[1].points != undefined){
+                pointsA = d._draw_[1].points;
+            }else{
+                pointsA = d._draw_[2].points;
+            }
+            
             return lineFunction(pointsA)
         })
-        .attr("fill", 'none').attr("stroke", "black");
+        .attr("fill", 'none')
+        .attr("stroke", d=>{
+            if(d.color == undefined){
+                return "black";
+            }else{
+                return d.color;
+            }
+        })
+        .attr("stroke-width", d=>{
+            if(d.penwidth == undefined){
+                return 1;
+            }else{
+                return d.penwidth;
+            }
+        });
 
     edge.append('polygon').attr('points', d => {
-        return d._hdraw_[3]['points']
+        if(d._hdraw_[3].points != undefined){
+            return d._hdraw_[3].points;
+        }else{
+            return d._hdraw_[4].points;
+        }
+    }).attr('fill',d=>{
+        if(d.color == undefined){
+            return "black";
+        }else{
+            return d.color;
+        }
     });
     edge.append('text')
         .attr("x", d => {
