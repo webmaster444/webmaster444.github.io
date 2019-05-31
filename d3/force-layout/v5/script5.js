@@ -76,7 +76,7 @@ d3.json('newdata2.json', (error, data) => {
         
     const defaultRadius = 15;
     nodes.forEach(function(node) {        
-        node.r = defaultRadius;
+        node.r = node.size * 5;
         node.cluster = result[node.id]
     });
 
@@ -125,7 +125,8 @@ d3.json('newdata2.json', (error, data) => {
         .attr("marker-end", "url(#triangle)");
 
     const node_g = svg.selectAll('.node_g').data(nodes).enter().append('g').attr('class', (d)=>'node_g ' + d.shape)
-        .on('mousedown', function(d){                        
+        .on('mousedown', function(d){                 
+            console.log(d);
             $("#empty-menuitem").html(d.id);
             $("#container-menu").toggle(100)
                 .css({
@@ -194,14 +195,17 @@ d3.json('newdata2.json', (error, data) => {
 
     const diamond = d3.selectAll('.diamond').append('polygon')
         .attr("points", d=>[[-d.size*5, 0],[0,-d.size*5],[d.size*5, 0],[0,d.size*5]])                
+        .attr('attr-id', d=>d.id)
         .attr('fill', d=>d.color);
 
     const triangle = d3.selectAll('.triangle').append('polygon')
         .attr("points", d=>[[-d.size*5, d.size * 5],[0,-d.size*5],[d.size*5, d.size * 5]])
+        .attr('attr-id', d=>d.id)
         .attr('fill', d=>d.color);
     
     const pentagon = d3.selectAll('.pentagon').append('polygon')
         .attr("points", d=>[[-d.size*4, d.size * 5],[-d.size*5,0],[0,-d.size*4],[d.size*5, 0],[d.size*4, d.size * 5]])
+        .attr('attr-id', d=>d.id)
         .attr('fill', d=>d.color);
 
     node_g.append('text').attr('x', -10).attr("y", 5)
