@@ -40,7 +40,7 @@ d3.json('newdata2.json', (error, data) => {
     const nodes = graph.nodes;
     const links = graph.links;
 
-    const width = 1560;
+    const width = $("#chart_wrapper").width();
     const height = 800;
 
     // separation between same-color circles
@@ -90,10 +90,11 @@ d3.json('newdata2.json', (error, data) => {
         }
     });    
 
-    const svg = d3.select('body')
+    const svg = d3.select('#chart_wrapper')
         .append('svg')
         .attr('height', height)
         .attr('width', width)
+        .attr('class', 'hide')
         .append('g')
         .attr('transform', `translate(${width / 2},${height / 2})`);
 
@@ -125,6 +126,7 @@ d3.json('newdata2.json', (error, data) => {
 
     const node_g = svg.selectAll('.node_g').data(nodes).enter().append('g').attr('class', (d)=>'node_g ' + d.shape)
         .on('mousedown', function(d){                        
+            $("#empty-menuitem").html(d.id);
             $("#container-menu").toggle(100)
                 .css({
                     top: event.pageY + "px",
@@ -167,11 +169,8 @@ d3.json('newdata2.json', (error, data) => {
 
     const circles = d3.selectAll('.circle').append('circle')
         .attr('attr-id', d=>d.id)
-        .attr('r', d => d.size * 5)
-        // .attr('fill', d => z(d.cluster))      
-        .attr('fill', d=>d.color)
-        // .attr('stroke', 'white')
-        // .attr('stroke-width', 1)
+        .attr('r', d => d.size * 5)        
+        .attr('fill', d=>d.color)        
     
     const rounds = d3.selectAll('.round').append('rect')
         .attr("x", d=>-d.size * 5)
@@ -197,8 +196,12 @@ d3.json('newdata2.json', (error, data) => {
         .attr("points", d=>[[-d.size*5, 0],[0,-d.size*5],[d.size*5, 0],[0,d.size*5]])                
         .attr('fill', d=>d.color);
 
-    const triangle = d3.selectAll('.diamond').append('polygon')
-        .attr("points", d=>[[-d.size*5, 0],[0,-d.size*5],[d.size*5, 0],[0,d.size*5]])                
+    const triangle = d3.selectAll('.triangle').append('polygon')
+        .attr("points", d=>[[-d.size*5, d.size * 5],[0,-d.size*5],[d.size*5, d.size * 5]])
+        .attr('fill', d=>d.color);
+    
+    const pentagon = d3.selectAll('.pentagon').append('polygon')
+        .attr("points", d=>[[-d.size*4, d.size * 5],[-d.size*5,0],[0,-d.size*4],[d.size*5, 0],[d.size*4, d.size * 5]])
         .attr('fill', d=>d.color);
 
     node_g.append('text').attr('x', -10).attr("y", 5)
@@ -220,8 +223,12 @@ d3.json('newdata2.json', (error, data) => {
         .force('y', d3.forceY().strength(0.005))
         .force('collide', collide)
         .force('cluster', clustering)
-        .force("center", d3.forceCenter(0, 0))
-        .on('tick', ticked);
+        .force("center", d3.forceCenter(0, 0))        
+        .on('tick', ticked)
+        .on('end',function(){
+            d3.select('svg').classed("hide", false);
+            d3.select('#loading').classed("hide", true);
+        })
 
     simulation.force('link')
         .links(graph.links)
@@ -240,7 +247,7 @@ d3.json('newdata2.json', (error, data) => {
     }
 
     function dragstarted(d) {
-        if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+        // if (!d3.event.active) simulation.alphaTarget(0.3).restart();
         d.fx = d.x;
         d.fy = d.y;
     }
@@ -251,7 +258,7 @@ d3.json('newdata2.json', (error, data) => {
     }
 
     function dragended(d) {
-        if (!d3.event.active) simulation.alphaTarget(0);
+        // if (!d3.event.active) simulation.alphaTarget(0);
         d.fx = null;
         d.fy = null;
     }

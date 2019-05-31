@@ -334,7 +334,7 @@
       "color":"steelblue",
       "width":"2",
       "size":"2",
-      "shape":"round"
+      "shape":"pentagon"
    },
    {
       "from":"AllProbe Bugzila",
@@ -680,7 +680,7 @@
       "color":"steelblue",
       "width":"2",
       "size":"2",
-      "shape":"round"
+      "shape":"pentagon"
    },
    {
       "from":"SRV27",
@@ -693,7 +693,7 @@
       "color":"lightgreen",
       "width":"5",
       "size":"2",
-      "shape":"round"
+      "shape":"pentagon"
    },
    {
       "id":"3cb29356-66ad-11e9-9172-353538303761",
@@ -952,7 +952,7 @@
       "color":"steelblue",
       "width":"2",
       "size":"3",
-      "shape":"square"
+      "shape":"pentagon"
    },
    {
       "from":"Allprobe microservice BigData",
@@ -967,7 +967,7 @@
       "color":"steelblue",
       "width":"5",
       "size":"2",
-      "shape":"round"
+      "shape":"pentagon"
    },
    {
       "from":"RR-ELS-8",
@@ -980,7 +980,7 @@
       "color":"steelblue",
       "width":"2",
       "size":"2",
-      "shape":"round"
+      "shape":"pentagon"
    },
    {
       "from":"RR-ELS-9",
@@ -1204,7 +1204,7 @@
       "color":"steelblue",
       "width":"2",
       "size":"2",
-      "shape":"circle"
+      "shape":"pentagon"
    },
    {
       "from":"RR-ELS-6",
@@ -1217,7 +1217,7 @@
       "color":"steelblue",
       "width":"2",
       "size":"2",
-      "shape":"diamond"
+      "shape":"pentagon"
    },
    {
       "from":"RR-ELS-7",
@@ -1269,6 +1269,6 @@
       "color":"steelblue",
       "width":"5",
       "size":"2",
-      "shape":"round"
+      "shape":"pentagon"
    }
 ]
