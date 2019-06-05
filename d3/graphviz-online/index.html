@@ -300,7 +300,7 @@ splines=ortho
         worker.terminate();
       }
 
-      worker = new Worker("full.render.js");
+      worker = new Worker("full.render.js");      
       worker.addEventListener("message", function (e) {
         if (typeof e.data.error !== "undefined") {
           var event = new CustomEvent("error", {"detail": new Error(e.data.error.message)});
