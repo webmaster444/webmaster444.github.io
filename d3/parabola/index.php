@@ -12,6 +12,10 @@
       fill: none;
       stroke: teal;
       }
+
+      .axis line{
+        stroke: #aaa;
+      }
       .axis path, line {
       stroke: black;
       shape-rendering: crispEdges;
@@ -97,12 +101,18 @@
    </style>
 </head>
 <body>
+  <?php 
+    if($_GET){
+    var_dump($_GET);
+  }
+  ?>
    <div id="chart_wrapper"></div>
 <div id="input_wrapper">
    <div class="container-fluid">
       <div class="row">
          <div class="col-sm-12">
 
+          <form method="GET">
             <h2> Test results </h2>
             <table id="test_table" class="table">
                <tr>
@@ -135,25 +145,25 @@
             <table id="system_table" class="table">
                <tr>
                   <td>
-                     <div><label> X3 :</label><input type="text" id="x3" onchange="changeABC(1)" value="1500" /></div>
+                     <div><label> X3 :</label><input type="text" id="x3" onchange="changeABC(1)" name="x3" value="1500" /></div>
                   </td>
                   <td>
-                     <div><label> X2 :</label><input type="text" id="x2" onchange="changeABC(1)" value="1000"/></div>
+                     <div><label> X2 :</label><input type="text" id="x2" onchange="changeABC(1)" name="x2" value="1000"/></div>
                   </td>
                   <td>
-                     <div><label> X1 :</label><input type="text" id="x1" onchange="changeABC(1)" value="0"/></div>
+                     <div><label> X1 :</label><input type="text" id="x1" onchange="changeABC(1)" name="x1" value="0"/></div>
                   </td>
                   <td>Flow</td>
                </tr>
                <tr>
                   <td>
-                     <div><label> Y3 :</label><input type="text" id="y3" onchange="changeABC(1)" value="90" /></div>
+                     <div><label> Y3 :</label><input type="text" id="y3" onchange="changeABC(1)" name="y3" value="90" /></div>
                   </td>
                   <td>
-                     <div><label> Y2 :</label><input type="text" id="y2" onchange="changeABC(1)" value="100"/></div>
+                     <div><label> Y2 :</label><input type="text" id="y2" onchange="changeABC(1)" name="y2" value="100"/></div>
                   </td>
                   <td>
-                     <div><label> Y1 :</label><input type="text" id="y1" onchange="changeABC(1)" value="105"/></div>
+                     <div><label> Y1 :</label><input type="text" id="y1" onchange="changeABC(1)" name="y1" value="105"/></div>
                   </td>
                   <td>Pressure</td>
                </tr>
@@ -161,9 +171,11 @@
 
             <h3>System demand</h3>
             <table id="demand_table" class="table">
-            <tr><td><label> X7 :</label><input type="text" id="x7" value="800" onchange="changeCircle()"/></td></tr>
-            <tr><td><label> Y7 :</label><input type="text" id="y7" value="80" onchange="changeCircle()"/></td></tr>
+            <tr><td><label> X7 :</label><input type="text" id="x7" value="800" name="x7" onchange="changeCircle()"/></td></tr>
+            <tr><td><label> Y7 :</label><input type="text" id="y7" value="80" name="y7" onchange="changeCircle()"/></td></tr>
           </table>
+          <input type="submit" value="Send" />
+        </form>
          </div>
       </div>
    </div>
@@ -246,7 +258,8 @@
 
         svg.select('.circle_pos').remove();
         svg.append('text').attr('class','circle_pos').attr('x',x(cx) - 50).attr('y',y(cy) - 10).text("X7,Y7");
-        svg.append('text').attr('class','circle_pos').attr('x',x(cx) - 50).attr('y',y(cy) + 10).text(cx +"," +cy);
+        svg.append('text').attr('class','circle_pos').attr('x',x(cx) - 50).attr('y',y(cy) + 10).text("(" +cx +"," +cy+")");
+        svg.append('text').attr('class','circle_pos').attr('x',x(cx) + 50).attr("y",y(cy)+30).text("System Demand");
       }
       changeABC(1);
       changeABC(2);
@@ -254,11 +267,16 @@
       function drawStaticLines(){
         svg.append('line').attr('class','xline').attr('x1',x(0)).attr('x2',x(2500)).attr('y1',y(65)).attr('y2',y(65));
         svg.append('line').attr('class','xline').attr('x1',x(0)).attr('x2',x(2500)).attr('y1',y(140)).attr('y2',y(140));
+        svg.append('text').attr('x',x(0)+3).attr('y',y(65) - 10).text("Min Pressure 65% 65 [PSI]").attr("fill","#004884");
+        svg.append('text').attr('x',x(0)+3).attr('y',y(140) - 10).text("Max Pressure 140% 140 [PSI]").attr("fill","#004884");
         svg.append('line').attr('class','yline').attr('x1',x(1000)).attr('x2',x(1000)).attr('y1',y(0)).attr('y2',y(200));
         svg.append('line').attr('class','yline').attr('x1',x(1500)).attr('x2',x(1500)).attr('y1',y(0)).attr('y2',y(200));
+        svg.append("text").attr("transform", "translate("+(x(1000) + 20)+"," + (y(0) - 5) + ") rotate(-90)").attr("fill","red").text("1000 [GPM] ");
+        svg.append("text").attr("transform", "translate("+(x(1000) - 10)+"," + (y(0) - 5) + ") rotate(-90)").attr("fill","black").text("100% Capacity");
+        svg.append("text").attr("transform", "translate("+(x(1500) + 20)+"," + (y(0) - 5) + ") rotate(-90)").attr("fill","red").text("1500 [GPM] ");
+        svg.append("text").attr("transform", "translate("+(x(1500) - 10)+"," + (y(0) - 5) + ") rotate(-90)").attr("fill","black").text("150% Capacity ");
       }
       function drawChart(x1,x2,x3,y1,y2,y3,lineno){
-
         //get a,b,c value
         var denom = (x1 - x2) * (x1 - x3) * (x2 - x3);
         a = (x3 * (y2 - y1) + x2 * (y1 - y3) + x1 * (y3 - y2)) / denom;
@@ -283,6 +301,8 @@
           svg.append('text').attr('x',x(x2)).attr('y',y(y2) + 10).text("("+x2+',' +y2 +")").attr('class','line1text');
           svg.append('text').attr('x',x(x3)).attr('y',y(y3) - 10).text("X3,Y3").attr('class','line1text');
           svg.append('text').attr('x',x(x3)).attr('y',y(y3) + 10).text("("+x3+',' +y3 +")").attr('class','line1text');
+
+          svg.append("text").attr("x", x(x3) - 500).attr("y",y(y3) - 10).text("Test Results").attr('class','line1text').attr("font-weight",'bold');
         }else{
           svg.select('.line2').remove();
           svg.append('path')        
@@ -331,5 +351,9 @@
       function changeCircle(){
        drawDemandCircle($("#x7").val(), $("#y7").val()); 
       }
+
+  $(window).on("resize", function () {
+    draw();
+  });
    </script>
 </body>
