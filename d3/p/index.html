@@ -60,15 +60,19 @@
       .demand_circle{
         fill:#ff7f00;
       }
+      .circle_pos{
+        fill: #ff7f00;
+        text-anchor: middle;
+      }
       label{
         display: block;        
       }
 
-      #test_table td,#system_table td{
+      #test_table td,#system_table td,#demand_table td{
         border: 1px solid black;
         padding:10px;
       }
-      #test_table,#system_table{
+      #test_table,#system_table,#demand_table{
         text-align: center;
       }
       table input{
@@ -77,6 +81,9 @@
       }
       #system_table label{
         color: #e53935;
+      }
+      #demand_table label{
+        color: #ff7f00;
       }
       #test_table label{
         color: #66bb6a;        
@@ -88,7 +95,8 @@
 <div id="input_wrapper">
    <div class="container-fluid">
       <div class="row">
-         <div class="col-sm-6">
+         <div class="col-sm-12">
+
             <h2> Test results </h2>
             <table id="test_table">
                <tr>
@@ -116,8 +124,7 @@
                <tr>
                </tr>
             </table>
-         </div>
-         <div class="col-sm-6">
+
             <h2> System Data </h2>
             <table id="system_table">
                <tr>
@@ -145,19 +152,18 @@
                   <td>Pressure</td>
                </tr>
             </table>
-         </div>
-      </div>
-      <div class="row">
-         <div>
+
             <h3>System demand</h3>
-            <input type="text" id="x7" value="800" onchange="changeCircle()"/>
-            <input type="text" id="y7" value="80" onchange="changeCircle()"/>
+            <table id="demand_table">
+            <tr><td><label> X7 :</label><input type="text" id="x7" value="800" onchange="changeCircle()"/></td></tr>
+            <tr><td><label> Y7 :</label><input type="text" id="y7" value="80" onchange="changeCircle()"/></td></tr>
+          </table>
          </div>
       </div>
    </div>
 </div>
    <script>
-      var margin = {top: 50, right: 50, bottom: 50, left: 50};
+      var margin = {top: 50, right: 100, bottom: 100, left: 100};
       var width = $("#chart_wrapper").width() - margin.left - margin.right;
       var height = 800 - margin.top - margin.bottom;
       
@@ -202,15 +208,26 @@
         .attr('class', 'axis')
         .attr('transform', 'translate(0,0)')
         .call(yAxis.tickSize(-width));
-      
+
+    svg
+        .append("text").attr('class', 'y_label_text')
+        .attr("transform", "translate(-35," + (height + margin.bottom) / 2 + ") rotate(-90)")
+        .text("Pressure [PSI] ");
+
+    svg
+        .append("text").attr('class', 'x_label_text')
+        .attr("transform", "translate(" + ((margin.left + width) / 2) + "," + (height + 50) + ")")
+        .attr('text-anchor', 'middle')
+        .text("Flow [GPM]");
+
       drawDemandCircle($("#x7").val(), $("#y7").val());
       function drawDemandCircle(cx,cy){
         svg.select('.demand_circle').remove();
         svg.append('circle').attr('class','demand_circle').attr('cx',x(cx)).attr('cy',y(cy)).attr('r',10);
 
         svg.select('.circle_pos').remove();
-        svg.append('text').attr('class','circle_pos').attr('x',x(cx) - 10).attr('y',y(cy) - 10).text("X7,Y7");
-        svg.append('text').attr('class','circle_pos').attr('x',x(cx) - 10).attr('y',y(cy) - 10).text("X7,Y7");
+        svg.append('text').attr('class','circle_pos').attr('x',x(cx) - 50).attr('y',y(cy) - 10).text("X7,Y7");
+        svg.append('text').attr('class','circle_pos').attr('x',x(cx) - 50).attr('y',y(cy) + 10).text(cx +"," +cy);
       }
       changeABC(1);
       changeABC(2);
