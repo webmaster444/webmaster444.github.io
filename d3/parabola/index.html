@@ -88,6 +88,12 @@
       #test_table label{
         color: #66bb6a;        
       }      
+
+      @media screen and (max-width: 767px){
+        table input{
+          max-width: 50px;
+        }
+      }
    </style>
 </head>
 <body>
@@ -98,7 +104,7 @@
          <div class="col-sm-12">
 
             <h2> Test results </h2>
-            <table id="test_table">
+            <table id="test_table" class="table">
                <tr>
                   <td>
                      <div><label> X6 :</label><input type="text" id="x6" onchange="changeABC(2)" value="1500" /></div>
@@ -126,7 +132,7 @@
             </table>
 
             <h2> System Data </h2>
-            <table id="system_table">
+            <table id="system_table" class="table">
                <tr>
                   <td>
                      <div><label> X3 :</label><input type="text" id="x3" onchange="changeABC(1)" value="1500" /></div>
@@ -154,7 +160,7 @@
             </table>
 
             <h3>System demand</h3>
-            <table id="demand_table">
+            <table id="demand_table" class="table">
             <tr><td><label> X7 :</label><input type="text" id="x7" value="800" onchange="changeCircle()"/></td></tr>
             <tr><td><label> Y7 :</label><input type="text" id="y7" value="80" onchange="changeCircle()"/></td></tr>
           </table>
@@ -163,9 +169,22 @@
    </div>
 </div>
    <script>
-      var margin = {top: 50, right: 100, bottom: 100, left: 100};
+    var margin = {top: 50, right: 100, bottom: 100, left: 100};
+    
+    if($("#chart_wrapper").width() < 767){
+      margin.left = 30;
+      margin.right = 30;
+      margin.top = 30;
+      margin.bottom = 30;
+    }
+      
       var width = $("#chart_wrapper").width() - margin.left - margin.right;
+
       var height = 800 - margin.top - margin.bottom;
+
+      if($("#chart_wrapper").width() < 767){
+        height = width * 2 / 3 - margin.top - margin.bottom;
+      }      
       
       var svg = d3.select("#chart_wrapper").append("svg")
         .attr("width", width + margin.left + margin.right)
