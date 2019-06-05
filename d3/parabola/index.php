@@ -44,12 +44,20 @@
       .line1{
         stroke: #66bb6a;
       }
+      .circle1{
+        fill: #66bb6a;
+      }
+
+      .circle2{
+        fill:#e53935;
+      }
       .line2text{
         fill: #e53935;
       }
       .line2{
         stroke: #e53935;
       }
+
 
       .xline{
         stroke: #004884;
@@ -117,24 +125,24 @@
             <table id="test_table" class="table">
                <tr>
                   <td>
-                     <div><label> X6 :</label><input type="text" id="x6" onchange="changeABC(2)" value="1500" /></div>
+                     <div><label> X6 :</label><input type="text" id="x6" name="x6" onchange="changeABC(2)" value="<?php if(isset($_GET['x6'])){ echo $_GET['x6'];} else {echo '1500';} ?>" /></div>
                   </td>
                   <td>
-                     <div><label> X5 :</label><input type="text" id="x5" onchange="changeABC(2)" value="1000" /></div>
+                     <div><label> X5 :</label><input type="text" id="x5" name="x5" onchange="changeABC(2)" value="<?php if(isset($_GET['x5'])){ echo $_GET['x5'];} else {echo '1000';} ?>" /></div>
                   </td>
                   <td>
-                     <div><label> X4 :</label><input type="text" id="x4" onchange="changeABC(2)" value="0"/></div>
+                     <div><label> X4 :</label><input type="text" id="x4" name="x4" onchange="changeABC(2)" value="<?php if(isset($_GET['x4'])){ echo $_GET['x4'];} else {echo '0';} ?>"/></div>
                   </td>
                   <td>Flow</td>
                </tr>
                <td>
-                  <div><label> Y6 :</label><input type="text" id="y6" onchange="changeABC(2)" value="80" /></div>
+                  <div><label> Y6 :</label><input type="text" id="y6" name="y6" onchange="changeABC(2)" value="<?php if(isset($_GET['y6'])){ echo $_GET['y6'];} else {echo '80';} ?>" /></div>
                </td>
                <td>
-                  <div><label> Y2 :</label><input type="text" id="y5" onchange="changeABC(2)" value="100" /></div>
+                  <div><label> Y2 :</label><input type="text" id="y5" name="y5" onchange="changeABC(2)" value="<?php if(isset($_GET['y5'])){ echo $_GET['y5'];} else {echo '100';} ?>" /></div>
                </td>
                <td>
-                  <div><label> Y1 :</label><input type="text" id="y4" onchange="changeABC(2)" value="110" /></div>
+                  <div><label> Y1 :</label><input type="text" id="y4" name="y4" onchange="changeABC(2)" value="<?php if(isset($_GET['y4'])){ echo $_GET['y4'];} else {echo '110';} ?>" /></div>
                </td>
                <td>Pressure</td>
                <tr>
@@ -145,25 +153,25 @@
             <table id="system_table" class="table">
                <tr>
                   <td>
-                     <div><label> X3 :</label><input type="text" id="x3" onchange="changeABC(1)" name="x3" value="1500" /></div>
+                     <div><label> X3 :</label><input type="text" id="x3" onchange="changeABC(1)" name="x3" value="<?php if(isset($_GET['x3'])){ echo $_GET['x3'];} else {echo '1500';} ?>" /></div>
                   </td>
                   <td>
-                     <div><label> X2 :</label><input type="text" id="x2" onchange="changeABC(1)" name="x2" value="1000"/></div>
+                     <div><label> X2 :</label><input type="text" id="x2" onchange="changeABC(1)" name="x2" value="<?php if(isset($_GET['x2'])){ echo $_GET['x2'];} else {echo '1000';} ?>"/></div>
                   </td>
                   <td>
-                     <div><label> X1 :</label><input type="text" id="x1" onchange="changeABC(1)" name="x1" value="0"/></div>
+                     <div><label> X1 :</label><input type="text" id="x1" onchange="changeABC(1)" name="x1" value="<?php if(isset($_GET['x1'])){ echo $_GET['x1'];} else {echo '0';} ?>"/></div>
                   </td>
                   <td>Flow</td>
                </tr>
                <tr>
                   <td>
-                     <div><label> Y3 :</label><input type="text" id="y3" onchange="changeABC(1)" name="y3" value="90" /></div>
+                     <div><label> Y3 :</label><input type="text" id="y3" onchange="changeABC(1)" name="y3" value="<?php if(isset($_GET['y3'])){ echo $_GET['y3'];} else {echo '90';} ?>" /></div>
                   </td>
                   <td>
-                     <div><label> Y2 :</label><input type="text" id="y2" onchange="changeABC(1)" name="y2" value="100"/></div>
+                     <div><label> Y2 :</label><input type="text" id="y2" onchange="changeABC(1)" name="y2" value="<?php if(isset($_GET['y2'])){ echo $_GET['y2'];} else {echo '100';} ?>"/></div>
                   </td>
                   <td>
-                     <div><label> Y1 :</label><input type="text" id="y1" onchange="changeABC(1)" name="y1" value="105"/></div>
+                     <div><label> Y1 :</label><input type="text" id="y1" onchange="changeABC(1)" name="y1" value="<?php if(isset($_GET['y1'])){ echo $_GET['y1'];} else {echo '105';} ?>"/></div>
                   </td>
                   <td>Pressure</td>
                </tr>
@@ -171,8 +179,8 @@
 
             <h3>System demand</h3>
             <table id="demand_table" class="table">
-            <tr><td><label> X7 :</label><input type="text" id="x7" value="800" name="x7" onchange="changeCircle()"/></td></tr>
-            <tr><td><label> Y7 :</label><input type="text" id="y7" value="80" name="y7" onchange="changeCircle()"/></td></tr>
+            <tr><td><label> X7 :</label><input type="text" id="x7" value="<?php if(isset($_GET['x7'])){ echo $_GET['x7'];} else {echo '800';} ?>" name="x7" onchange="changeCircle()"/></td></tr>
+            <tr><td><label> Y7 :</label><input type="text" id="y7" value="<?php if(isset($_GET['y7'])){ echo $_GET['y7'];} else {echo '80';} ?>" name="y7" onchange="changeCircle()"/></td></tr>
           </table>
           <input type="submit" value="Send" />
         </form>
@@ -203,8 +211,7 @@
         .attr("height", height + margin.top + margin.bottom)
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-      
-      var a = 1, b= 1, c = 1;
+            
       var fn = function (x,a,b,c) {
         return a * Math.pow(x, 2) + b * x + c; 
       };
@@ -256,8 +263,7 @@
         svg.select('.demand_circle').remove();
         svg.append('circle').attr('class','demand_circle').attr('cx',x(cx)).attr('cy',y(cy)).attr('r',10);
 
-        svg.select('.circle_pos').remove();
-        svg.append('text').attr('class','circle_pos').attr('x',x(cx) - 50).attr('y',y(cy) - 10).text("X7,Y7");
+        svg.selectAll('.circle_pos').remove();        
         svg.append('text').attr('class','circle_pos').attr('x',x(cx) - 50).attr('y',y(cy) + 10).text("(" +cx +"," +cy+")");
         svg.append('text').attr('class','circle_pos').attr('x',x(cx) + 50).attr("y",y(cy)+30).text("System Demand");
       }
@@ -283,6 +289,7 @@
         b = (x3^2 * (y1 - y2) + x2^2 * (y3 - y1) + x1^2 * (y2 - y3)) / denom;
         c = (x2 * x3 * (x2 - x3) * y1 + x3 * x1 * (x3 - x1) * y2 + x1 * x2 * (x1 - x2) * y3) / denom;                     
         
+        console.log(a,b,c);
         var data = d3.range(d3.min([x1,x2,x3]), d3.max([x1,x2,x3])).map(function (d) {
           return {x:d, y:fn(d,a,b,c)};
         });             
@@ -295,11 +302,12 @@
           .attr('d', line);
 
           svg.selectAll('.line1text').remove();
-          svg.append('text').attr('x',x(x1)).attr('y',y(y1) - 10).text("X1,Y1").attr('class','line1text');
-          svg.append('text').attr('x',x(x1)).attr('y',y(y1) + 10).text("("+x1+',' +y1 +")").attr('class','line1text');
-          svg.append('text').attr('x',x(x2)).attr('y',y(y2) - 10).text("X2,Y2").attr('class','line1text');
-          svg.append('text').attr('x',x(x2)).attr('y',y(y2) + 10).text("("+x2+',' +y2 +")").attr('class','line1text');
-          svg.append('text').attr('x',x(x3)).attr('y',y(y3) - 10).text("X3,Y3").attr('class','line1text');
+          svg.selectAll('.circle1').remove();
+          svg.append("circle").attr("cx",x(x1)).attr("cy",y(y1)).attr("r",5).attr("class","circle1");
+          svg.append("circle").attr("cx",x(x2)).attr("cy",y(y2)).attr("r",5).attr("class","circle1");
+          svg.append("circle").attr("cx",x(x3)).attr("cy",y(y3)).attr("r",5).attr("class","circle1");          
+          svg.append('text').attr('x',x(x1)).attr('y',y(y1) + 10).text("("+x1+',' +y1 +")").attr('class','line1text');          
+          svg.append('text').attr('x',x(x2)).attr('y',y(y2) + 10).text("("+x2+',' +y2 +")").attr('class','line1text');          
           svg.append('text').attr('x',x(x3)).attr('y',y(y3) + 10).text("("+x3+',' +y3 +")").attr('class','line1text');
 
           svg.append("text").attr("x", x(x3) - 500).attr("y",y(y3) - 10).text("Test Results").attr('class','line1text').attr("font-weight",'bold');
@@ -311,11 +319,13 @@
           .attr('d', line);
 
           svg.selectAll('.line2text').remove();
-          svg.append('text').attr('x',x(x1)).attr('y',y(y1) - 10).text("X4,Y4").attr('class','line2text');
-          svg.append('text').attr('x',x(x1)).attr('y',y(y1) + 10).text("("+x1+',' +y1 +")").attr('class','line2text');
-          svg.append('text').attr('x',x(x2)).attr('y',y(y2) - 10).text("X5,Y5").attr('class','line2text');
-          svg.append('text').attr('x',x(x2)).attr('y',y(y2) + 10).text("("+x2+',' +y2 +")").attr('class','line2text');
-          svg.append('text').attr('x',x(x3)).attr('y',y(y3) - 10).text("X6,Y6").attr('class','line2text');
+          svg.selectAll('.circle2').remove();
+          svg.append("circle").attr("cx",x(x1)).attr("cy",y(y1)).attr("r",5).attr("class","circle2");
+          svg.append("circle").attr("cx",x(x2)).attr("cy",y(y2)).attr("r",5).attr("class","circle2");
+          svg.append("circle").attr("cx",x(x3)).attr("cy",y(y3)).attr("r",5).attr("class","circle2");
+          
+          svg.append('text').attr('x',x(x1)).attr('y',y(y1) + 10).text("("+x1+',' +y1 +")").attr('class','line2text');          
+          svg.append('text').attr('x',x(x2)).attr('y',y(y2) + 10).text("("+x2+',' +y2 +")").attr('class','line2text');          
           svg.append('text').attr('x',x(x3)).attr('y',y(y3) + 10).text("("+x3+',' +y3 +")").attr('class','line2text');
         }         
       }
@@ -353,7 +363,7 @@
       }
 
   $(window).on("resize", function () {
-    draw();
+    // draw();
   });
    </script>
 </body>
