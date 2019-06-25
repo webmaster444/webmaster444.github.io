@@ -16,7 +16,7 @@
       .axis line{
         stroke: #aaa;
       }
-      .axis path, line {
+      .axis path{
       stroke: black;
       shape-rendering: crispEdges;
       }
@@ -139,10 +139,10 @@
                   <div><label> Y6 :</label><input type="text" id="y6" name="y6" onchange="changeABC(2)" value="<?php if(isset($_GET['y6'])){ echo $_GET['y6'];} else {echo '80';} ?>" /></div>
                </td>
                <td>
-                  <div><label> Y2 :</label><input type="text" id="y5" name="y5" onchange="changeABC(2)" value="<?php if(isset($_GET['y5'])){ echo $_GET['y5'];} else {echo '100';} ?>" /></div>
+                  <div><label> Y5 :</label><input type="text" id="y5" name="y5" onchange="changeABC(2)" value="<?php if(isset($_GET['y5'])){ echo $_GET['y5'];} else {echo '100';} ?>" /></div>
                </td>
                <td>
-                  <div><label> Y1 :</label><input type="text" id="y4" name="y4" onchange="changeABC(2)" value="<?php if(isset($_GET['y4'])){ echo $_GET['y4'];} else {echo '110';} ?>" /></div>
+                  <div><label> Y4 :</label><input type="text" id="y4" name="y4" onchange="changeABC(2)" value="<?php if(isset($_GET['y4'])){ echo $_GET['y4'];} else {echo '110';} ?>" /></div>
                </td>
                <td>Pressure</td>
                <tr>
@@ -153,10 +153,10 @@
             <table id="system_table" class="table">
                <tr>
                   <td>
-                     <div><label> X3 :</label><input type="text" id="x3" onchange="changeABC(1)" name="x3" value="<?php if(isset($_GET['x3'])){ echo $_GET['x3'];} else {echo '1500';} ?>" /></div>
+                     <div><label> X3 :</label><input type="text" id="x3" onchange="x3change()" name="x3" value="<?php if(isset($_GET['x3'])){ echo $_GET['x3'];} else {echo '1500';} ?>" /></div>
                   </td>
                   <td>
-                     <div><label> X2 :</label><input type="text" id="x2" onchange="changeABC(1)" name="x2" value="<?php if(isset($_GET['x2'])){ echo $_GET['x2'];} else {echo '1000';} ?>"/></div>
+                     <div><label> X2 :</label><input type="text" id="x2" onchange="x2change()" name="x2" value="<?php if(isset($_GET['x2'])){ echo $_GET['x2'];} else {echo '1000';} ?>"/></div>
                   </td>
                   <td>
                      <div><label> X1 :</label><input type="text" id="x1" onchange="changeABC(1)" name="x1" value="<?php if(isset($_GET['x1'])){ echo $_GET['x1'];} else {echo '0';} ?>"/></div>
@@ -168,7 +168,7 @@
                      <div><label> Y3 :</label><input type="text" id="y3" onchange="changeABC(1)" name="y3" value="<?php if(isset($_GET['y3'])){ echo $_GET['y3'];} else {echo '90';} ?>" /></div>
                   </td>
                   <td>
-                     <div><label> Y2 :</label><input type="text" id="y2" onchange="changeABC(1)" name="y2" value="<?php if(isset($_GET['y2'])){ echo $_GET['y2'];} else {echo '100';} ?>"/></div>
+                     <div><label> Y2 :</label><input type="text" id="y2" onchange="y2change()" name="y2" value="<?php if(isset($_GET['y2'])){ echo $_GET['y2'];} else {echo '100';} ?>"/></div>
                   </td>
                   <td>
                      <div><label> Y1 :</label><input type="text" id="y1" onchange="changeABC(1)" name="y1" value="<?php if(isset($_GET['y1'])){ echo $_GET['y1'];} else {echo '105';} ?>"/></div>
@@ -189,7 +189,7 @@
    </div>
 </div>
    <script>
-    var margin = {top: 50, right: 100, bottom: 100, left: 100};
+    var margin = {top: 50, right: 100, bottom: 150, left: 100};
     
     if($("#chart_wrapper").width() < 767){
       margin.left = 30;
@@ -254,10 +254,16 @@
 
     svg
         .append("text").attr('class', 'x_label_text')
-        .attr("transform", "translate(" + ((margin.left + width) / 2) + "," + (height + 50) + ")")
+        .attr("transform", "translate(" + x(1250) + "," + (height + 50) + ")")
         .attr('text-anchor', 'middle')
         .text("Flow [GPM]");
 
+    var legends = svg.append("g").attr("class",'legend').attr("transform","translate("+(x(1250) - 50) + "," + (height + 80)+")");
+
+    legends.append('line').attr("x1",0).attr("x2",10).attr("y1",5).attr("y2",5).attr("stroke-width",'2px').attr("stroke","#66bb6a");
+    legends.append('text').attr("x",15).attr("y",8).text("Test Results");
+    legends.append('line').attr("x1",0).attr("x2",10).attr("y1",25).attr("y2",25).attr("stroke-width",'2px').attr("stroke","red");
+    legends.append('text').attr("x",15).attr("y",28).text("Pump Data");
       drawDemandCircle($("#x7").val(), $("#y7").val());
       function drawDemandCircle(cx,cy){
         svg.select('.demand_circle').remove();
@@ -271,25 +277,38 @@
       changeABC(2);
       drawStaticLines();      
       function drawStaticLines(){
-        svg.append('line').attr('class','xline').attr('x1',x(0)).attr('x2',x(2500)).attr('y1',y(65)).attr('y2',y(65));
-        svg.append('line').attr('class','xline').attr('x1',x(0)).attr('x2',x(2500)).attr('y1',y(140)).attr('y2',y(140));
-        svg.append('text').attr('x',x(0)+3).attr('y',y(65) - 10).text("Min Pressure 65% 65 [PSI]").attr("fill","#004884");
-        svg.append('text').attr('x',x(0)+3).attr('y',y(140) - 10).text("Max Pressure 140% 140 [PSI]").attr("fill","#004884");
-        svg.append('line').attr('class','yline').attr('x1',x(1000)).attr('x2',x(1000)).attr('y1',y(0)).attr('y2',y(200));
-        svg.append('line').attr('class','yline').attr('x1',x(1500)).attr('x2',x(1500)).attr('y1',y(0)).attr('y2',y(200));
-        svg.append("text").attr("transform", "translate("+(x(1000) + 20)+"," + (y(0) - 5) + ") rotate(-90)").attr("fill","red").text("1000 [GPM] ");
-        svg.append("text").attr("transform", "translate("+(x(1000) - 10)+"," + (y(0) - 5) + ") rotate(-90)").attr("fill","black").text("100% Capacity");
-        svg.append("text").attr("transform", "translate("+(x(1500) + 20)+"," + (y(0) - 5) + ") rotate(-90)").attr("fill","red").text("1500 [GPM] ");
-        svg.append("text").attr("transform", "translate("+(x(1500) - 10)+"," + (y(0) - 5) + ") rotate(-90)").attr("fill","black").text("150% Capacity ");
+        var miny = $("#y2").val() * 0.65;
+        var maxy = $("#y2").val() * 1.4;
+        svg.append('line').attr('class','xline minYLine').attr('x1',x(0)).attr('x2',x(2500)).attr('y1',y(miny)).attr('y2',y(miny));
+        svg.append('line').attr('class','xline maxYLine').attr('x1',x(0)).attr('x2',x(2500)).attr('y1',y(maxy)).attr('y2',y(maxy));
+        svg.append('text').attr("class","minY").attr('x',x(0)+3).attr('y',y(miny) - 10).text("Min Pressure 65% "+miny+" [PSI]").attr("fill","#004884");
+        svg.append('text').attr("class","maxY").attr('x',x(0)+3).attr('y',y(maxy) - 10).text("Max Pressure 140% "+maxy+" [PSI]").attr("fill","#004884");
+
+        var tmpX2 = $("#x2").val();
+        var tmpX3 = $("#x3").val();
+        svg.append('line').attr('class','yline x2line').attr('x1',x(tmpX2)).attr('x2',x(tmpX2)).attr('y1',y(0)).attr('y2',y(200));
+        
+        svg.append("text").attr("class", 'x2righttext').attr("transform", "translate("+(x(tmpX2) + 20)+"," + (y(0) - 5) + ") rotate(-90)").attr("fill","red").text(tmpX2 + " [GPM] ");
+        svg.append("text").attr("class","x2lefttext").attr("transform", "translate("+(x(tmpX2) - 10)+"," + (y(0) - 5) + ") rotate(-90)").attr("fill","black").text("100% Capacity");
+
+        svg.append('line').attr('class','yline x3line').attr('x1',x(tmpX3)).attr('x2',x(tmpX3)).attr('y1',y(0)).attr('y2',y(200));
+        svg.append("text").attr("class","x3righttext").attr("transform", "translate("+(x(tmpX3) + 20)+"," + (y(0) - 5) + ") rotate(-90)").attr("fill","red").text( tmpX3 + " [GPM] ");
+        svg.append("text").attr("class","x3lefttext").attr("transform", "translate("+(x(tmpX3) - 10)+"," + (y(0) - 5) + ") rotate(-90)").attr("fill","black").text("150% Capacity ");
       }
       function drawChart(x1,x2,x3,y1,y2,y3,lineno){
+        x1 = parseInt(x1);
+        x2 = parseInt(x2);
+        x3 = parseInt(x3);
+        y1 = parseInt(y1);
+        y2 = parseInt(y2);
+        y3 = parseInt(y3);
+
         //get a,b,c value
         var denom = (x1 - x2) * (x1 - x3) * (x2 - x3);
         a = (x3 * (y2 - y1) + x2 * (y1 - y3) + x1 * (y3 - y2)) / denom;
-        b = (x3^2 * (y1 - y2) + x2^2 * (y3 - y1) + x1^2 * (y2 - y3)) / denom;
+        b = (x3*x3 * (y1 - y2) + x2*x2 * (y3 - y1) + x1*x1 * (y2 - y3)) / denom;
         c = (x2 * x3 * (x2 - x3) * y1 + x3 * x1 * (x3 - x1) * y2 + x1 * x2 * (x1 - x2) * y3) / denom;                     
-        
-        console.log(a,b,c);
+                
         var data = d3.range(d3.min([x1,x2,x3]), d3.max([x1,x2,x3])).map(function (d) {
           return {x:d, y:fn(d,a,b,c)};
         });             
@@ -308,11 +327,9 @@
           svg.append("circle").attr("cx",x(x3)).attr("cy",y(y3)).attr("r",5).attr("class","circle1");          
           svg.append('text').attr('x',x(x1)).attr('y',y(y1) + 10).text("("+x1+',' +y1 +")").attr('class','line1text');          
           svg.append('text').attr('x',x(x2)).attr('y',y(y2) + 10).text("("+x2+',' +y2 +")").attr('class','line1text');          
-          svg.append('text').attr('x',x(x3)).attr('y',y(y3) + 10).text("("+x3+',' +y3 +")").attr('class','line1text');
-
-          svg.append("text").attr("x", x(x3) - 500).attr("y",y(y3) - 10).text("Test Results").attr('class','line1text').attr("font-weight",'bold');
+          svg.append('text').attr('x',x(x3)).attr('y',y(y3) + 10).text("("+x3+',' +y3 +")").attr('class','line1text');          
         }else{
-          svg.select('.line2').remove();
+          svg.select('.line2').remove();          
           svg.append('path')        
           .datum(data)
           .attr('class','line2')
@@ -362,6 +379,31 @@
        drawDemandCircle($("#x7").val(), $("#y7").val()); 
       }
 
+      function x3change(){
+        var tmpX3 = $("#x3").val();
+        svg.select('.x3line').attr('x1',x(tmpX3)).attr('x2',x(tmpX3)).attr('y1',y(0)).attr('y2',y(200));
+        svg.select(".x3righttext").attr("transform", "translate("+(x(tmpX3) + 20)+"," + (y(0) - 5) + ") rotate(-90)").text( tmpX3 + " [GPM] ");
+        svg.select(".x3lefttext").attr("transform", "translate("+(x(tmpX3) - 10)+"," + (y(0) - 5) + ") rotate(-90)").text(tmpX3 / 10 + "% Capacity ");
+        changeABC(1);
+      }
+      function x2change(){
+        var tmpX3 = $("#x2").val();
+        svg.select('.x2line').attr('x1',x(tmpX3)).attr('x2',x(tmpX3)).attr('y1',y(0)).attr('y2',y(200));
+        svg.select(".x2righttext").attr("transform", "translate("+(x(tmpX3) + 20)+"," + (y(0) - 5) + ") rotate(-90)").text( tmpX3 + " [GPM] ");
+        svg.select(".x2lefttext").attr("transform", "translate("+(x(tmpX3) - 10)+"," + (y(0) - 5) + ") rotate(-90)").text(tmpX3 / 10 + "% Capacity ");
+        changeABC(1);
+      }
+
+
+      function y2change(){
+        var miny = $("#y2").val() * 0.65;
+        var maxy = $("#y2").val() * 1.4;
+        svg.select('.minYLine').attr('y1',y(miny)).attr('y2',y(miny));
+        svg.select('.maxYLine').attr('y1',y(maxy)).attr('y2',y(maxy));
+        svg.select('.minY').attr('y',y(miny)).text("Min Pressure 65% "+miny+" [PSI]");
+        svg.select('.maxY').attr('y',y(maxy)).text("Max Pressure 140% "+maxy+" [PSI]");
+        changeABC(1);
+      }
   $(window).on("resize", function () {
     // draw();
   });
