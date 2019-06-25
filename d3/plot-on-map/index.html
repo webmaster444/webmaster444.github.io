@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <title>Point on a map D3</title>
 
-<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="https://d3js.org/topojson.v1.min.js"></script>
 
 <style type="text/css">
 	.feature {
@@ -43,7 +43,7 @@ var path = d3.geo.path()
 
 
 d3.json("us.json", function(error, topo) {
-  	states = topojson.feature(topo, topo.objects.states).features
+  	states = topojson.feature(topo, topo.objects.states).featuress
 
   	// set projection parameters
   	projection
