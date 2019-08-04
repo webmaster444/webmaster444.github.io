@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
 
-    <link rel="canonical" href="/article.html">
+    <link rel="canonical" href="article.html">
     <link rel="shortcut icon" href="amp_favicon.png">
 
     <title>News Article</title>
@@ -41,6 +41,8 @@
       }
     </style>
     <script async src="https://cdn.ampproject.org/v0.js"></script>
+    <script async custom-element="amp-bind" src="https://cdn.ampproject.org/v0/amp-bind-0.1.js"></script>
+    <script async custom-element="amp-carousel" src="https://cdn.ampproject.org/v0/amp-carousel-0.1.js"></script>
   </head>
   <body>
     <header>
@@ -50,7 +52,39 @@
       <h1>Article Name</h1>
 
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam egestas tortor sapien, non tristique ligula accumsan eu.</p>
+ <div hidden
+    [hidden]="hideGreeting">Hello World</div>
+  <button on="tap:AMP.setState({ hideGreeting: false })">Show greeting</button>
 
+    <div>Hello <span [text]="myText">World</span></div>
+  <button on="tap:AMP.setState({ myText: 'AMP' })">Change text</button>
+
+    <amp-state id="name">
+    <script type="application/json">
+      "?"
+    </script>
+  </amp-state>
+  <input id="name-input"
+    placeholder="Enter a name"
+    on="input-throttled:AMP.setState({ name: event.value })">
+  <div>Hello <span [text]="name">?</span></div>
+
+  <amp-carousel height="300"
+  layout="fixed-height"
+  type="carousel">
+  <amp-img src="image1.jpg"
+    width="400"
+    height="300"
+    alt="a sample image"></amp-img>
+  <amp-img src="image2.jpg"
+    width="400"
+    height="300"
+    alt="another sample image"></amp-img>
+  <amp-img src="image3.jpg"
+    width="400"
+    height="300"
+    alt="and another sample image"></amp-img>
+</amp-carousel>
       <amp-img src="image.jpg" layout="responsive" width="266" height="150"></amp-img>
     </article>
   </body>
