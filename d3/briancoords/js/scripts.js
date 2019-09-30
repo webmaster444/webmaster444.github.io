@@ -65,8 +65,8 @@ var passagePopupHtml = '<div class="modal fade" id="passageModal'+passage.id+'" 
 	})
 
   	//get relationship data
-	// d3.json("https://dev.briancoords.com/publicdev/wp-json/wp/v2/relationship/").then(function(relationship_data) {	
-	d3.json("js/relationship.json").then(function(relationship_data) {	
+	d3.json("https://dev.briancoords.com/publicdev/wp-json/wp/v2/relationship").then(function(relationship_data) {	
+	// d3.json("js/relationship.json").then(function(relationship_data) {	
 	  	if(relationship_data){
 	  		// filter relationship data if start and end value is integer
 	  		relationship_data.filter(function(relation){
