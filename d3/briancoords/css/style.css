@@ -16,3 +16,18 @@
 .passage_text{
 	text-anchor: middle;
 }
+
+.hide{
+	display: none;
+}
+
+input{
+	margin-left:30px;
+	margin-top: 10px;
+	margin-right: 10px;
+}
+
+path.arrow{
+	fill:none;
+	stroke: black;
+}

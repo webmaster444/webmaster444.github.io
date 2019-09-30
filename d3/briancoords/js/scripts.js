@@ -14,6 +14,10 @@ var y = d3.scaleBand()
           .padding(0.1)
           .paddingOuter(0);
 
+var link = d3.linkRadial()
+    .angle(function(d) {return x(d.startX); })
+    .radius(function(d) { return y(d.startY); });
+
 var svg = d3.select(".wrapper").append("svg").attr('viewBox','0 0 960 400').attr('preserveAspectRatio',"xMinYMin meet")
     .append("g")
     .attr("transform", 
@@ -61,7 +65,7 @@ var passagePopupHtml = '<div class="modal fade" id="passageModal'+passage.id+'" 
 	})
 
   	//get relationship data
-	d3.json("https://dev.briancoords.com/publicdev/wp-json/wp/v2/relationship/").then(function(relationship_data) {
+	d3.json("https://dev.briancoords.com/publicdev/wp-json/wp/v2/relationship/").then(function(relationship_data) {	
 	  	if(relationship_data){
 	  		relationship_data.filter(function(relation){
 	  			return Number.isInteger(relation.relationship_start) && Number.isInteger(relation.relationship_end)
@@ -106,13 +110,18 @@ var passagePopupHtml = '<div class="modal fade" id="passageModal'+passage.id+'" 
 			// draw relationship arrows
 			var g_arrows = svg.selectAll('g.relationship_arrow').data(relationship_data).enter().append('g').attr('class', 'relationship_arrow');
 
-			var relation_arrow = g_arrows.append('line')
-				.attr("class","arrow")
+			var relation_arrow = g_arrows.append('path')
+				.attr("class","arrow relationship")
 				.attr("marker-end","url(#arrow)")
-				.attr("x1",function(d){return x(d.startX) + x.bandwidth()/2})
-				.attr("y1",function(d){return y(d.startY) + y.bandwidth()/2})
-				.attr("x2",function(d){return x(d.endX) + x.bandwidth()/2})
-				.attr("y2",function(d){return y(d.endY) + y.bandwidth()/2})
+		      	.attr('d', function(d){
+			        var o1 = {x: x(d.startX)+x.bandwidth() - 5, y: y(d.startY) - 5 + y.bandwidth()};
+			        var o2 = {x: x(d.endX)+10, y: y(d.endY)+10};
+			        return diagonal(o1, o2);
+		      	})
+				// .attr("x1",function(d){return x(d.startX) + x.bandwidth()/2})
+				// .attr("y1",function(d){return y(d.startY) + y.bandwidth()/2})
+				// .attr("x2",function(d){return x(d.endX) + x.bandwidth()/2})
+				// .attr("y2",function(d){return y(d.endY) + y.bandwidth()/2})
 				.on('click', function(d){
 					$("#relationshipModal"+d.id).modal('show');
 				});
@@ -120,6 +129,16 @@ var passagePopupHtml = '<div class="modal fade" id="passageModal'+passage.id+'" 
 	});
   }  
 });
+
+function diagonal(s, d) {
+
+path = `M ${s.x} ${s.y}
+        C ${(s.x + d.x) / 2} ${s.y},
+          ${(s.x + d.x) / 2} ${d.y},
+          ${d.x} ${d.y}`
+
+return path
+}
 
 function getXValue(id, passage_data){
 	var res = "";
@@ -144,3 +163,11 @@ function getYValue(id, passage_data){
 	}
 	return res;
 }
+
+$(document).on('change','#show_relatioship_radio', function(){
+	if($(this).prop('checked')==true){
+		svg.selectAll('.relationship').classed('hide', false);
+	}else{
+		svg.selectAll('.relationship').classed('hide', true);
+	}
+})
