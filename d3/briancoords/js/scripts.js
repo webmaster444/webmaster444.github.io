@@ -65,18 +65,29 @@ var passagePopupHtml = '<div class="modal fade" id="passageModal'+passage.id+'" 
 	})
 
   	//get relationship data
-	d3.json("https://dev.briancoords.com/publicdev/wp-json/wp/v2/relationship/").then(function(relationship_data) {	
+	// d3.json("https://dev.briancoords.com/publicdev/wp-json/wp/v2/relationship/").then(function(relationship_data) {	
+	d3.json("js/relationship.json").then(function(relationship_data) {	
 	  	if(relationship_data){
+	  		// filter relationship data if start and end value is integer
 	  		relationship_data.filter(function(relation){
 	  			return Number.isInteger(relation.relationship_start) && Number.isInteger(relation.relationship_end)
 	  		});	  	
+
+	  		// remove duplicated relationships
+	  		relationship_data = removeDuplicatedRelationships(relationship_data);
+	  		// set position of relationship and modal content
 	  		relationship_data.forEach(function(relationship, i){
 	  			relationship.startX = getXValue(relationship.relationship_start, passage_data);
 	  			relationship.startY = getYValue(relationship.relationship_start, passage_data);
 	  			relationship.endX   = getXValue(relationship.relationship_end, passage_data);
 	  			relationship.endY   = getYValue(relationship.relationship_end, passage_data);
 
-	  			var relationshipPopupHtml = '<div class="modal fade" id="relationshipModal'+relationship.id+'" tabindex="-1" role="dialog" aria-labelledby="relationshipModal'+relationship.id+'" aria-hidden="true"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="exampleModalLabel">Relationship: '+relationship.title.rendered+'</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body">'+relationship.relationship_start+'->' +relationship.relationship_end+'</div><div class="modal-footer"><button type="button" class="btn tn-secondary" data-dismiss="modal">Close</button><button type="button" class="btn btn-primary">Save changes</button></div></div></div></div>';
+	  			var relationshipPopupHtml = '<div class="modal fade" id="relationshipModal'+relationship.id+'" tabindex="-1" role="dialog" aria-labelledby="relationshipModal'+relationship.id+'" aria-hidden="true"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="exampleModalLabel">Relationship: '+relationship.title.rendered+'</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body">';
+	  			
+	  			relationship['items'].forEach(function(item){
+	  				relationshipPopupHtml +='<span>'+item.id+'</span><span>'+item.title+'</span><br/>';
+	  			})
+	  			relationshipPopupHtml +='</div><div class="modal-footer"><button type="button" class="btn tn-secondary" data-dismiss="modal">Close</button><button type="button" class="btn btn-primary">Save changes</button></div></div></div></div>';
 
 				$('body').append(relationshipPopupHtml);
 
@@ -164,6 +175,31 @@ function getYValue(id, passage_data){
 	return res;
 }
 
+function removeDuplicatedRelationships(relationship_data){
+	let res = [];
+	let links = [];
+	for( var i = 0; i < relationship_data.length; i++){ 
+		let ele = relationship_data[i];		
+		var tmp = [ele.relationship_start,ele.relationship_end];
+		var indexInArray = isItemInArray(links,tmp); 		
+		if(indexInArray==false){
+			links.push(tmp);
+			ele['items'] = [];
+			let tmpItem = new Object;
+			tmpItem['id'] = ele.id;
+			tmpItem['title'] = ele.title.rendered;
+			ele['items'].push(tmpItem);
+			res.push(ele);
+		}else{
+			let duplicatedItem = relationship_data[indexInArray];
+			let tmpItem = new Object;
+			tmpItem['id'] = relationship_data[i].id;
+			tmpItem['title'] = ele.title.rendered;
+			duplicatedItem['items'].push(tmpItem);			
+		}
+	}		
+	return res;
+}
 $(document).on('change','#show_relatioship_radio', function(){
 	if($(this).prop('checked')==true){
 		svg.selectAll('.relationship').classed('hide', false);
@@ -171,3 +207,13 @@ $(document).on('change','#show_relatioship_radio', function(){
 		svg.selectAll('.relationship').classed('hide', true);
 	}
 })
+
+function isItemInArray(array, item) {
+    for (var i = 0; i < array.length; i++) {
+        // This if statement depends on the format of your array
+        if (array[i][0] == item[0] && array[i][1] == item[1]) {
+            return i;   // Found it
+        }
+    }
+    return false;   // Not found
+}
