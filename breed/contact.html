@@ -50,14 +50,6 @@
 									<li class="nav-item"><a class="nav-link" href="portfolio-details.html">Portfolio Details</a></li>
 								</ul>
 							</li>
-							<li class="nav-item submenu dropdown">
-								<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-								 aria-expanded="false">Blog</a>
-								<ul class="dropdown-menu">
-									<li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
-									<li class="nav-item"><a class="nav-link" href="single-blog.html">Blog Details</a></li>
-								</ul>
-							</li>
 							<li class="nav-item active"><a class="nav-link" href="contact.html">Contact</a></li>
 						</ul>
 					</div>
@@ -88,35 +80,6 @@
   <!-- ================ contact section start ================= -->
   <section class="section-margin">
     <div class="container">
-      <div class="d-none d-sm-block mb-5 pb-4">
-        <div id="map" style="height: 480px;"></div>
-        <script>
-          function initMap() {
-            var uluru = {lat: -25.363, lng: 131.044};
-            var grayStyles = [
-              {
-                featureType: "all",
-                stylers: [
-                  { saturation: -90 },
-                  { lightness: 50 }
-                ]
-              },
-              {elementType: 'labels.text.fill', stylers: [{color: '#A3A3A3'}]}
-            ];
-            var map = new google.maps.Map(document.getElementById('map'), {
-              center: {lat: -31.197, lng: 150.744},
-              zoom: 9,
-              styles: grayStyles,
-              scrollwheel:  false
-            });
-          }
-          
-        </script>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDpfS1oRGreGSBU5HHjMmQ3o5NLw7VdJ6I&callback=initMap"></script>
-        
-      </div>
-
-
       <div class="row">
         <div class="col-12">
           <h2 class="contact-title">Get in Touch</h2>
@@ -200,8 +163,8 @@
 											<li class="nav-item"><a class="nav-link text-white" href="index.html">Home</a></li>
 											<li class="nav-item"><a class="nav-link text-white" href="about.html">About</a></li>
 											<li class="nav-item"><a class="nav-link text-white" href="portfolio.html">Portfolio</a></li>
-											<li class="nav-item"><a class="nav-link text-white" href="blog.html">BLog</a></li>
 											<li class="nav-item"><a class="nav-link text-white" href="services.html">Services </a></li>
+											<li class="nav-item"><a class="nav-link text-white" href="contact.html">Contact</a></li>
 										</ul>
 									</div>
 								</nav>
@@ -218,10 +181,7 @@
 			</div>
 			<div class="row footer_bottom justify-content-center">
 				<p class="col-lg-8 col-sm-12 footer-text">
-					<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
-			</div>
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved </p></div>
 		</div>
 	</footer>
   <!--================End Footer Area =================-->
@@ -237,8 +197,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 	<script src="vendors/owl-carousel/owl.carousel.min.js"></script>
 	<script src="js/jquery.ajaxchimp.min.js"></script>
 	<script src="js/mail-script.js"></script>
-	<!--gmaps Js-->
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjCGmQ0Uq4exrzdcL6rvxywDDOvfAu6eE"></script>
+	<!--gmaps Js-->	
 	<script src="js/gmaps.min.js"></script>
 	<script src="js/theme.js"></script>
 </body>
