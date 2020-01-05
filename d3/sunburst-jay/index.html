@@ -220,7 +220,7 @@
         function initializeBreadcrumbTrail() {
             // Add the svg area.
             var trail = d3.select("#sequence").append("svg:svg")
-                .attr("width", width)
+                .attr("width", 1000)
                 .attr("height", 50)
                 .attr("id", "trail");
             // Add the label at the end, for the percentage.
@@ -272,10 +272,10 @@
 
             // Now move and update the percentage at the end.
             d3.select("#trail").select("#endlabel")
-                .attr("x", (nodeArray.length + 0.5) * (b.w + b.s))
+                .attr("x", (nodeArray.length) * (b.w + b.s) + 10)
                 .attr("y", b.h / 2)
                 .attr("dy", "0.35em")
-                .attr("text-anchor", "middle")
+                .attr("text-anchor", "start")
                 .text(percentageString);
 
             // Make the breadcrumb trail visible, if it's hidden.
@@ -283,10 +283,10 @@
                 .style("visibility", "");
 
         }
-        function mouseover(d) {
+        function mouseover(d) {            
             // var percentage = (100 * d.value / totalSize).toPrecision(3);
-            let percentage = 0.5;
-            var percentageString = percentage + "%";
+            var percentage = 0.5;
+            var percentageString = "RowCounts:" + d['data']['RowCounts'] + ' ' + "SensitivtyScore:" +  d['data']['SensitivtyScore'] + " " + "RedundancyMultiple:" + d['data']['RedundancyMultiple'];
             if (percentage < 0.1) {
             percentageString = "< 0.1%";
             }
@@ -340,12 +340,14 @@
                     keys
                         .reduce((array, k) => {
                             var temp = array.find(({ name }) => name === o[k]);
-                            if (!temp) array.push(temp = { name: o[k], rowcount: 0, children: [] });
+                            if (!temp) array.push(temp = { name: o[k], RowCounts: 0,SensitivtyScore:0,RedundancyMultiple:0, children: [] });
                             // temp.rowcount += +o.RowCounts;
-                            temp.rowcount = 0;
+                            temp['RowCounts'] = 0;
+                            temp['SensitivtyScore'] = 0;
+                            temp['RedundancyMultiple'] = 0;
                             return temp.children;
                         }, r)
-                        .push({ name: o.DataElementName, rowcount: +o.RowCounts });
+                        .push({ name: o.DataElementName, RowCounts: +o.RowCounts, SensitivtyScore: +o.SensitivtyScore,RedundancyMultiple: +o.RedundancyMultiple });
                     return r;
                 }, []);            
             return result;
@@ -386,7 +388,7 @@
 
             root = d3.hierarchy(root[0]);
                         
-            root.sum(d => d.rowcount);
+            root.sum(d => d['RowCounts']);
 
             const slice = svg.selectAll('g.slice')
                 .data(partition(root).descendants());
