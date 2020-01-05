@@ -256,7 +256,7 @@
 
             entering.append("svg:polygon")
                 .attr("points", breadcrumbPoints)
-                .style("fill", function(d) { return "black"; });
+                .style("fill", function(d) { return color((d.children ? d : d.parent).data.name); });
 
             entering.append("svg:text")
                 .attr("x", (b.w + b.t) / 2)
