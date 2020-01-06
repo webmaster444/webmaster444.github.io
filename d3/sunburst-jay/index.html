@@ -54,6 +54,12 @@
             let root = createTreeData(data_filtered);
             render_chart(root);
         })
+
+        $("#aggregate-select").change(function(){
+            filter_data();
+            let root = createTreeData(data_filtered);
+            render_chart(root);
+        });
         // const width = window.innerWidth,
         //     height = window.innerHeight,
         let b = {
@@ -110,8 +116,7 @@
 
         let svg;        
 
-        d3.csv('DataInventoryReport.csv', function(data){      
-            console.log(data);
+        d3.csv('DataInventoryReport.csv', function(data){                  
             data_full = data;
             data_filtered = data;
             let treeKeys = ['DataStoreName','TableName', 'DataElementName'];
@@ -136,7 +141,7 @@
             
         //     console.log(root);
         //     root.sum(d => d.size);
-
+        //     console.log(root);
         //     const slice = svg.selectAll('g.slice')
         //         .data(partition(root).descendants());
 
@@ -220,7 +225,7 @@
         function initializeBreadcrumbTrail() {
             // Add the svg area.
             var trail = d3.select("#sequence").append("svg:svg")
-                .attr("width", 1000)
+                .attr("width", 1300)
                 .attr("height", 50)
                 .attr("id", "trail");
             // Add the label at the end, for the percentage.
@@ -298,7 +303,7 @@
                 .style("visibility", "");
 
             var sequenceArray = d.ancestors().reverse();
-            sequenceArray.shift(); // remove root node from the array
+            // sequenceArray.shift(); // remove root node from the array
             updateBreadcrumbs(sequenceArray, percentageString);
 
             // Fade all the segments.
@@ -341,13 +346,19 @@
                         .reduce((array, k) => {
                             var temp = array.find(({ name }) => name === o[k]);
                             if (!temp) array.push(temp = { name: o[k], RowCounts: 0,SensitivtyScore:0,RedundancyMultiple:0, children: [] });
-                            // temp.rowcount += +o.RowCounts;
-                            temp['RowCounts'] = 0;
-                            temp['SensitivtyScore'] = 0;
-                            temp['RedundancyMultiple'] = 0;
+                            // temp.rowcount += +o.RowCounts;                            
+                            temp['RowCounts'] = o.RowCounts;
+                            if($("#aggregate-select").val()=="sum"){                                                                
+                                temp['SensitivtyScore'] += +o['SensitivtyScore'];
+                                temp['RedundancyMultiple'] += +o['RedundancyMultiple'];
+                            }else if($("#aggregate-select").val()=="average"){
+                                temp['SensitivtyScore'] = parseFloat(d3.sum(temp.children.map(function(d){return d['SensitivtyScore']})) / temp.children.length).toFixed(2);
+                                temp['RedundancyMultiple'] = parseFloat(d3.sum(temp.children.map(function(d){return d['RedundancyMultiple']})) / temp.children.length).toFixed(2);
+                            }                         
+                            temp['size'] = 0;
                             return temp.children;
                         }, r)
-                        .push({ name: o.DataElementName, RowCounts: +o.RowCounts, SensitivtyScore: +o.SensitivtyScore,RedundancyMultiple: +o.RedundancyMultiple });
+                        .push({ name: o.DataElementName, size: +1, RowCounts: +o.RowCounts, SensitivtyScore: +o.SensitivtyScore,RedundancyMultiple: +o.RedundancyMultiple });
                     return r;
                 }, []);            
             return result;
@@ -368,14 +379,11 @@
                 data_filtered = data_tmp.filter(function(d){return parseInt(d['RowCounts'])!= 0});
             }else{
                 data_filtered = data_tmp;
-            }
-            console.log(data_filtered);
+            }            
             return data_filtered;
         }
 
-        function render_chart(root){             
-            console.log('render_chart');
-            console.log(root);
+        function render_chart(root){                         
             $("#chart").html("");
             svg = d3.select('#chart').append('svg')
             .attr("width", width)
@@ -388,7 +396,7 @@
 
             root = d3.hierarchy(root[0]);
                         
-            root.sum(d => d['RowCounts']);
+            root.sum(d => d['size']);
 
             const slice = svg.selectAll('g.slice')
                 .data(partition(root).descendants());
