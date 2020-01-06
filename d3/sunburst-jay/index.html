@@ -20,7 +20,25 @@
       </div>
       <div id="sidebar">
         <div id="data-selection-widget">
-            <h3>Data Selection</h3>            
+            <h3>Data Selection</h3>     
+            <div class="selection-rowcounts">
+                <input type="checkbox" id="checkbox-rowcount" name="selection[]" value="RowCount"/> Row Count
+                <select id="select-rowcount" class="hide">
+                    <option value="length">Length</option>
+                    <option value="color">Color</option>
+                </select>
+            </div>
+            <div class="selection-sensitivity">
+                <input type="checkbox" id="checkbox-sensitivity" name="selection[]" value="Sensitivity"/> Sensitivity
+            </div>
+            <div class="selection-redundancy">
+                <input type="checkbox" id="checkbox-redundancy" name="selection[]" value="Redundancy" /> Redundancy
+                <select id="select-redundancy" class="hide">
+                    <option value="length">Length</option>
+                    <option value="color">Color</option>
+                </select>
+            </div>
+            <p class="error-msg hide">Sorry, you can't select all of them. Please deselect one first</p>
         </div>
         <div id="aggregate-widget">
             <h3>Aggregate  Data</h3>
@@ -49,17 +67,90 @@
             render_chart(root);  
         });
 
+        $('[name="selection[]"]').change(function(){
+            let checked = [];
+            if($("input[name='selection[]']:checked").length > 2){
+                $('.error-msg').removeClass('hide');
+                setTimeout(function() {
+                    $('.error-msg').addClass('hide');
+                },2000);
+                $(this).prop('checked', false);
+            }
+            $("input[name='selection[]']:checked").each (function ()
+            {
+                checked.push($(this).val());
+            });            
+
+            if(checked.includes('Sensitivity')){
+                $("#data-selection-widget select").children('option[value="color"]').hide();
+                $("#data-selection-widget select").val('length');
+            }else{
+                if($(this).attr('id')=="checkbox-redundancy"){
+                    if(checked.includes("RowCount")){
+                        if($("#select-rowcount").val()=="length"){
+                            console.log('ddd');
+                            $("#select-redundancy").val("color");
+                        }else{
+                            $("#select-redundancy").val("length");
+                        }
+                    }
+                }else if($(this).attr('id')=="checkbox-rowcount"){
+                    if(checked.includes("Redundancy")){
+                        if($("#select-redundancy").val()=="length"){
+                            $("#select-rowcount").val("color");
+                        }else{
+                            $("#select-rowcount").val("length");
+                        }
+                    }
+                }
+                $("#data-selection-widget select").children('option').show();
+            }
+        });
+
+        $("#select-rowcount").change(function(d){
+            if($(this).val()=="color"){
+                $("#select-redundancy").val("length");
+            }else{
+                $("#select-redundancy").val("color");
+            }
+        });
+
+        $("#select-redundancy").change(function(d){
+            if($(this).val()=="color"){
+                $("#select-rowcount").val("length");
+            }else{
+                $("#select-rowcount").val("color");
+            }
+        });
+
         $("[name='include-zero-rowcount']").change(function(d){
             filter_data();
             let root = createTreeData(data_filtered);
             render_chart(root);
-        })
+        });
 
         $("#aggregate-select").change(function(){
             filter_data();
             let root = createTreeData(data_filtered);
             render_chart(root);
         });
+
+        $("#checkbox-redundancy").change(function(){
+            if($(this).prop('checked')==true){
+                $("#select-redundancy").removeClass('hide');
+            }else{
+                $("#select-redundancy").addClass('hide');
+            }
+        });
+
+        $("#checkbox-rowcount").change(function(){
+            if($(this).prop('checked')==true){
+                $("#select-rowcount").removeClass('hide');
+            }else{
+                $("#select-rowcount").addClass('hide');
+            }
+        });
+
         // const width = window.innerWidth,
         //     height = window.innerHeight,
         let b = {
