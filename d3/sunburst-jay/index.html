@@ -13,10 +13,6 @@
     <div id="main">
         <div id="sequence"></div>
         <div id="chart">
-          <div id="explanation" style="visibility: hidden;">
-            <span id="percentage"></span><br/>
-            of visits begin with this sequence of pages
-          </div>
         </div>
       </div>
       <div id="sidebar">
@@ -61,11 +57,17 @@
       </div>
 
     <script type="text/javascript">
+        //define column names;
+        let field_redundancy = "RedundancyMultiple";
+        let field_rowcnt = "RowCounts";
+        let field_sensitivity = "SensitivtyScore";
+
         let data_full, data_filtered;
+        var selected_length="", selected_color="";
         $("[name='sensitivity[]']").change(function(d){
             filter_data();       
             let root = createTreeData(data_filtered);
-            render_chart(root);  
+            render_chart(root);              
         });
 
         $('[name="selection[]"]').change(function(){
@@ -88,8 +90,7 @@
             }else{
                 if($(this).attr('id')=="checkbox-redundancy"){
                     if(checked.includes("RowCount")){
-                        if($("#select-rowcount").val()=="length"){
-                            console.log('ddd');
+                        if($("#select-rowcount").val()=="length"){                            
                             $("#select-redundancy").val("color");
                         }else{
                             $("#select-redundancy").val("length");
@@ -106,6 +107,8 @@
                 }
                 $("#data-selection-widget select").children('option').show();
             }
+
+            getSelectionValues();
         });
 
         $("#select-rowcount").change(function(d){
@@ -114,6 +117,7 @@
             }else{
                 $("#select-redundancy").val("color");
             }
+            getSelectionValues();
         });
 
         $("#select-redundancy").change(function(d){
@@ -122,6 +126,7 @@
             }else{
                 $("#select-rowcount").val("color");
             }
+            getSelectionValues();
         });
 
         $("[name='include-zero-rowcount']").change(function(d){
@@ -171,8 +176,14 @@
 
         const y = d3.scaleSqrt()
             .range([maxRadius*.1, maxRadius]);
+            
+        const yRowCounts = d3.scaleSqrt().range([0,maxRadius / 6]);
+        const yRedundancy = d3.scaleSqrt().range([0,maxRadius / 6]);
 
         const color = d3.scaleOrdinal(d3.schemeCategory20);
+        var xScale = d3.scaleLinear().domain([0, 100]).range([0, 500])
+
+        var colorScale = d3.scaleLinear().range(["#eee555", "#ee82ee"]);    
 
         const partition = d3.partition();
 
@@ -181,6 +192,18 @@
             .endAngle(d => x(d.x1))
             .innerRadius(d => Math.max(0, y(d.y0)))
             .outerRadius(d => Math.max(0, y(d.y1)));
+
+        const outArcByRowCount = d3.arc()
+            .startAngle(d => x(d.x0))
+            .endAngle(d => x(d.x1))
+            .innerRadius(d => Math.max(0, y(d.y0)))
+            .outerRadius(d => Math.max(0, y(d.y0) + yRowCounts(parseInt(d.data[field_rowcnt]))));
+
+        const outArcByRedundancy = d3.arc()
+            .startAngle(d => x(d.x0))
+            .endAngle(d => x(d.x1))
+            .innerRadius(d => Math.max(0, y(d.y0)))
+            .outerRadius(d => Math.max(0, y(d.y0) + yRedundancy(parseFloat(d.data[field_redundancy]))));
 
         const middleArcLine = d => {
             const halfPi = Math.PI/2;
@@ -207,79 +230,18 @@
         };
 
         let svg;        
-
+ 
         d3.csv('DataInventoryReport.csv', function(data){                  
             data_full = data;
             data_filtered = data;
             let treeKeys = ['DataStoreName','TableName', 'DataElementName'];
             let treeArrayData = [];
 
-            // console.log(data);
-            // data.forEach(function(d){
-            //     let tmp = [];
-            //     treeKeys.forEach(function(i){tmp.push(d[i]);})
-            //     treeArrayData.push(tmp);
-            // });
-
-            // createTreeData(treeArrayData);
             filter_data();
             let root = createTreeData(data_filtered);
             render_chart(root);
         });
-
-        // d3.json('https://gist.githubusercontent.com/mbostock/4348373/raw/85f18ac90409caa5529b32156aa6e71cf985263f/flare.json', (error, root) => {   
-        //     console.log(root);
-        //     root = d3.hierarchy(root);
-            
-        //     console.log(root);
-        //     root.sum(d => d.size);
-        //     console.log(root);
-        //     const slice = svg.selectAll('g.slice')
-        //         .data(partition(root).descendants());
-
-        //     slice.exit().remove();
-
-        //     const newSlice = slice.enter()
-        //         .append('g').attr('class', 'slice')
-        //         .on('click', d => {
-        //             d3.event.stopPropagation();
-        //             focusOn(d);
-        //         }).on('mouseover', mouseover);
-
-        //     newSlice.append('title')
-        //         .text(d => d.data.name + '\n' + formatNumber(d.value));
-
-        //     newSlice.append('path')
-        //         .attr('class', 'main-arc')
-        //         .style('fill', d => color((d.children ? d : d.parent).data.name))
-        //         .attr('d', arc);
-
-        //     newSlice.append('path')
-        //         .attr('class', 'hidden-arc')
-        //         .attr('id', (_, i) => `hiddenArc${i}`)
-        //         .attr('d', middleArcLine);
-
-        //     const text = newSlice.append('text')
-        //         .attr('display', d => textFits(d) ? null : 'none');
-
-        //     // Add white contour
-        //     text.append('textPath')
-        //         .attr('startOffset','50%')
-        //         .attr('xlink:href', (_, i) => `#hiddenArc${i}` )
-        //         .text(d => d.data.name)
-        //         .style('fill', 'none')
-        //         // .style('stroke', '#fff')
-        //         // .style('stroke-width', 5)
-        //         // .style('stroke-linejoin', 'round');
-
-        //     text.append('textPath')
-        //         .attr('startOffset','50%')
-        //         .attr('xlink:href', (_, i) => `#hiddenArc${i}` )
-        //         .text(d => d.data.name);
-
-        //     d3.select("#container").on("mouseleave", mouseleave);
-        // });
-        
+                
         function focusOn(d = { x0: 0, x1: 1, y0: 0, y1: 1 }) {
             // Reset to top-level if no data point specified
 
@@ -381,19 +343,15 @@
 
         }
         function mouseover(d) {            
-            // var percentage = (100 * d.value / totalSize).toPrecision(3);
-            var percentage = 0.5;
-            var percentageString = "RowCounts:" + d['data']['RowCounts'] + ' ' + "SensitivtyScore:" +  d['data']['SensitivtyScore'] + " " + "RedundancyMultiple:" + d['data']['RedundancyMultiple'];
+            var percentage = (100 * d.value / totalSize).toPrecision(3);            
+            var percentageString = "RowCounts:" + d['data'][field_rowcnt] + ' ' + "SensitivtyScore:" +  d['data'][field_sensitivity] + " " + "RedundancyMultiple:" + d['data'][field_redundancy];
             if (percentage < 0.1) {
             percentageString = "< 0.1%";
             }
 
             d3.select("#percentage")
                 .text(percentageString);
-
-            d3.select("#explanation")
-                .style("visibility", "");
-
+            
             var sequenceArray = d.ancestors().reverse();
             // sequenceArray.shift(); // remove root node from the array
             updateBreadcrumbs(sequenceArray, percentageString);
@@ -439,13 +397,18 @@
                             var temp = array.find(({ name }) => name === o[k]);
                             if (!temp) array.push(temp = { name: o[k], RowCounts: 0,SensitivtyScore:0,RedundancyMultiple:0, children: [] });
                             // temp.rowcount += +o.RowCounts;                            
-                            temp['RowCounts'] = o.RowCounts;
+                            temp[field_rowcnt] = o.RowCounts;
                             if($("#aggregate-select").val()=="sum"){                                                                
-                                temp['SensitivtyScore'] += +o['SensitivtyScore'];
-                                temp['RedundancyMultiple'] += +o['RedundancyMultiple'];
+                                temp[field_sensitivity] += +o[field_sensitivity];
+                                temp[field_redundancy] += +o[field_redundancy];
                             }else if($("#aggregate-select").val()=="average"){
-                                temp['SensitivtyScore'] = parseFloat(d3.sum(temp.children.map(function(d){return d['SensitivtyScore']})) / temp.children.length).toFixed(2);
-                                temp['RedundancyMultiple'] = parseFloat(d3.sum(temp.children.map(function(d){return d['RedundancyMultiple']})) / temp.children.length).toFixed(2);
+                                if(temp.children.length == 0){
+                                    temp[field_sensitivity] = 0;
+                                    temp[field_redundancy] = 0;
+                                }else{
+                                    temp[field_sensitivity] = parseFloat(d3.sum(temp.children.map(function(d){return d[field_sensitivity]})) / temp.children.length).toFixed(2);
+                                    temp[field_redundancy] = parseFloat(d3.sum(temp.children.map(function(d){return d[field_redundancy]})) / temp.children.length).toFixed(2);
+                                }                                
                             }                         
                             temp['size'] = 0;
                             return temp.children;
@@ -463,19 +426,19 @@
                 checked.push(parseInt($(this).val()));
             });            
             
-            // data_filtered = data_full.filter(function(d){return checked.includes(d['SensitivtyScore'])});
-            data_tmp = data_full.filter(function(d){return checked.includes(parseInt(d['SensitivtyScore']))});  
+            // data_filtered = data_full.filter(function(d){return checked.includes(d[field_sensitivity])});
+            data_tmp = data_full.filter(function(d){return checked.includes(parseInt(d[field_sensitivity]))});  
 
             
             if(!$("[name='include-zero-rowcount']").prop('checked')){
-                data_filtered = data_tmp.filter(function(d){return parseInt(d['RowCounts'])!= 0});
+                data_filtered = data_tmp.filter(function(d){return parseInt(d[field_rowcnt])!= 0});
             }else{
                 data_filtered = data_tmp;
             }            
             return data_filtered;
         }
 
-        function render_chart(root){                         
+        function render_chart(root){                                                         
             $("#chart").html("");
             svg = d3.select('#chart').append('svg')
             .attr("width", width)
@@ -484,20 +447,31 @@
             .append("g")
             .attr("id", "container")
             .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
-            .on('click', () => focusOn()); // Reset zoom on canvas click            
+            .on('click', () => focusOn()); // Reset zoom on canvas click   
 
             root = d3.hierarchy(root[0]);
                         
             root.sum(d => d['size']);
-
+            
+            yRowCounts.domain(d3.extent(root.descendants().map(function(d){return d.data[field_rowcnt]})));
+            yRedundancy.domain(d3.extent(root.descendants().map(function(d){return d.data[field_redundancy]})));            
+            
+            if(selected_color == field_rowcnt){
+                colorScale.domain(d3.extent(root.descendants().map(function(d){return d.data[field_rowcnt]})));
+            }else if(selected_color == field_sensitivity){
+                colorScale.domain(d3.extent(root.descendants().map(function(d){return d.data[field_sensitivity]})));
+            }else if(selected_color == field_redundancy){
+                colorScale.domain(d3.extent(root.descendants().map(function(d){return d.data[field_redundancy]})));
+            }
+            
             const slice = svg.selectAll('g.slice')
                 .data(partition(root).descendants());
 
             slice.exit().remove();
 
             const newSlice = slice.enter()
-                .append('g').attr('class', 'slice')
-                .on('click', d => {
+                .append('g').attr('class', d=>{if(d.children==undefined) return 'slice leaves'; return 'slice';})
+                .on('click', d => {                    
                     d3.event.stopPropagation();
                     focusOn(d);
                 }).on('mouseover', mouseover);
@@ -507,8 +481,30 @@
 
             newSlice.append('path')
                 .attr('class', 'main-arc')
-                .style('fill', d => color((d.children ? d : d.parent).data.name))
-                .attr('d', arc);
+                .style('fill', function(d){
+                    if(selected_color == ""){
+                        return color((d.children ? d : d.parent).data.name)
+                    }else if(selected_color == field_sensitivity){                        
+                        return colorScale(d.data[field_sensitivity]);
+                    }else if(selected_color == field_rowcnt){
+                        return colorScale(d.data[field_rowcnt]);
+                    }else if(selected_color == field_redundancy){
+                        return colorScale(d.data[field_redundancy]);
+                    }
+                })
+                .attr('d', function(d){
+                    if(d.children == undefined){
+                        if(selected_length == field_rowcnt){                            
+                            return outArcByRowCount(d);
+                        }else if(selected_length == field_redundancy){
+                            return outArcByRedundancy(d);
+                        }else{
+                            return arc(d);
+                        }
+                    }else{
+                        return arc(d);
+                    }                    
+                });
 
             newSlice.append('path')
                 .attr('class', 'hidden-arc')
@@ -523,10 +519,7 @@
                 .attr('startOffset','50%')
                 .attr('xlink:href', (_, i) => `#hiddenArc${i}` )
                 .text(d => d.data.name)
-                .style('fill', 'none')
-                // .style('stroke', '#fff')
-                // .style('stroke-width', 5)
-                // .style('stroke-linejoin', 'round');
+                .style('fill', 'none');
 
             text.append('textPath')
                 .attr('startOffset','50%')
@@ -534,6 +527,42 @@
                 .text(d => d.data.name);
 
             d3.select("#container").on("mouseleave", mouseleave);
+            
+            totalSize = root.value;
+        }
+
+        function getSelectionValues(){
+            selected_color = "", selected_length = "";
+            let checked = [];
+            $("input[name='selection[]']:checked").each(function(){
+                checked.push($(this).val());
+            }); 
+
+            if(checked.includes("Sensitivity")){
+                selected_color = "SensitivtyScore";
+                if(checked.includes("RowCount")){
+                    selected_length = field_rowcnt;
+                }else if(checked.includes("Redundancy")){
+                    selected_length = field_redundancy;
+                }
+            }else{
+                if(checked.includes("RowCount")){
+                    if($("#select-rowcount").val() == "length"){
+                        selected_length = field_rowcnt;
+                    }else if($("#select-rowcount").val() == "color"){
+                        selected_color = field_rowcnt;
+                    }
+                }
+                if(checked.includes("Redundancy")){
+                    if($("#select-redundancy").val() == "length"){
+                        selected_length = field_redundancy;
+                    }else if($("#select-redundancy").val() == "color"){
+                        selected_color = field_redundancy;
+                    }
+                }
+            }
+            let root = createTreeData(data_filtered);
+            render_chart(root);              
         }
     </script>
 </body>
