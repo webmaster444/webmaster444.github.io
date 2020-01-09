@@ -62,6 +62,7 @@
         let field_rowcnt = "RowCounts";
         let field_sensitivity = "SensitivtyScore";
 
+        let clicked_data = "";
         let data_full, data_filtered;
         var selected_length="", selected_color="";
         $("[name='sensitivity[]']").change(function(d){
@@ -248,6 +249,11 @@
             d3.select("#container").on("mouseleave", null);
             // Reset to top-level if no data point specified
 
+            yRowCounts.domain([0,d3.max(d.descendants().map(function(j){return j.data[field_rowcnt]}))]);
+            yRedundancy.domain([0, d3.max(d.descendants().map(function(j){return j.data[field_redundancy]}))]);  
+
+            console.log(yRedundancy.domain());
+            console.log(yRowCounts.domain());
             const transition = svg.transition()
                 .duration(1000)
                 .tween('scale', () => {                    
@@ -470,8 +476,13 @@
             root = d3.hierarchy(root[0]);                       
             root.sum(d => d['size']);            
 
-            yRowCounts.domain(d3.extent(root.descendants().map(function(d){return d.data[field_rowcnt]})));
-            yRedundancy.domain(d3.extent(root.descendants().map(function(d){return d.data[field_redundancy]})));            
+            if(clicked_data == ""){
+                yRowCounts.domain([0, d3.max(root.descendants().map(function(d){return d.data[field_rowcnt]}))]);
+                yRedundancy.domain([0, d3.max(root.descendants().map(function(d){return d.data[field_redundancy]}))]);            
+            }else{
+                yRowCounts.domain([0, d3.max(clicked_data.descendants().map(function(d){return d.data[field_rowcnt]}))]);
+                yRedundancy.domain([0, d3.max(clicked_data.descendants().map(function(d){return d.data[field_redundancy]}))]);            
+            }            
             
             if(selected_color == field_rowcnt){
                 colorScale.domain(d3.extent(root.descendants().map(function(d){return d.data[field_rowcnt]})));
@@ -490,7 +501,8 @@
                 .append('g').attr('class', d=>{if(d.children==undefined) return 'slice leaves'; return 'slice';})
                 .on('click', d => {                    
                     d3.event.stopPropagation();
-                    focusOn(d);
+                    clicked_data = d;
+                    focusOn(d);                    
                 }).on('mouseover', mouseover);
 
             newSlice.append('title')
