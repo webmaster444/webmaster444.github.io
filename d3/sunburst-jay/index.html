@@ -177,11 +177,11 @@
             .range([0, 2 * Math.PI])
             .clamp(true);
 
-        const y = d3.scaleLinear()
-            .range([maxRadius*.1, maxRadius]);
-            
-        const yRowCounts = d3.scaleSqrt().range([0,maxRadius / 6]);
-        const yRedundancy = d3.scaleSqrt().range([0,maxRadius / 6]);
+        const y = d3.scalePow().exponent(2)
+            .range([10, maxRadius]);
+        
+        const yRowCounts = d3.scaleLinear().range([0,120]);
+        const yRedundancy = d3.scaleLinear().range([0,120]);
 
         const color = d3.scaleOrdinal(d3.schemeCategory20);
         var xScale = d3.scaleLinear().domain([0, 100]).range([0, 500])
@@ -199,14 +199,20 @@
         const outArcByRowCount = d3.arc()
             .startAngle(d => x(d.x0))
             .endAngle(d => x(d.x1))
-            .innerRadius(d => Math.max(0, y(d.y0)))
-            .outerRadius(d => Math.max(0, y(d.y0) + yRowCounts(parseInt(d.data[field_rowcnt]))));
+            .innerRadius(function(d){                
+                return Math.max(0, y(d.y0));
+            })            
+            .outerRadius(function(d){                                 
+                return Math.max(0, y(d.y0)) + yRowCounts(parseInt(d.data[field_rowcnt]));
+            });
 
         const outArcByRedundancy = d3.arc()
             .startAngle(d => x(d.x0))
             .endAngle(d => x(d.x1))
             .innerRadius(d => Math.max(0, y(d.y0)))
-            .outerRadius(d => Math.max(0, y(d.y0) + yRedundancy(parseFloat(d.data[field_redundancy]))));
+            .outerRadius(function(d){
+                return Math.max(0, y(d.y0)) + yRedundancy(parseFloat(d.data[field_redundancy]))
+            });
 
         const middleArcLine = d => {
             const halfPi = Math.PI/2;
@@ -234,24 +240,23 @@
 
         let svg;        
  
-        d3.csv('DataInventoryReport.csv', function(data){                  
-            data_full = data;
-            data_filtered = data;
-            let treeKeys = ['DataStoreName','TableName', 'DataElementName'];
-            let treeArrayData = [];
+        let root = get_data();
+        function get_data(){
+            d3.csv('DataInventoryReport.csv', function(data){                  
+                data_full = data;
+                data_filtered = data;
+                let treeKeys = ['DataStoreName','TableName', 'DataElementName'];
+                let treeArrayData = [];
 
-            filter_data();
-            let root = createTreeData(data_filtered);
-            console.log(root);
-            render_chart(root);
-        });
+                filter_data();
+                let root = createTreeData(data_filtered);            
+                render_chart(root);                
+            });
+        }        
                 
         function focusOn(d = { x0: 0, x1: 1, y0: 0, y1: 1 }) {            
             d3.select("#container").on("mouseleave", null);
-            // Reset to top-level if no data point specified
-
-            yRowCounts.domain([0,d3.max(d.descendants().map(function(j){return j.data[field_rowcnt]}))]);
-            yRedundancy.domain([0, d3.max(d.descendants().map(function(j){return j.data[field_redundancy]}))]);  
+            // Reset to top-level if no data point specified                        
 
             const transition = svg.transition()
                 .duration(1000)
@@ -261,11 +266,14 @@
                     return t => { x.domain(xd(t)); y.domain(yd(t)); };
                 });
             
+            yRowCounts.domain([0,d3.max(d.descendants().map(function(j){return j.data[field_rowcnt]}))]);
+            yRedundancy.domain([0, d3.max(d.descendants().map(function(j){return j.data[field_redundancy]}))]);  
+
             transition.selectAll('path.main-arc')
                 .attrTween('d', function(d){
-                    return function(){                  
+                    return function(){                         
                         if(d.children == undefined){
-                            if(selected_length == field_rowcnt){                            
+                            if(selected_length == field_rowcnt){                                          
                                 return outArcByRowCount(d);
                             }else if(selected_length == field_redundancy){
                                 return outArcByRedundancy(d);
@@ -274,8 +282,7 @@
                             }
                         }else{
                             return arc(d);
-                        }  
-                        // return arc(d);
+                        }                          
                     } 
                 }).on('end', function(d){                    
                     d3.select("#container").on("mouseleave", mouseleave);          
@@ -370,10 +377,7 @@
             if(d.height !=3){            
                 var percentage = (100 * d.value / totalSize).toPrecision(3);            
                 var percentageString = "RowCounts:" + d['data'][field_rowcnt] + ' ' + "SensitivtyScore:" +  d['data'][field_sensitivity] + " " + "RedundancyMultiple:" + d['data'][field_redundancy];
-                if (percentage < 0.1) {
-                percentageString = "< 0.1%";
-                }
-
+                
                 d3.select("#percentage")
                     .text(percentageString);
                 
@@ -469,7 +473,7 @@
             return data_filtered;
         }
 
-        function render_chart(root){                                                                     
+        function render_chart(root){                                                                                             
             $("#chart").html("");
             svg = d3.select('#chart').append('svg')
             .attr("width", width)
@@ -490,7 +494,7 @@
                 yRowCounts.domain([0, d3.max(clicked_data.descendants().map(function(d){return d.data[field_rowcnt]}))]);
                 yRedundancy.domain([0, d3.max(clicked_data.descendants().map(function(d){return d.data[field_redundancy]}))]);            
             }            
-            
+
             if(selected_color == field_rowcnt){
                 colorScale.domain(d3.extent(root.descendants().map(function(d){return d.data[field_rowcnt]})));
             }else if(selected_color == field_sensitivity){
@@ -510,9 +514,9 @@
                     if(d.height == 3) return "slice root";
                     if(d.children==undefined) return 'slice leaves'; return 'slice';
                 })
-                .on('click', d => {                    
+                .on('click', d => {       
                     d3.event.stopPropagation();
-                    clicked_data = d;
+                    clicked_data = d;                    
                     focusOn(d);                    
                 }).on('mouseover', mouseover);
 
@@ -535,7 +539,7 @@
                         return colorScale(d.data[field_redundancy]);
                     }
                 })
-                .attr('d', function(d){
+                .attr('d', function(d){                    
                     if(d.children == undefined){
                         if(selected_length == field_rowcnt){                            
                             return outArcByRowCount(d);
@@ -603,7 +607,7 @@
                         selected_color = field_redundancy;
                     }
                 }
-            }
+            }                        
             let root = createTreeData(data_filtered);
             render_chart(root);            
         }      
