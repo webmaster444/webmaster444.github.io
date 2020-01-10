@@ -266,8 +266,8 @@
                     return t => { x.domain(xd(t)); y.domain(yd(t)); };
                 });
             
-            yRowCounts.domain([0,d3.max(d.descendants().map(function(j){return j.data[field_rowcnt]}))]);
-            yRedundancy.domain([0, d3.max(d.descendants().map(function(j){return j.data[field_redundancy]}))]);  
+            yRowCounts.domain([0,d3.max(d.descendants().filter(function(d){return d.height == 0}).map(function(j){return j.data[field_rowcnt]}))]);
+            yRedundancy.domain([0, d3.max(d.descendants().filter(function(d){return d.height == 0}).map(function(j){return j.data[field_redundancy]}))]);  
 
             transition.selectAll('path.main-arc')
                 .attrTween('d', function(d){
@@ -488,13 +488,14 @@
             root.sum(d => d['size']);            
 
             if(clicked_data == ""){
-                yRowCounts.domain([0, d3.max(root.descendants().map(function(d){return d.data[field_rowcnt]}))]);
-                yRedundancy.domain([0, d3.max(root.descendants().map(function(d){return d.data[field_redundancy]}))]);            
+                yRowCounts.domain([0, d3.max(root.descendants().filter(function(d){return d.height == 0}).map(function(d){return d.data[field_rowcnt]}))]);
+                yRedundancy.domain([0, d3.max(root.descendants().filter(function(d){return d.height == 0}).map(function(d){return d.data[field_redundancy]}))]);            
             }else{
-                yRowCounts.domain([0, d3.max(clicked_data.descendants().map(function(d){return d.data[field_rowcnt]}))]);
-                yRedundancy.domain([0, d3.max(clicked_data.descendants().map(function(d){return d.data[field_redundancy]}))]);            
+                yRowCounts.domain([0, d3.max(clicked_data.descendants().filter(function(d){return d.height == 0}).map(function(d){return d.data[field_rowcnt]}))]);
+                yRedundancy.domain([0, d3.max(clicked_data.descendants().filter(function(d){return d.height == 0}).map(function(d){return d.data[field_redundancy]}))]);            
             }            
 
+            console.log(yRedundancy.domain());
             if(selected_color == field_rowcnt){
                 colorScale.domain(d3.extent(root.descendants().map(function(d){return d.data[field_rowcnt]})));
             }else if(selected_color == field_sensitivity){
