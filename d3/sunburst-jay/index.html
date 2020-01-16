@@ -53,7 +53,14 @@
 
             <h5>Row counts</h5>
             <input type="checkbox" name="include-zero-rowcount" value="0" checked="checked" />Include tables with 0 rows
-        </div>        
+        </div>    
+        <div id="filter-rings">
+            <h3>Filter Rings</h3>
+            <input type="checkbox" name="rings[]" value="DataStoreName" checked="checked" /> DataStoreName <br/>
+            <input type="checkbox" name="rings[]" value="TableName" checked="checked" /> TableName <br/>
+            <input type="checkbox" name="rings[]" value="DataElementName" checked="checked" /> DataElementName <br/>
+            <p class="ring-error-msg hide">Sorry, but you must select at least one.</p>
+        </div>
       </div>
 
     <script type="text/javascript">
@@ -65,10 +72,24 @@
         let clicked_data = "";
         let data_full, data_filtered;
         var selected_length="", selected_color="";
+        let treeKeys = ['DataStoreName','TableName', 'DataElementName'];
+        let tree_depth;
         $("[name='sensitivity[]']").change(function(d){
             filter_data();       
             let root = createTreeData(data_filtered);
             render_chart(root);              
+        });
+
+        $("[name='rings[]']").change(function(d){
+            if($("input[name='rings[]']:checked").length == 0){
+                $('.ring-error-msg').removeClass('hide');
+                setTimeout(function() {
+                    $('.ring-error-msg').addClass('hide');
+                },2000);
+                $(this).prop('checked', true);
+            }
+            let root = createTreeData(data_filtered);
+            render_chart(root);            
         });
 
         $('[name="selection[]"]').change(function(){
@@ -242,10 +263,9 @@
  
         let root = get_data();
         function get_data(){
-            d3.csv('DataInventoryReport3.csv', function(data){                  
+            d3.csv('DataInventoryReport2.csv', function(data){                  
                 data_full = data;
-                data_filtered = data;
-                let treeKeys = ['DataStoreName','TableName', 'DataElementName'];
+                data_filtered = data;                
                 let treeArrayData = [];
 
                 filter_data();
@@ -346,7 +366,13 @@
 
             entering.append("svg:polygon")
                 .attr("points", breadcrumbPoints)
-                .style("fill", function(d) { return color((d.children ? d : d.parent).data.name); });
+                .style("fill", function(d) {                     
+                    if(tree_depth !=1){
+                        return color((d.children ? d : d.parent).data.name)
+                    }else{
+                        return color(d.data.name);
+                    }  
+                });
 
             entering.append("svg:text")
                 .attr("x", (b.w + b.t) / 2)
@@ -374,7 +400,7 @@
 
         }
         function mouseover(d) {                        
-            if(d.height !=3){            
+            if(d.depth !=0){            
                 var percentage = (100 * d.value / totalSize).toPrecision(3);            
                 var percentageString = "RowCounts:" + d['data'][field_rowcnt] + ' ' + "SensitivtyScore:" +  d['data'][field_sensitivity] + " " + "RedundancyMultiple:" + d['data'][field_redundancy];
                 
@@ -425,7 +451,7 @@
                 final = {};
                result = data.reduce((r, o) => {
                     keys
-                        .reduce((array, k) => {
+                        .reduce((array, k) => {                            
                             var temp = array.find(({ name }) => name === o[k]);
                             if (!temp) array.push(temp = { name: o[k], RowCounts: 0,SensitivtyScore:0,RedundancyMultiple:0, children: [] });
                             // temp.rowcount += +o.RowCounts;                            
@@ -443,19 +469,72 @@
                                 }                                
                             }                         
                             temp['size'] = 0;
+                            temp['key'] = k;
                             return temp.children;
                         }, r)
                         .push({ name: o.DataElementName, size: +1, RowCounts: +o.RowCounts, SensitivtyScore: +o.SensitivtyScore,RedundancyMultiple: +o.RedundancyMultiple });
                     return r;
                 }, []);            
 
-            final = {'name':"ROOT", children:result};
+            var rings = [];
+            $("input[name='rings[]']:checked").each(function ()
+            {
+                rings.push(($(this).val()));
+            });            
 
+            tree_depth = rings.length;
+            // console.log(result);
+            let filtered_res = [];
+
+            result.forEach(function(store,i){                
+                if(rings.includes("DataStoreName")){                    
+                    let tmp = [];
+                    store.children.forEach(function(table){                        
+                        if(!rings.includes("DataElementName")){
+                            delete table.children;
+                        }
+                        if(!rings.includes("TableName")){                            
+                            if(table.children){
+                                table.children.forEach(function(el){
+                                    tmp.push(el);
+                                })                            
+                            }                            
+                        }
+                    });     
+                    if(!rings.includes("TableName")){
+                        store.children = tmp;                        
+                    }
+                    if(!rings.includes("TableName") && !rings.includes("DataElementName")){
+                        delete store.children;
+                    }                    
+                    // filtered_res.push(store);
+                }else{
+                    store.children.forEach(function(table){                        
+                        if(!rings.includes("DataElementName")){
+                            delete table.children;
+                        }
+                        if(rings.includes("TableName")){
+                            filtered_res.push(table);
+                        }else{
+                            table.children.forEach(function(el){
+                                filtered_res.push(el);
+                            })
+                        }
+                    })
+                }
+            });
+            
+            if(rings.includes("DataStoreName")){
+                final = {'name':"ROOT", children:result};
+            }else{
+                final = {'name':"ROOT", children:filtered_res};
+            }
+            
             return final;
         }
 
         function filter_data(){            
-            let checked = []
+            let checked = [];
             $("input[name='sensitivity[]']:checked").each(function ()
             {
                 checked.push(parseInt($(this).val()));
@@ -481,11 +560,10 @@
             .append("g")
             .attr("id", "container")
             .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
-            .on('click', () => focusOn()); // Reset zoom on canvas click   
+            .on('click', () => focusOn()); // Reset zoom on canvas click               
 
-            
             root = d3.hierarchy(root);                    
-            root.sum(d => d['size']);            
+            root.sum(function(d){return d.children ? 0 : 1;});            
 
             if(clicked_data == ""){
                 yRowCounts.domain([0, d3.max(root.descendants().filter(function(d){return d.height == 0}).map(function(d){return d.data[field_rowcnt]}))]);
@@ -494,8 +572,7 @@
                 yRowCounts.domain([0, d3.max(clicked_data.descendants().filter(function(d){return d.height == 0}).map(function(d){return d.data[field_rowcnt]}))]);
                 yRedundancy.domain([0, d3.max(clicked_data.descendants().filter(function(d){return d.height == 0}).map(function(d){return d.data[field_redundancy]}))]);            
             }            
-
-            console.log(yRedundancy.domain());
+            
             if(selected_color == field_rowcnt){
                 colorScale.domain(d3.extent(root.descendants().map(function(d){return d.data[field_rowcnt]})));
             }else if(selected_color == field_sensitivity){
@@ -512,7 +589,7 @@
             const newSlice = slice.enter()
                 .append('g')
                 .attr('class', d=>{
-                    if(d.height == 3) return "slice root";
+                    if(d.depth == 0) return "slice root";
                     if(d.children==undefined) return 'slice leaves'; return 'slice';
                 })
                 .on('click', d => {       
@@ -528,7 +605,11 @@
                 .attr('class', 'main-arc')
                 .style('fill', function(d){
                     if(selected_color == ""){
-                        return color((d.children ? d : d.parent).data.name)
+                        if(root.height !=1){
+                            return color((d.children ? d : d.parent).data.name)
+                        }else{
+                            return color(d.data.name);
+                        }                        
                     }else if(selected_color == field_sensitivity){   
                         if(d.data[field_sensitivity]==0){
                             return sensitivity0color;
