@@ -61,6 +61,12 @@
             <input type="checkbox" name="rings[]" value="DataElementName" checked="checked" /> DataElementName <br/>
             <p class="ring-error-msg hide">Sorry, but you must select at least one.</p>
         </div>
+
+        <div id="legend-widget">
+            <h3>Legend</h3>
+            <p>Length: <span id="length_span">Entity Count</span></p>
+            <p>Color: <span id="color_span"></span></p>
+        </div>
       </div>
 
     <script type="text/javascript">
@@ -191,7 +197,7 @@
 
         const formatNumber = d3.format(',d');
 
-        const sensitivity0color = "#e5e5e5";
+        const sensitivity0color = "#65D188";
 
         initializeBreadcrumbTrail();
         const x = d3.scaleLinear()
@@ -207,7 +213,8 @@
         const color = d3.scaleOrdinal(d3.schemeCategory20);
         var xScale = d3.scaleLinear().domain([0, 100]).range([0, 500])
 
-        var colorScale = d3.scaleLinear().range(["#F49CAC","#E66C82","#C6435A","#AA243C","#860C21"]);    
+        // var colorScale = d3.scaleLinear().range(["#F49CAC","#E66C82","#C6435A","#AA243C","#860C21"]);    
+        var colorScale = d3.scaleLinear().range(["#65D188","#8FD37E","#BAD674","#E4D86A","#F07350","#FC0E36"]);    
 
         const partition = d3.partition();
 
@@ -282,7 +289,7 @@
                 .duration(1000)
                 .tween('scale', () => {                    
                     const xd = d3.interpolate(x.domain(), [d.x0, d.x1]),
-                        yd = d3.interpolate(y.domain(), [d.y0, 1]);                        
+                        yd = d3.interpolate(y.domain(), y.domain());                        
                     return t => { x.domain(xd(t)); y.domain(yd(t)); };
                 });
             
@@ -427,8 +434,8 @@
 
         function mouseleave(d) {            
             // Hide the breadcrumb trail
-            d3.select("#trail")
-                .style("visibility", "hidden");
+            // d3.select("#trail")
+            //     .style("visibility", "hidden");
 
             // Deactivate all segments during transition.
             d3.selectAll("path").on("mouseover", null);
@@ -563,7 +570,9 @@
             .on('click', () => focusOn()); // Reset zoom on canvas click               
 
             root = d3.hierarchy(root);                    
-            root.sum(function(d){return d.children ? 0 : 1;});            
+            root.sum(function(d){return d.children ? 0 : 1;});
+
+            root.sort(function(a, b) { return a.value - b.value; });      
 
             if(clicked_data == ""){
                 yRowCounts.domain([0, d3.max(root.descendants().filter(function(d){return d.height == 0}).map(function(d){return d.data[field_rowcnt]}))]);
@@ -573,14 +582,22 @@
                 yRedundancy.domain([0, d3.max(clicked_data.descendants().filter(function(d){return d.height == 0}).map(function(d){return d.data[field_redundancy]}))]);            
             }            
             
-            if(selected_color == field_rowcnt){
-                colorScale.domain(d3.extent(root.descendants().map(function(d){return d.data[field_rowcnt]})));
-            }else if(selected_color == field_sensitivity){
-                colorScale.domain(d3.extent(root.descendants().map(function(d){return d.data[field_sensitivity]})));
-            }else if(selected_color == field_redundancy){
-                colorScale.domain(d3.extent(root.descendants().map(function(d){return d.data[field_redundancy]})));
+            // if(selected_color == field_rowcnt){
+            //     colorScale.domain(d3.extent(root.descendants().map(function(d){return d.data[field_rowcnt]})));
+            // }else if(selected_color == field_sensitivity){
+            //     colorScale.domain(d3.extent(root.descendants().map(function(d){return d.data[field_sensitivity]})));
+            // }else if(selected_color == field_redundancy){
+            //     colorScale.domain(d3.extent(root.descendants().map(function(d){return d.data[field_redundancy]})));
+            // }
+            let colMin = d3.min(root.descendants().map(function(d){return d.data[selected_color]}));
+            let colMax = d3.max(root.descendants().map(function(d){return d.data[selected_color]}));
+            let colStep = (colMax - colMin)/5;
+            let colDomain = [];
+            for(let i=0;i<6;i++){
+                colDomain.push(colMin + colStep*i);
             }
-            
+            colorScale.domain(colDomain);
+
             const slice = svg.selectAll('g.slice')
                 .data(partition(root).descendants());
 
@@ -611,10 +628,11 @@
                             return color(d.data.name);
                         }                        
                     }else if(selected_color == field_sensitivity){   
-                        if(d.data[field_sensitivity]==0){
-                            return sensitivity0color;
-                        }                        
-                        return colorScale(d.data[field_sensitivity]);                        
+                        // if(d.data[field_sensitivity]==0){
+                        //     return sensitivity0color;
+                        // }                        
+                        console.log(d.data[field_sensitivity], colorScale(d.data[field_sensitivity]));
+                        return colorScale(parseFloat(d.data[field_sensitivity]));                        
                     }else if(selected_color == field_rowcnt){
                         return colorScale(d.data[field_rowcnt]);
                     }else if(selected_color == field_redundancy){
@@ -690,6 +708,13 @@
                     }
                 }
             }                        
+
+            // Legend 
+            $("#length_span").html(selected_length);
+            if(selected_length==""){
+                $("#length_span").html("Entity Count");
+            }
+            $("#color_span").html(selected_color);
             let root = createTreeData(data_filtered);
             render_chart(root);            
         }      
