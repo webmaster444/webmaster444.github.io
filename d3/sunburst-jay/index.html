@@ -66,6 +66,23 @@
             <h3>Legend</h3>
             <p>Length: <span id="length_span">Entity Count</span></p>
             <p>Color: <span id="color_span"></span></p>
+            <div class="color-legend hide">
+            <svg width="200" height="50" id="legend-svg">
+                <defs>
+                    <linearGradient id="gradient">         <!--gradientTransform="rotate(45)"-->
+                        <stop offset="0.0%" stop-color="#65D188"></stop>  
+                        <stop offset="20%" stop-color="#8FD37E"></stop>
+                        <stop offset="40%" stop-color="#BAD674"></stop>
+                        <stop offset="60%" stop-color="#E4D86A"></stop>
+                        <stop offset="80%" stop-color="#F07350"></stop> 
+                        <stop offset="100%" stop-color="#FC0E36"></stop>
+                    </linearGradient>
+                </defs>
+                <rect x="15" y="0" width="170" height="30" fill="url(#gradient)" />
+                <text id="color-min" x="15" y="40" text-anchor="middle">30.00</text>
+                <text id="color-max" x="185" y="40" text-anchor="middle">30.00</text>
+            </svg>
+        </div>
         </div>
       </div>
 
@@ -191,8 +208,8 @@
             w: 250, h: 30, s: 3, t: 10
         };
 
-        let width = 750;
-        let height = 600,
+        let width = 900;
+        let height = 800,
             maxRadius = (Math.min(width, height) / 2) - 5;
 
         const formatNumber = d3.format(',d');
@@ -205,7 +222,7 @@
             .clamp(true);
 
         const y = d3.scalePow().exponent(2)
-            .range([10, maxRadius]);
+            .range([100, maxRadius]);
         
         const yRowCounts = d3.scaleLinear().range([0,120]);
         const yRedundancy = d3.scaleLinear().range([0,120]);
@@ -489,8 +506,7 @@
                 rings.push(($(this).val()));
             });            
 
-            tree_depth = rings.length;
-            // console.log(result);
+            tree_depth = rings.length;            
             let filtered_res = [];
 
             result.forEach(function(store,i){                
@@ -598,6 +614,8 @@
             }
             colorScale.domain(colDomain);
 
+            d3.select("#color-min").text(colMin);
+            d3.select("#color-max").text(colMax);
             const slice = svg.selectAll('g.slice')
                 .data(partition(root).descendants());
 
@@ -630,8 +648,7 @@
                     }else if(selected_color == field_sensitivity){   
                         // if(d.data[field_sensitivity]==0){
                         //     return sensitivity0color;
-                        // }                        
-                        console.log(d.data[field_sensitivity], colorScale(d.data[field_sensitivity]));
+                        // }                                                
                         return colorScale(parseFloat(d.data[field_sensitivity]));                        
                     }else if(selected_color == field_rowcnt){
                         return colorScale(d.data[field_rowcnt]);
@@ -715,6 +732,11 @@
                 $("#length_span").html("Entity Count");
             }
             $("#color_span").html(selected_color);
+            if(selected_color==""){
+                $(".color-legend").addClass('hide');
+            }else{
+                $(".color-legend").removeClass('hide');                
+            }
             let root = createTreeData(data_filtered);
             render_chart(root);            
         }      
