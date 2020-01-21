@@ -91,3 +91,9 @@ font-size: 2.5em;
 .root{
     opacity: 0;
 }
+
+h5{
+    margin: 10px 0;
+    font-size: 12px;
+    font-weight: normal;
+}

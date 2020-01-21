@@ -26,12 +26,12 @@
                 </select>
             </div>
             <div class="selection-sensitivity">
-                <input type="checkbox" id="checkbox-sensitivity" name="selection[]" value="Sensitivity"/> Sensitivity
+                <input type="checkbox" id="checkbox-sensitivity" name="selection[]" value="Sensitivity" checked="checked"/> Sensitivity
             </div>
             <div class="selection-redundancy">
-                <input type="checkbox" id="checkbox-redundancy" name="selection[]" value="Redundancy" /> Redundancy
-                <select id="select-redundancy" class="hide">
-                    <option value="length">Length</option>
+                <input type="checkbox" id="checkbox-redundancy" name="selection[]" value="Redundancy" checked="checked"/> Redundancy
+                <select id="select-redundancy">
+                    <option value="length" selected>Length</option>
                     <option value="color">Color</option>
                 </select>
             </div>
@@ -39,11 +39,10 @@
         </div>
         <div id="aggregate-widget">
             <h3>Aggregate  Data</h3>
-            <select id="aggregate-select"><option value="sum">Sum</option><option value="average">Average</option></select>
+            <select id="aggregate-select"><option value="sum">Sum</option><option value="average" selected>Average</option></select>
         </div>
-        <div id="filter-widget">
-            <h3>Filter Data</h3>
-            <h5>Sensitivity</h5>
+        <div id="filter-widget">            
+            <h5> Filter by Sensitivity</h5>
             <input type="checkbox" name="sensitivity[]" value="0" /> 0
             <input type="checkbox" name="sensitivity[]" value="1" checked="checked"/> 1
             <input type="checkbox" name="sensitivity[]" value="2" checked="checked"/> 2
@@ -70,11 +69,7 @@
             <svg width="200" height="50" id="legend-svg">
                 <defs>
                     <linearGradient id="gradient">         <!--gradientTransform="rotate(45)"-->
-                        <stop offset="0.0%" stop-color="#65D188"></stop>  
-                        <stop offset="20%" stop-color="#8FD37E"></stop>
-                        <stop offset="40%" stop-color="#BAD674"></stop>
-                        <stop offset="60%" stop-color="#E4D86A"></stop>
-                        <stop offset="80%" stop-color="#F07350"></stop> 
+                        <stop offset="0.0%" stop-color="#E5E5E5"></stop>  
                         <stop offset="100%" stop-color="#FC0E36"></stop>
                     </linearGradient>
                 </defs>
@@ -96,6 +91,11 @@
         let data_full, data_filtered;
         var selected_length="", selected_color="";
         let treeKeys = ['DataStoreName','TableName', 'DataElementName'];
+        let breadcrumbColors = {
+            "DataStoreName":"#9cc4b2",
+            "TableName":"#c98ca7",
+            "DataElementName":"#e76d83"
+        }
         let tree_depth;
         $("[name='sensitivity[]']").change(function(d){
             filter_data();       
@@ -231,12 +231,11 @@
         const yRowCounts = d3.scaleLinear().range([0,maxRadius - yMin - 70]);
         const yRedundancy = d3.scaleLinear().range([0,maxRadius - yMin - 70]);
 
-        console.log(maxRadius - yMin - 70);
         const color = d3.scaleOrdinal(d3.schemeCategory20);
         var xScale = d3.scaleLinear().domain([0, 100]).range([0, 500])
-
-        // var colorScale = d3.scaleLinear().range(["#F49CAC","#E66C82","#C6435A","#AA243C","#860C21"]);    
-        var colorScale = d3.scaleLinear().range(["#65D188","#8FD37E","#BAD674","#E4D86A","#F07350","#FC0E36"]);    
+        
+        var colorScale = d3.scaleLinear().range(["#E5E5E5","#FC0E36"]);    
+        var redundancyColorScale = d3.scaleLinear().range(["#AEAEAE", "#B928BB"]);
 
         const partition = d3.partition();
 
@@ -297,6 +296,7 @@
                 data_filtered = data;                
                 let treeArrayData = [];
 
+                getSelectionValues();
                 filter_data();
                 let root = createTreeData(data_filtered);            
                 render_chart(root);                
@@ -396,11 +396,12 @@
             entering.append("svg:polygon")
                 .attr("points", breadcrumbPoints)
                 .style("fill", function(d) {                     
-                    if(tree_depth !=1){
-                        return color((d.children ? d : d.parent).data.name)
-                    }else{
-                        return color(d.data.name);
-                    }  
+                    // 
+                    if(d.data.key == undefined){
+                            return breadcrumbColors['DataElementName'];
+                        }else{
+                            return breadcrumbColors[d.data.key];
+                        }                        
                 });
 
             entering.append("svg:text")
@@ -612,15 +613,15 @@
             // }
             let colMin = d3.min(root.descendants().map(function(d){return d.data[selected_color]}));
             let colMax = d3.max(root.descendants().map(function(d){return d.data[selected_color]}));
-            let colStep = (colMax - colMin)/5;
-            let colDomain = [];
-            for(let i=0;i<6;i++){
-                colDomain.push(colMin + colStep*i);
+            if(selected_color == field_redundancy){
+                redundancyColorScale.domain(d3.extent(root.descendants().map(function(d){return d.data[selected_color]})));
+            }else{                
+                colorScale.domain(d3.extent(root.descendants().map(function(d){return d.data[selected_color]})));                
             }
-            colorScale.domain(colDomain);
-
+            
             d3.select("#color-min").text(colMin);
             d3.select("#color-max").text(colMax);
+
             const slice = svg.selectAll('g.slice')
                 .data(partition(root).descendants());
 
@@ -639,7 +640,8 @@
                 }).on('mouseover', mouseover);
 
             newSlice.append('title')
-                .text(d => d.data.name + '\n' + formatNumber(d.value));
+                // .text(d => d.data.name + '\n' + formatNumber(d.value));
+                .text(d => d.data.name);
 
             newSlice.append('path')
                 .attr('class', 'main-arc')
@@ -658,7 +660,7 @@
                     }else if(selected_color == field_rowcnt){
                         return colorScale(d.data[field_rowcnt]);
                     }else if(selected_color == field_redundancy){
-                        return colorScale(d.data[field_redundancy]);
+                        return redundancyColorScale(d.data[field_redundancy]);
                     }
                 })
                 .attr('d', function(d){                    
@@ -745,6 +747,11 @@
             if(selected_color==""){
                 $(".color-legend").addClass('hide');
             }else{
+                if(selected_color==field_redundancy){
+                    $("#gradient stop").last().attr('stop-color',redundancyColorScale.range()[1]);
+                }else{
+                    $("#gradient stop").last().attr('stop-color',colorScale.range()[1]);
+                }
                 $(".color-legend").removeClass('hide');                
             }
             let root = createTreeData(data_filtered);
