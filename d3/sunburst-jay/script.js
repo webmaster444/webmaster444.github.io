@@ -157,8 +157,8 @@ let yMin = 150
 let yRange = [0, yMin+20, yMin+30,yMin+50, yMin+70, maxRadius];
 
 const y = d3.scaleLinear().range(yRange).domain([0,0.25,0.333,0.5,0.75,1]);
-const yRowCounts = d3.scaleLinear().range([0,maxRadius - yMin - 70]);
-const yRedundancy = d3.scaleLinear().range([0,maxRadius - yMin - 70]);
+const yRowCounts = d3.scaleLinear().range([5,maxRadius - yMin - 70]);
+const yRedundancy = d3.scaleLinear().range([5,maxRadius - yMin - 70]);
 
 const color = d3.scaleOrdinal(d3.schemeCategory20);
 var xScale = d3.scaleLinear().domain([0, 100]).range([0, 500])
