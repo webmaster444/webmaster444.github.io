@@ -54,14 +54,23 @@
         .tooltip table td{
             padding:2px;
         }
+
+        line.overall-dpl-line{
+            /*stroke: black;*/
+        }
+        text{
+            font-size: 10px;
+        }
     </style>
 </head>
 <body>
 <script>
-    var margin = {top: 20, right: 20, bottom: 30, left: 70},
+    var margin = {top: 20, right: 50, bottom: 30, left: 70},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
+    // label type will have one of these values ["absolute","percent","both"]
+    var labeltype ="absolute";
     // set the ranges
     var x = d3.scaleBand()
               .range([0, width])
@@ -75,6 +84,25 @@
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    function marker(color){
+        var defs = svg.append("defs")
+
+        defs.append("marker")
+                .attr("id",color.replace("#", ""))
+                .attr("viewBox","0 -5 10 10")
+                .attr("refX",5)
+                .attr("refY",0)
+                .attr("markerWidth",4)
+                    .attr("markerHeight",4)
+                    .attr("orient","auto")
+                
+                .append("path")
+                    .attr("d", "M0,-5L10,0L0,5")
+                    .attr("class","arrowHead")
+                    .style("fill", color);
+
+        return "url(#"+color+")";
+    }    
     function numberFormatMK(n){
         return numeral(n).format('0.0a');
     }    
@@ -83,7 +111,7 @@
         .attr("class", "tooltip")               
         .style("opacity", 0);
 
-    let yMax = 0 ,yPl = 0 ,yAc=0;
+    let yMax = 0 ,yPl = 0 ,yAc=0 , yAcData = {},textClicked = 0;
     d3.csv('data.csv', function(error,data){
         if (error) throw error;        
 
@@ -193,7 +221,9 @@
                     .style("opacity", 0);   
             });
 
-          // add the x Axis
+        // add the labels to bars
+        updatetextLabels(chart_data);
+        // add the x Axis
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
             .call(d3.axisBottom(x));
@@ -201,8 +231,82 @@
           // add the y Axis
         svg.append("g")
             .call(d3.axisLeft(y));    
+
+        // overall dPL line chart
+        svg.append('line').attr('class','overall-dpl-line')
+        .attr("marker-end",function(){
+            if(yAcData.dplpercent > 0){
+                return marker("green");
+            }else{
+                return marker("red");
+            }
+        })
+        .attr('stroke',function(){
+            if(yAcData.dplpercent > 0){
+                return "green";
+            }else{
+                return "red";
+            }
+        })
+        .attr('x1',width).attr('y1',y(yPl)).attr('x2',width).attr('y2',y(yAc));
+
+
+        //overall dPL line legend
+        svg.append('text').attr('class','overall-dpl-text')        
+        .attr('x',width+5).attr('y',(y(yPl) + y(yAc))/2+5).text(yAcData.dplpercent.toFixed(1)+"%");
     });
 
+    function updatetextLabels(chart_data){
+        svg.selectAll('.label').remove();
+
+        svg.selectAll(".label")
+            .data(chart_data)
+            .enter().append("text")
+            .attr('class',"label")
+            .attr('text-anchor','middle')
+            .attr('x',(d)=>x(d.x) + x.bandwidth()/2)
+            .attr('y',function(d){
+                if(d.type != "month"){
+                    return y(d.y) - 5;
+                }else{
+                    if(d.color == "positive"){
+                        return y(yPl + d.y) - 5;
+                    }else{
+                        return y(yPl + d.y) + 10;
+                    }
+                }                
+            })
+            .text(function(d){
+                if(d.type == "month"){
+                    if(labeltype == "absolute"){
+                        return numberFormatMK(d.y);
+                    }else if(labeltype == "percent"){
+                        return d.dplpercent.toFixed(1) + "%";
+                    }else if(labeltype == "both"){
+                        return numberFormatMK(d.y) +" ( " + d.dplpercent.toFixed(1) + "% )";
+                    }
+                }else{
+                    return numberFormatMK(d.y);
+                }
+            })
+            .on('click',function(d){                
+                textClicked++;
+                if(textClicked > 0){
+                    updateLabelType(textClicked);
+                    updatetextLabels(chart_data);
+                }                
+            });
+    }
+
+    function updateLabelType(textClicked){
+        if(textClicked % 3 == 1){
+            labeltype = "percent";
+        }else if(textClicked % 3 == 2){
+            labeltype = "both";
+        }else if(textClicked % 3 == 0){
+            labeltype = "absolute";
+        }
+    }
     function makeChartData(data){
         let res = [];
         let tmp = {};
@@ -227,6 +331,7 @@
         }else{
             tmp['color'] = 'negative';
         }
+        yAcData = tmp;
         res.push(tmp);
 
         data.forEach(function(d){
