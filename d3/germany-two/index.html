@@ -65,7 +65,7 @@
 </head>
 <body>
 <script>
-    var margin = {top: 20, right: 50, bottom: 30, left: 70},
+    var margin = {top: 20, right: 80, bottom: 30, left: 70},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
@@ -111,7 +111,7 @@
         .attr("class", "tooltip")               
         .style("opacity", 0);
 
-    let yMax = 0 ,yPl = 0 ,yAc=0 , yAcData = {},textClicked = 0;
+    let yMax = 0 ,yPl = 0 ,yAc=0 , yAcData = {},textClicked = 0, highlighted = false;
     d3.csv('data.csv', function(error,data){
         if (error) throw error;        
 
@@ -250,10 +250,6 @@
         })
         .attr('x1',width).attr('y1',y(yPl)).attr('x2',width).attr('y2',y(yAc));
 
-
-        //overall dPL line legend
-        svg.append('text').attr('class','overall-dpl-text')        
-        .attr('x',width+5).attr('y',(y(yPl) + y(yAc))/2+5).text(yAcData.dplpercent.toFixed(1)+"%");
     });
 
     function updatetextLabels(chart_data){
@@ -296,6 +292,20 @@
                     updatetextLabels(chart_data);
                 }                
             });
+
+        svg.select('.overall-dpl-text').remove();
+        //overall dPL line legend
+        svg.append('text').attr('class','overall-dpl-text')        
+        .attr('x',width+5).attr('y',(y(yPl) + y(yAc))/2+5)
+        .text(function(d){
+            if(labeltype == "absolute"){                            
+                return numberFormatMK(yAc - yPl);
+            }else if(labeltype == "percent"){
+                return yAcData.dplpercent.toFixed(1)+"%";
+            }else if(labeltype == "both"){
+                return numberFormatMK(yAc - yPl) + " ( " + yAcData.dplpercent.toFixed(1)+"% )";
+            }
+        });
     }
 
     function updateLabelType(textClicked){
