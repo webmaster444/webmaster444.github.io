@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Slava two custom charts</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src='https://d3js.org/d3.v4.min.js'></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+    <style>
+        div.tooltip {   
+            position: absolute;         
+            text-align: center;         
+            width: 250px;                    
+            height: 100px;                   
+            padding: 2px;               
+            font: 12px sans-serif;      
+            background: black; 
+            border: 0px;        
+            border-radius: 8px;         
+            pointer-events: none;    
+            color: white;       
+        }
+
+        span.circle{
+            width:10px;
+            height:10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        span.white{
+            background:white;
+        }
+
+        span.gray{
+            background-color: gray;
+        }
+
+        span.green{
+            background-color: green;
+        }
+    </style>
+</head>
+<body>
+<script>
+    var margin = {top: 20, right: 20, bottom: 30, left: 70},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+    // set the ranges
+    var x = d3.scaleBand()
+              .range([0, width])
+              .padding(0.1);
+    var y = d3.scaleLinear()
+              .range([height, 0]);
+
+    var svg = d3.select("body").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    function numberFormatMK(n){
+        return numeral(n).format('0.0a');
+    }    
+    // Define the div for the tooltip
+    var div = d3.select("body").append("div")   
+        .attr("class", "tooltip")               
+        .style("opacity", 0);
+
+    let yMax = 0 ,yPl = 0 ,yAc=0;
+    d3.csv('data.csv', function(error,data){
+        if (error) throw error;        
+
+        // format the data
+        data.forEach(function(d) {
+            d['This Year Sales Ziel'] = d['This Year Sales Ziel'].substring(1);
+            d['This Year Sales'] = d['This Year Sales'].substring(1);
+        });
+
+
+        let chart_data = makeChartData(data);
+        // Scale the range of the data in the domains
+        let xDomain = [];
+        xDomain.push('PL');
+        let fiscalMonths = data.map(function(d){return d['FiscalMonth']});
+        xDomain = xDomain.concat(fiscalMonths);
+        xDomain.push('AC');
+
+        x.domain(xDomain);
+        y.domain([0, yMax]);
+
+        svg.selectAll(".bar")
+            .data(chart_data)
+            .enter().append("rect")
+            .attr("class", "bar")
+            .attr("x", function(d) {return x(d['x']); })
+            .attr("width", x.bandwidth())
+            .attr('fill',function(d){
+                if(d.color == "positive"){
+                    return "green";
+                }else if(d.color == "negative"){
+                    return "red";
+                }
+                return "lightblue";
+            })
+            .attr("y", function(d) {
+                if(d.type == "month"){
+                    return y(Math.max(yPl, (yPl + d.y)));
+                }
+                return y(Math.abs(d['y'])); 
+            })
+            .attr("height", function(d) { 
+                if(d.type == "month"){
+                    return height - y(Math.abs(d['y']));
+                }
+                return height - y(Math.abs(d['y'])); 
+            })
+            .on("mouseover", function(d) {
+                let tooltipContent = "";
+                tooltipContent += "<label>"+d.x+"</label>";
+                tooltipContent += "<table>";
+                if(d.type == "month"){
+                    tooltipContent += "<tr><td><span class='gray circle'></span></td>";
+                    tooltipContent += "<td>This Year Sales</td>";
+                    tooltipContent += "<td>"+numberFormatMK(d.sales)+"</td></tr>";                
+
+                    tooltipContent += "<tr><td><span class='white circle'></span></td>";
+                    tooltipContent += "<td>This Year Sales Ziel</td>";
+                    tooltipContent += "<td>"+numberFormatMK(d.target)+"</td></tr>";                
+
+                    tooltipContent += "<tr><td></td>";
+                    tooltipContent += "<td>ΔPL</td>";
+                    tooltipContent += "<td>"+numberFormatMK(d.y)+"</td></tr>";    
+
+                    tooltipContent += "<tr><td></td>";
+                    tooltipContent += "<td>ΔPL%</td>";
+                    tooltipContent += "<td>"+d.dplpercent.toFixed(1)+"%</td></tr>";    
+                }
+
+                tooltipContent +="</table>";
+                div.transition()        
+                    .duration(200)      
+                    .style("opacity", .9);      
+                div .html(tooltipContent)  
+                    .style("left", (d3.event.pageX) + "px")     
+                    .style("top", (d3.event.pageY - 28) + "px");    
+                })                  
+            .on("mouseout", function(d) {       
+                div.transition()        
+                    .duration(500)      
+                    .style("opacity", 0);   
+            });
+
+          // add the x Axis
+        svg.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x));
+
+          // add the y Axis
+        svg.append("g")
+            .call(d3.axisLeft(y));    
+    });
+
+    function makeChartData(data){
+        let res = [];
+        let tmp = {};
+
+        let dPL = [];
+        yPl = d3.sum(data.map(function(d){return d['This Year Sales Ziel']}));
+        yAc = d3.sum(data.map(function(d){return d['This Year Sales']}));
+
+        tmp['x'] = "PL";
+        tmp['y'] = yPl;
+
+        res.push(tmp);
+
+        tmp = {};
+        tmp['x'] = "AC";
+        tmp['y'] = yAc;
+        
+        res.push(tmp);
+
+        data.forEach(function(d){
+            tmp = {};
+            tmp['x'] = d['FiscalMonth'];
+            tmp['y'] = parseInt(d['This Year Sales']) - parseInt(d['This Year Sales Ziel']);
+            if(tmp['y'] > 0){
+                tmp['color'] = 'positive';
+            }else{
+                tmp['color'] = 'negative';
+            }
+            tmp['sales'] = parseInt(d['This Year Sales']);
+            tmp['target'] = parseInt(d['This Year Sales Ziel']);
+            tmp['dplpercent'] = tmp['sales'] * 100 / tmp['target'] - 100;
+
+            tmp['type'] = 'month';
+            dPL.push(Math.abs(tmp['y']));
+            res.push(tmp);
+        })
+
+        yMax = d3.max([yPl,yAc]) + d3.max(dPL);
+
+        return res;
+    }
+</script>
+</body>
+</html>
