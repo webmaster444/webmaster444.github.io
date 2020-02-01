@@ -112,10 +112,12 @@
             .attr("x", function(d) {return x(d['x']); })
             .attr("width", x.bandwidth())
             .attr('fill',function(d){
-                if(d.color == "positive"){
-                    return "green";
-                }else if(d.color == "negative"){
-                    return "red";
+                if(d.type == "month"){
+                    if(d.color == "positive"){
+                        return "green";
+                    }else if(d.color == "negative"){
+                        return "red";
+                    }
                 }
                 return "lightblue";
             })
@@ -155,6 +157,26 @@
                     tooltipContent += "<tr><td></td>";
                     tooltipContent += "<td style='text-align:right'>ΔPL%</td>";
                     tooltipContent += "<td>"+d.dplpercent.toFixed(1)+"%</td></tr>";    
+                }else if(d.type == "PL"){            
+                    tooltipContent += "<tr><td><span class='white circle'></span></td>";
+                    tooltipContent += "<td style='text-align:right'>This Year Sales Ziel</td>";
+                    tooltipContent += "<td>"+numberFormatMK(d.y)+"</td></tr>";                
+                }else if(d.type == "AC"){
+                    tooltipContent += "<tr><td><span class='gray circle'></span></td>";
+                    tooltipContent += "<td style='text-align:right'>This Year Sales</td>";
+                    tooltipContent += "<td>"+numberFormatMK(d.y)+"</td></tr>";                
+
+                    if(d.color == "positive"){
+                        tooltipContent += "<tr><td><span class='green circle'></span></td>";
+                    }else{
+                        tooltipContent += "<tr><td><span class='red circle'></span></td>";
+                    }                    
+                    tooltipContent += "<td style='text-align:right'>ΔPL</td>";
+                    tooltipContent += "<td>"+numberFormatMK(d.y)+"</td></tr>";    
+
+                    tooltipContent += "<tr><td></td>";
+                    tooltipContent += "<td style='text-align:right'>ΔPL%</td>";
+                    tooltipContent += "<td>"+d.dplpercent.toFixed(1)+"%</td></tr>";  
                 }
 
                 tooltipContent +="</table>";
@@ -191,13 +213,20 @@
 
         tmp['x'] = "PL";
         tmp['y'] = yPl;
-
+        tmp['type'] = 'PL';
         res.push(tmp);
 
         tmp = {};
         tmp['x'] = "AC";
         tmp['y'] = yAc;
-        
+        tmp['type'] = 'AC';
+
+        tmp['dplpercent'] = yAc * 100 / yPl - 100;
+        if(tmp['dplpercent'] > 0){
+            tmp['color'] = 'positive';
+        }else{
+            tmp['color'] = 'negative';
+        }
         res.push(tmp);
 
         data.forEach(function(d){
