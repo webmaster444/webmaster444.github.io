@@ -61,6 +61,19 @@
         text{
             font-size: 10px;
         }
+
+        .ac-line,.pl-line{
+            stroke: #cccccc;
+            opacity: 0.8;
+        }
+
+        .lowopacity{
+            opacity: 0.5;
+        }
+
+        .highlighted{
+            opacity: 1;
+        }    
     </style>
 </head>
 <body>
@@ -111,7 +124,7 @@
         .attr("class", "tooltip")               
         .style("opacity", 0);
 
-    let yMax = 0 ,yPl = 0 ,yAc=0 , yAcData = {},textClicked = 0, highlighted = false;
+    let yMax = 0 ,yPl = 0 ,yAc=0 , yAcData = {},textClicked = 0, highlighted = false, rectClicked = false;
     d3.csv('data.csv', function(error,data){
         if (error) throw error;        
 
@@ -133,9 +146,18 @@
         x.domain(xDomain);
         y.domain([0, yMax]);
 
-        svg.selectAll(".bar")
+        //draw parallel lines
+        svg.append('line').attr('class','ac-line').attr('x1',x(0)).attr('x2',width).attr('y1',y(yAc)).attr('y2',y(yAc));
+        svg.append('line').attr('class','pl-line').attr('x1',x(0)).attr('x2',width).attr('y1',y(yPl)).attr('y2',y(yPl));
+        var g_wrapper = svg.selectAll(".g_wrapper")
             .data(chart_data)
-            .enter().append("rect")
+            .enter().append("g").attr('class','g_wrapper').attr('xdata',(d)=>d.x)
+            .on('click',function(d){                            
+                highlightElement(this,d3.select(this).classed('highlighted'));
+                rectClicked = d3.select(this).classed('highlighted');
+            });
+
+            g_wrapper.append('rect')
             .attr("class", "bar")
             .attr("x", function(d) {return x(d['x']); })
             .attr("width", x.bandwidth())
@@ -146,8 +168,12 @@
                     }else if(d.color == "negative"){
                         return "red";
                     }
-                }
-                return "lightblue";
+                }else{
+                    if(d.x == "PL")
+                        return "#eaeaea";
+                    else if(d.x == "AC")
+                        return "gray";
+                }                
             })
             .attr("y", function(d) {
                 if(d.type == "month"){
@@ -162,6 +188,9 @@
                 return height - y(Math.abs(d['y'])); 
             })
             .on("mouseover", function(d) {
+                if(rectClicked == false){
+                    highlightElement(this.parentNode,false);
+                }
                 let tooltipContent = "";
                 tooltipContent += "<label>"+d.x+"</label>";
                 tooltipContent += "<table>";
@@ -207,7 +236,7 @@
                     tooltipContent += "<td>"+d.dplpercent.toFixed(1)+"%</td></tr>";  
                 }
 
-                tooltipContent +="</table>";
+                tooltipContent +="</table>";                
                 div.transition()        
                     .duration(200)      
                     .style("opacity", .9);      
@@ -222,7 +251,7 @@
             });
 
         // add the labels to bars
-        updatetextLabels(chart_data);
+        updatetextLabels(g_wrapper,chart_data);
         // add the x Axis
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
@@ -230,7 +259,7 @@
 
           // add the y Axis
         svg.append("g")
-            .call(d3.axisLeft(y));    
+            .call(d3.axisLeft(y).ticks(20, "s"));    
 
         // overall dPL line chart
         svg.append('line').attr('class','overall-dpl-line')
@@ -252,12 +281,10 @@
 
     });
 
-    function updatetextLabels(chart_data){
-        svg.selectAll('.label').remove();
+    function updatetextLabels(g_wrapper,chart_data){
+        g_wrapper.selectAll('.label').remove();
 
-        svg.selectAll(".label")
-            .data(chart_data)
-            .enter().append("text")
+        g_wrapper.append("text")
             .attr('class',"label")
             .attr('text-anchor','middle')
             .attr('x',(d)=>x(d.x) + x.bandwidth()/2)
@@ -289,7 +316,7 @@
                 textClicked++;
                 if(textClicked > 0){
                     updateLabelType(textClicked);
-                    updatetextLabels(chart_data);
+                    updatetextLabels(g_wrapper,chart_data);
                 }                
             });
 
@@ -365,6 +392,21 @@
         yMax = d3.max([yPl,yAc]) + d3.max(dPL);
 
         return res;
+    }
+
+    function highlightElement(item,highlighted){
+        if(highlighted == false){
+            d3.selectAll('.bar').classed('lowopacity',true);
+            d3.selectAll('.label').classed('lowopacity',true);
+            d3.select(item).selectAll('*').classed('lowopacity',false);
+            d3.select(item).classed('highlighted',true);
+            d3.selectAll('.tick text').classed('lowopacity',true);
+            d3.selectAll('.tick text').filter(function(d){return d == d3.select(item).attr('xdata');}).classed('lowopacity',false);
+        }else{
+            d3.selectAll('.lowopacity').classed('lowopacity',false);
+            d3.selectAll('.tick text').classed('lowopacity',false);
+            d3.select(item).classed('highlighted',false);
+        }
     }
 </script>
 </body>
