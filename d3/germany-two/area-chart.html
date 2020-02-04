@@ -207,7 +207,9 @@
                     highlightElement(dvalX,true);
                     prevMonth = dvalX;
                 }                
-            }).on('mouseout',function(d,e){highlightElement("",false)});
+            }).on('mouseout',function(d,e){
+                prevMonth = "";
+                highlightElement("",false)});
 
         svg.append("clipPath")
           .attr("id", "clip-above")
@@ -222,12 +224,35 @@
         svg.append("path")
           .attr("class", "area below")
           .attr("clip-path", "url(#clip-below)")
-          .attr("d", coloredArea.y0(function(d) { return y(d["target"]); }));
+          .attr("d", coloredArea.y0(function(d) { return y(d["target"]); }))
+            .on('mousemove',function(d,e){
+                console.log('below in');
+                const m = d3.mouse(this);                
+                var dvalX = scaleBandInvert(x)(m[0]);
+                if(dvalX != prevMonth){
+                    highlightElement(dvalX,false);
+                    highlightElement(dvalX,true);
+                    prevMonth = dvalX;
+                }                
+            }).on('mouseout',function(d,e){
+                prevMonth = "";
+                highlightElement("",false)});
 
         svg.append("path")
           .attr("class", "area above")
           .attr("clip-path", "url(#clip-above)")
-          .attr("d", coloredArea);
+          .attr("d", coloredArea)
+                      .on('mousemove',function(d,e){
+                const m = d3.mouse(this);                
+                var dvalX = scaleBandInvert(x)(m[0]);
+                if(dvalX != prevMonth){
+                    highlightElement(dvalX,false);
+                    highlightElement(dvalX,true);
+                    prevMonth = dvalX;
+                }                
+            }).on('mouseout',function(d,e){
+                prevMonth = "";
+                highlightElement("",false)});
 
         svg.append("path")
             .attr("class", "line sales-line")            
@@ -241,46 +266,8 @@
         var g_wrapper = svg.selectAll('.g_wrapper').data(chart_data).enter().append('g').attr('xdata',(d)=>d.x).attr('class','g_wrapper').on('mouseover',function(d){ highlightElement(this,d3.select(this).classed('highlighted')); });
 
         g_wrapper.append('circle').attr('class','sales-circle').attr('cx',(d)=>(x(d.x) + x.bandwidth()/2)).attr('cy',(d)=>y(d.sales)).attr('r',3).on("mouseover", function(d) {
-                if(rectClicked == false){
-                    highlightElement(this.parentNode,false);
-                }
-                let tooltipContent = "";
-                tooltipContent += "<label>"+d.x+"</label>";
-                tooltipContent += "<table>";
-                if(d.type == "month"){
-                    tooltipContent += "<tr><td><span class='gray circle'></span></td>";
-                    tooltipContent += "<td style='text-align:right'>This Year Sales</td>";
-                    tooltipContent += "<td>"+numberFormatMK(d.sales)+"</td></tr>";                
-
-                    tooltipContent += "<tr><td><span class='white circle'></span></td>";
-                    tooltipContent += "<td style='text-align:right'>This Year Sales Ziel</td>";
-                    tooltipContent += "<td>"+numberFormatMK(d.target)+"</td></tr>";                
-
-                    if(d.color == "positive"){
-                        tooltipContent += "<tr><td><span class='green circle'></span></td>";
-                    }else{
-                        tooltipContent += "<tr><td><span class='red circle'></span></td>";
-                    }                    
-                    tooltipContent += "<td style='text-align:right'>ΔPL</td>";
-                    tooltipContent += "<td>"+numberFormatMK(d.y)+"</td></tr>";    
-
-                    tooltipContent += "<tr><td></td>";
-                    tooltipContent += "<td style='text-align:right'>ΔPL%</td>";
-                    tooltipContent += "<td>"+d.dplpercent.toFixed(1)+"%</td></tr>";    
-                }
-
-                tooltipContent +="</table>";                
-                div.transition()        
-                    .duration(200)      
-                    .style("opacity", .9);      
-                div .html(tooltipContent)  
-                    .style("left", (d3.event.pageX) + "px")     
-                    .style("top", (d3.event.pageY - 28) + "px");    
                 })                  
-            .on("mouseout", function(d) {       
-                div.transition()        
-                    .duration(500)      
-                    .style("opacity", 0);   
+            .on("mouseout", function(d) {                       
             });
 
         g_wrapper.append('circle').attr('class','target-circle').attr('cx',(d)=>(x(d.x) + x.bandwidth()/2)).attr('cy',(d)=>y(d.target)).attr('r',3).on("mouseover", function(d) {
