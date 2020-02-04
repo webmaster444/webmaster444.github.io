@@ -106,7 +106,7 @@
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
     function marker(color){
         var defs = svg.append("defs")
@@ -157,6 +157,9 @@
         x.domain(xDomain);
         y.domain([0, yMax]);
 
+        svg.append('rect').attr('x',0).attr('y',0).attr('width',width).attr('height',height).attr('fill','white').on('click',function(d){
+            highlightElement("",true);
+        });
         //draw parallel lines
         svg.append('line').attr('class','ac-line').attr('x1',x(0)).attr('x2',width).attr('y1',y(yAc)).attr('y2',y(yAc));
         svg.append('line').attr('class','pl-line').attr('x1',x(0)).attr('x2',width).attr('y1',y(yPl)).attr('y2',y(yPl));
@@ -260,6 +263,9 @@
                     .style("top", (d3.event.pageY - 28) + "px");    
                 })                  
             .on("mouseout", function(d) {       
+                if(rectClicked != d.x){
+                    highlightElement('',true);
+                }                
                 div.transition()        
                     .duration(500)      
                     .style("opacity", 0);   
