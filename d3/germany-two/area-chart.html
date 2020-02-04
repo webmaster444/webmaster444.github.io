@@ -30,6 +30,9 @@
           fill: #ccc;
         }
 
+        circle{
+            pointer-events: none;
+        }
         div.tooltip {   
             position: absolute;                     
             text-align: left;
@@ -114,7 +117,9 @@
             stroke-dasharray: 5 5;
         }
 
-
+        .area.overlay{
+            fill: transparent;
+        }
     </style>
 </head>
 <body>
@@ -142,26 +147,7 @@ var svg = d3.select("body").append("svg")
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-// function marker(color){
-//     var defs = svg.append("defs")
-
-//     defs.append("marker")
-//             .attr("id",color.replace("#", ""))
-//             .attr("viewBox","0 -5 10 10")
-//             .attr("refX",5)
-//             .attr("refY",0)
-//             .attr("markerWidth",4)
-//                 .attr("markerHeight",4)
-//                 .attr("orient","auto")
-
-//             .append("path")
-//                 .attr("d", "M0,-5L10,0L0,5")
-//                 .attr("class","arrowHead")
-//                 .style("fill", color);
-
-//     return "url(#"+color+")";
-// }    
+   
 function numberFormatMK(n) {
     return numeral(n).format('0.0a');
 }
@@ -209,6 +195,17 @@ d3.csv('data.csv', function(error, data) {
             return y((Math.max(d["sales"], d["target"]) + Math.min(d['sales'], d['target'])) / 2);
         });
 
+    var maxOverlay = d3.area()
+        .x(function(d) {
+            return x(d.x) + x.bandwidth() / 2;
+        })
+        .y0(function(d) {
+            return y(height)
+        })
+        .y1(function(d) {
+            return y(Math.max(d["sales"], d["target"]) );
+        });
+
     var coloredArea = d3.area()
         .x(function(d) {
             return x(d.x) + x.bandwidth() / 2;
@@ -234,16 +231,20 @@ d3.csv('data.csv', function(error, data) {
                 rectClicked = dvalX;
             }else{
                 highlightElement(dvalX, false);
+                rectClicked = "";
             }
         })
         .on('mousemove', function(d, e) {
             const m = d3.mouse(this);
             var dvalX = scaleBandInvert(x)(m[0]);
-            if (dvalX != prevMonth) {
-                highlightElement(dvalX, false);
-                highlightElement(dvalX, true);
-                prevMonth = dvalX;
-            }
+            
+            if(rectClicked == ""){
+                if (dvalX != prevMonth) {
+                    highlightElement(dvalX, false);
+                    highlightElement(dvalX, true);
+                    prevMonth = dvalX;        
+                }            
+            }            
 
             let cuData = d3.selectAll('.g_wrapper').filter(function(d) {
                 return d3.select(this).attr('xdata') == dvalX
@@ -252,7 +253,9 @@ d3.csv('data.csv', function(error, data) {
 
         }).on('mouseout', function(d, e) {
             prevMonth = "";
-            highlightElement("", false);
+            if(rectClicked == ""){
+                highlightElement("", false);
+            }            
             hideTooltip();
         });
 
@@ -281,16 +284,19 @@ d3.csv('data.csv', function(error, data) {
                 rectClicked = dvalX;
             }else{
                 highlightElement(dvalX, false);
+                rectClicked = "";
             }
         })
         .on('mousemove', function(d, e) {
             const m = d3.mouse(this);
             var dvalX = scaleBandInvert(x)(m[0]);
-            if (dvalX != prevMonth) {
-                highlightElement(dvalX, false);
-                highlightElement(dvalX, true);
-                prevMonth = dvalX;
-            }
+            if(rectClicked ==""){
+                if (dvalX != prevMonth) {
+                    highlightElement(dvalX, false);
+                    highlightElement(dvalX, true);
+                    prevMonth = dvalX;
+                }
+            }            
 
             let cuData = d3.selectAll('.g_wrapper').filter(function(d) {
                 return d3.select(this).attr('xdata') == dvalX
@@ -299,7 +305,9 @@ d3.csv('data.csv', function(error, data) {
 
         }).on('mouseout', function(d, e) {
             prevMonth = "";
-            highlightElement("", false);
+            if(rectClicked == ""){
+                highlightElement("", false);
+            }            
             hideTooltip();
         });
 
@@ -316,17 +324,21 @@ d3.csv('data.csv', function(error, data) {
                 rectClicked = dvalX;
             }else{
                 highlightElement(dvalX, false);
+                rectClicked = "";
             }
         })
         .on('mousemove', function(d, e) {
+            console.log(rectClicked);
             const m = d3.mouse(this);
             var dvalX = scaleBandInvert(x)(m[0]);
-            if (dvalX != prevMonth) {
-                highlightElement(dvalX, false);
-                highlightElement(dvalX, true);
-                prevMonth = dvalX;
+            if(rectClicked == ""){
+                if (dvalX != prevMonth) {
+                    highlightElement(dvalX, false);
+                    highlightElement(dvalX, true);
+                    prevMonth = dvalX;                    
+                }
             }
-
+            
             let cuData = d3.selectAll('.g_wrapper').filter(function(d) {
                 return d3.select(this).attr('xdata') == dvalX
             }).datum();
@@ -334,7 +346,9 @@ d3.csv('data.csv', function(error, data) {
 
         }).on('mouseout', function(d, e) {
             prevMonth = "";
-            highlightElement("", false);
+            if(rectClicked == ""){
+                highlightElement("", false);
+            }            
             hideTooltip();
         });
 
@@ -351,14 +365,91 @@ d3.csv('data.csv', function(error, data) {
         highlightElement(this, d3.select(this).classed('highlighted'));
     });
 
-    g_wrapper.append('circle').attr('class', 'sales-circle').attr('cx', (d) => (x(d.x) + x.bandwidth() / 2)).attr('cy', (d) => y(d.sales)).attr('r', 3).on("mouseover", function(d) {})
-        .on("mouseout", function(d) {});
+    g_wrapper.append('circle').attr('class', 'sales-circle').attr('cx', (d) => (x(d.x) + x.bandwidth() / 2)).attr('cy', (d) => y(d.sales)).attr('r', 3)
+        .on('mouseover', function(d, e) {
+            var dvalX = d.x;
+            if(rectClicked == ""){
+                if (dvalX != prevMonth) {
+                    console.log('eeee');
+                    highlightElement(dvalX, false);
+                    highlightElement(dvalX, true);
+                    prevMonth = dvalX;                    
+                }
+            }
+            
+            showTooltip(d);
 
-    g_wrapper.append('circle').attr('class', 'target-circle').attr('cx', (d) => (x(d.x) + x.bandwidth() / 2)).attr('cy', (d) => y(d.target)).attr('r', 3).on("mouseover", function(d) {
+        }).on('mouseout', function(d, e) {
+            prevMonth = d.x;
+            if(rectClicked == ""){
+                highlightElement("", false);
+            }            
+            hideTooltip();
+        });
 
+    g_wrapper.append('circle').attr('class', 'target-circle').attr('cx', (d) => (x(d.x) + x.bandwidth() / 2)).attr('cy', (d) => y(d.target)).attr('r', 10)
+        .on('mouseover', function(d, e) {
+            console.log(rectClicked);
+            var dvalX = d.x;
+            if(rectClicked == ""){
+                if (dvalX != prevMonth) {
+                    console.log('eeee');
+                    highlightElement(dvalX, false);
+                    highlightElement(dvalX, true);
+                    prevMonth = dvalX;                    
+                }
+            }
+            
+            showTooltip(d);
+
+        }).on('mouseout', function(d, e) {
+            prevMonth = d.x;
+            if(rectClicked == ""){
+                highlightElement("", false);
+            }            
+            hideTooltip();
+        });
+
+    // overlay to trigger mouseover effect
+    svg.append("path")
+        .attr("class", "area overlay")
+        .attr("d", maxOverlay)
+        .on("click",function(d,e){
+            console.log('overlay click');
+            const m = d3.mouse(this);
+            var dvalX = scaleBandInvert(x)(m[0]);
+            if (dvalX != rectClicked) {
+                highlightElement(dvalX, false);
+                highlightElement(dvalX, true);
+                rectClicked = dvalX;
+            }else{
+                highlightElement(dvalX, false);
+                rectClicked = "";
+            }
         })
-        .on("mouseout", function(d) {
+        .on('mousemove', function(d, e) {
+            console.log(rectClicked);
+            const m = d3.mouse(this);
+            var dvalX = scaleBandInvert(x)(m[0]);
+            if(rectClicked == ""){
+                if (dvalX != prevMonth) {
+                    highlightElement(dvalX, false);
+                    highlightElement(dvalX, true);
+                    prevMonth = dvalX;                    
+                }
+            }
+            
+            let cuData = d3.selectAll('.g_wrapper').filter(function(d) {
+                return d3.select(this).attr('xdata') == dvalX
+            }).datum();
+            showTooltip(cuData);
 
+        }).on('mouseout', function(d, e) {
+            prevMonth = "";
+            if(rectClicked == ""){
+                highlightElement("", false);
+            }            
+            hideTooltip();
         });
 
     // add the labels to bars
@@ -371,25 +462,6 @@ d3.csv('data.csv', function(error, data) {
     // add the y Axis
     svg.append("g")
         .call(d3.axisLeft(y).ticks(20, "s"));
-
-    // overall dPL line chart
-    // svg.append('line').attr('class','overall-dpl-line')
-    // .attr("marker-end",function(){
-    //     if(yAcData.dplpercent > 0){
-    //         return marker("green");
-    //     }else{
-    //         return marker("red");
-    //     }
-    // })
-    // .attr('stroke',function(){
-    //     if(yAcData.dplpercent > 0){
-    //         return "green";
-    //     }else{
-    //         return "red";
-    //     }
-    // })
-    // .attr('x1',width).attr('y1',y(yPl)).attr('x2',width).attr('y2',y(yAc));
-
 });
 
 function updatetextLabels(g_wrapper, chart_data) {
@@ -409,20 +481,6 @@ function updatetextLabels(g_wrapper, chart_data) {
         .text(function(d) {
             return numberFormatMK(d.sales);
         })
-
-    // svg.select('.overall-dpl-text').remove();
-    // //overall dPL line legend
-    // svg.append('text').attr('class', 'overall-dpl-text')
-    //     .attr('x', width + 5).attr('y', (y(yPl) + y(yAc)) / 2 + 5)
-    //     .text(function(d) {
-    //         if (labeltype == "absolute") {
-    //             return numberFormatMK(yAc - yPl);
-    //         } else if (labeltype == "percent") {
-    //             return yAcData.dplpercent.toFixed(1) + "%";
-    //         } else if (labeltype == "both") {
-    //             return numberFormatMK(yAc - yPl) + " ( " + yAcData.dplpercent.toFixed(1) + "% )";
-    //         }
-    //     });
 }
 
 function updateLabelType(textClicked) {
