@@ -385,7 +385,7 @@ d3.csv('data.csv', function(error, data) {
             hideTooltip();
         });
 
-    g_wrapper.append('circle').attr('class', 'target-circle').attr('cx', (d) => (x(d.x) + x.bandwidth() / 2)).attr('cy', (d) => y(d.target)).attr('r', 10)
+    g_wrapper.append('circle').attr('class', 'target-circle').attr('cx', (d) => (x(d.x) + x.bandwidth() / 2)).attr('cy', (d) => y(d.target)).attr('r', 3)
         .on('mouseover', function(d, e) {
             var dvalX = d.x;
             if(rectClicked == ""){
