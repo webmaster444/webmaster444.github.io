@@ -8,35 +8,27 @@
     <script src='https://d3js.org/d3.v4.min.js'></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
     <style>
-        body {
-  font: 10px sans-serif;
-}
+        .axis path,
+        .axis line {
+          fill: none;
+          stroke: #000;
+          shape-rendering: crispEdges;
+        }
 
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
+        .area.below {
+          fill: red;
+        }
 
-.x.axis path {
-  /*display: none;*/
-}
+        .area.above {
+          fill: green;
+        }
 
-.area.below {
-  fill: red;
-}
-
-.area.above {
-  fill: green;
-}
-
-.highlight-line{
-    stroke: black;
-}
-.area.gray {
-  fill: #ccc;
-}
+        .highlight-line{
+            stroke: black;
+        }
+        .area.gray {
+          fill: #ccc;
+        }
 
         div.tooltip {   
             position: absolute;                     
@@ -146,25 +138,25 @@
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    function marker(color){
-        var defs = svg.append("defs")
+    // function marker(color){
+    //     var defs = svg.append("defs")
 
-        defs.append("marker")
-                .attr("id",color.replace("#", ""))
-                .attr("viewBox","0 -5 10 10")
-                .attr("refX",5)
-                .attr("refY",0)
-                .attr("markerWidth",4)
-                    .attr("markerHeight",4)
-                    .attr("orient","auto")
+    //     defs.append("marker")
+    //             .attr("id",color.replace("#", ""))
+    //             .attr("viewBox","0 -5 10 10")
+    //             .attr("refX",5)
+    //             .attr("refY",0)
+    //             .attr("markerWidth",4)
+    //                 .attr("markerHeight",4)
+    //                 .attr("orient","auto")
                 
-                .append("path")
-                    .attr("d", "M0,-5L10,0L0,5")
-                    .attr("class","arrowHead")
-                    .style("fill", color);
+    //             .append("path")
+    //                 .attr("d", "M0,-5L10,0L0,5")
+    //                 .attr("class","arrowHead")
+    //                 .style("fill", color);
 
-        return "url(#"+color+")";
-    }    
+    //     return "url(#"+color+")";
+    // }    
     function numberFormatMK(n){
         return numeral(n).format('0.0a');
     }    
@@ -173,7 +165,7 @@
         .attr("class", "tooltip")               
         .style("opacity", 0);
 
-    let yMax = 0 ,yPl = 0 ,yAc=0 , yAcData = {},textClicked = 0, highlighted = false, rectClicked = false;
+    let yMax = 0 ,yPl = 0 ,yAc=0 , yAcData = {},textClicked = 0, highlighted = false, rectClicked = false, prevMonth = "";
     d3.csv('data.csv', function(error,data){
         if (error) throw error;        
 
@@ -196,7 +188,6 @@
             .y1(function(d) { return y((Math.max(d["sales"], d["target"]) + Math.min(d['sales'],d['target']))/2); });
 
         var coloredArea = d3.area()
-            // .curve(d3.curveBasis)
             .x(function(d) { return x(d.x) + x.bandwidth()/2; })
             .y1(function(d) { return y(d["sales"]); });
 
@@ -206,8 +197,17 @@
         svg.datum(chart_data);
 
         svg.append("path")
-          .attr("class", "area gray")
-          .attr("d", greyArea);
+            .attr("class", "area gray")
+            .attr("d", greyArea)
+            .on('mousemove',function(d,e){
+                const m = d3.mouse(this);                
+                var dvalX = scaleBandInvert(x)(m[0]);
+                if(dvalX != prevMonth){
+                    highlightElement(dvalX,false);
+                    highlightElement(dvalX,true);
+                    prevMonth = dvalX;
+                }                
+            }).on('mouseout',function(d,e){highlightElement("",false)});
 
         svg.append("clipPath")
           .attr("id", "clip-above")
@@ -284,47 +284,11 @@
             });
 
         g_wrapper.append('circle').attr('class','target-circle').attr('cx',(d)=>(x(d.x) + x.bandwidth()/2)).attr('cy',(d)=>y(d.target)).attr('r',3).on("mouseover", function(d) {
-                if(rectClicked == false){
-                    highlightElement(this.parentNode,false);
-                }
-                let tooltipContent = "";
-                tooltipContent += "<label>"+d.x+"</label>";
-                tooltipContent += "<table>";
-                if(d.type == "month"){
-                    tooltipContent += "<tr><td><span class='gray circle'></span></td>";
-                    tooltipContent += "<td style='text-align:right'>This Year Sales</td>";
-                    tooltipContent += "<td>"+numberFormatMK(d.sales)+"</td></tr>";                
-
-                    tooltipContent += "<tr><td><span class='white circle'></span></td>";
-                    tooltipContent += "<td style='text-align:right'>This Year Sales Ziel</td>";
-                    tooltipContent += "<td>"+numberFormatMK(d.target)+"</td></tr>";                
-
-                    if(d.color == "positive"){
-                        tooltipContent += "<tr><td><span class='green circle'></span></td>";
-                    }else{
-                        tooltipContent += "<tr><td><span class='red circle'></span></td>";
-                    }                    
-                    tooltipContent += "<td style='text-align:right'>ΔPL</td>";
-                    tooltipContent += "<td>"+numberFormatMK(d.y)+"</td></tr>";    
-
-                    tooltipContent += "<tr><td></td>";
-                    tooltipContent += "<td style='text-align:right'>ΔPL%</td>";
-                    tooltipContent += "<td>"+d.dplpercent.toFixed(1)+"%</td></tr>";    
-                }
-
-                tooltipContent +="</table>";                
-                div.transition()        
-                    .duration(200)      
-                    .style("opacity", .9);      
-                div .html(tooltipContent)  
-                    .style("left", (d3.event.pageX) + "px")     
-                    .style("top", (d3.event.pageY - 28) + "px");    
+                
                 })                  
             .on("mouseout", function(d) {       
-                div.transition()        
-                    .duration(500)      
-                    .style("opacity", 0);   
-            });;
+ 
+            });
 
         // add the labels to bars
         updatetextLabels(g_wrapper,chart_data);
@@ -438,21 +402,71 @@
     }
 
     function highlightElement(item,highlighted){
-        if(highlighted == false){
+        if(highlighted == true){
             d3.selectAll('circle').classed('lowopacity',true);
             d3.selectAll('.label').classed('lowopacity',true);
-            d3.select(item).selectAll('*').classed('lowopacity',false);
-            d3.select(item).classed('highlighted',true);
+            d3.selectAll('.g_wrapper').filter(function(d){return d3.select(this).attr('xdata')== item }).selectAll('*').classed('lowopacity',false);
+            d3.selectAll('.g_wrapper').filter(function(d){return d3.select(this).attr('xdata')== item }).classed('highlighted',true);
             d3.selectAll('.tick text').classed('lowopacity',true);
-            d3.selectAll('.tick text').filter(function(d){return d == d3.select(item).attr('xdata');}).classed('lowopacity',false);
-            var cuData = d3.select(item).datum();                        
-            svg.append('line').attr('class','highlight-line').attr('x1',x(cuData.x)+x.bandwidth()/2).attr('x2',x(cuData.x)+x.bandwidth()/2).attr('y1',height).attr('y2',y(d3.max([cuData.sales,cuData.target])));
+            d3.selectAll('.tick text').filter(function(d){return d == item;}).classed('lowopacity',false);
+            var cuData = d3.selectAll('.g_wrapper').filter(function(d){return d3.select(this).attr('xdata')== item }).datum();                        
+            svg.append('line').attr('class','highlight-line').attr('x1',x(cuData.x)+x.bandwidth()/2).attr('x2',x(cuData.x)+x.bandwidth()/2).attr('y1',height).attr('y2',y(d3.max([cuData.sales,cuData.target])));       
+            
+            // if(rectClicked == false){
+            //         highlightElement(this.parentNode,false);
+            //     }
+                let tooltipContent = "";
+                tooltipContent += "<label>"+cuData.x+"</label>";
+                tooltipContent += "<table>";
+                if(cuData.type == "month"){
+                    tooltipContent += "<tr><td><span class='gray circle'></span></td>";
+                    tooltipContent += "<td style='text-align:right'>This Year Sales</td>";
+                    tooltipContent += "<td>"+numberFormatMK(cuData.sales)+"</td></tr>";                
+
+                    tooltipContent += "<tr><td><span class='white circle'></span></td>";
+                    tooltipContent += "<td style='text-align:right'>This Year Sales Ziel</td>";
+                    tooltipContent += "<td>"+numberFormatMK(cuData.target)+"</td></tr>";                
+
+                    if(cuData.color == "positive"){
+                        tooltipContent += "<tr><td><span class='green circle'></span></td>";
+                    }else{
+                        tooltipContent += "<tr><td><span class='red circle'></span></td>";
+                    }                    
+                    tooltipContent += "<td style='text-align:right'>ΔPL</td>";
+                    tooltipContent += "<td>"+numberFormatMK(cuData.y)+"</td></tr>";    
+
+                    tooltipContent += "<tr><td></td>";
+                    tooltipContent += "<td style='text-align:right'>ΔPL%</td>";
+                    tooltipContent += "<td>"+cuData.dplpercent.toFixed(1)+"%</td></tr>";    
+                }
+
+                tooltipContent +="</table>";                
+                div.transition()        
+                    .duration(200)      
+                    .style("opacity", .9);      
+                div .html(tooltipContent)  
+                    .style("left", (d3.event.pageX) + "px")     
+                    .style("top", (d3.event.pageY - 28) + "px");         
         }else{
             d3.selectAll('.lowopacity').classed('lowopacity',false);
             d3.selectAll('.tick text').classed('lowopacity',false);
-            d3.select(item).classed('highlighted',false);
-            d3.selectAll('.highlight-line').remove();
+            d3.selectAll('.g_wrapper').classed('highlighted',false);
+            d3.selectAll('.highlight-line').remove();            
+
+            div.transition()        
+                .duration(500)      
+                .style("opacity", 0);  
         }
+    }
+
+    function scaleBandInvert(scale) {
+      var domain = scale.domain();
+      var paddingOuter = scale(domain[0]);
+      var eachBand = scale.step();
+      return function (value) {
+        var index = Math.floor(((value - paddingOuter) / eachBand));
+        return domain[Math.max(0,Math.min(index, domain.length-1))];
+      }
     }
 </script>
 </body>
