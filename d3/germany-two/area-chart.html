@@ -328,7 +328,6 @@ d3.csv('data.csv', function(error, data) {
             }
         })
         .on('mousemove', function(d, e) {
-            console.log(rectClicked);
             const m = d3.mouse(this);
             var dvalX = scaleBandInvert(x)(m[0]);
             if(rectClicked == ""){
@@ -370,7 +369,6 @@ d3.csv('data.csv', function(error, data) {
             var dvalX = d.x;
             if(rectClicked == ""){
                 if (dvalX != prevMonth) {
-                    console.log('eeee');
                     highlightElement(dvalX, false);
                     highlightElement(dvalX, true);
                     prevMonth = dvalX;                    
@@ -389,11 +387,9 @@ d3.csv('data.csv', function(error, data) {
 
     g_wrapper.append('circle').attr('class', 'target-circle').attr('cx', (d) => (x(d.x) + x.bandwidth() / 2)).attr('cy', (d) => y(d.target)).attr('r', 10)
         .on('mouseover', function(d, e) {
-            console.log(rectClicked);
             var dvalX = d.x;
             if(rectClicked == ""){
                 if (dvalX != prevMonth) {
-                    console.log('eeee');
                     highlightElement(dvalX, false);
                     highlightElement(dvalX, true);
                     prevMonth = dvalX;                    
@@ -414,8 +410,7 @@ d3.csv('data.csv', function(error, data) {
     svg.append("path")
         .attr("class", "area overlay")
         .attr("d", maxOverlay)
-        .on("click",function(d,e){
-            console.log('overlay click');
+        .on("click",function(d,e){            
             const m = d3.mouse(this);
             var dvalX = scaleBandInvert(x)(m[0]);
             if (dvalX != rectClicked) {
@@ -428,7 +423,6 @@ d3.csv('data.csv', function(error, data) {
             }
         })
         .on('mousemove', function(d, e) {
-            console.log(rectClicked);
             const m = d3.mouse(this);
             var dvalX = scaleBandInvert(x)(m[0]);
             if(rectClicked == ""){
