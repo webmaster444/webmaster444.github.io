@@ -135,7 +135,7 @@
         .attr("class", "tooltip")               
         .style("opacity", 0);
 
-    let yMax = 0 ,yPl = 0 ,yAc=0 , yAcData = {},textClicked = 0, highlighted = false, rectClicked = false;
+    let yMax = 0 ,yPl = 0 ,yAc=0 , yAcData = {},textClicked = 0, highlighted = false, rectClicked = "";
     d3.csv('data.csv', function(error,data){
         if (error) throw error;        
 
@@ -163,9 +163,13 @@
         var g_wrapper = svg.selectAll(".g_wrapper")
             .data(chart_data)
             .enter().append("g").attr('class','g_wrapper').attr('xdata',(d)=>d.x)
-            .on('click',function(d){                            
-                highlightElement(this,d3.select(this).classed('highlighted'));
-                rectClicked = d3.select(this).classed('highlighted');
+            .on('click',function(d){                     
+                if(d3.select(this).attr('xdata')!=rectClicked){
+                    highlightElement(this,false);
+                    rectClicked = d3.select(this).attr('xdata');
+                }else{
+                    highlightElement(this,true);
+                }                                
             });
 
             g_wrapper.append('rect')
@@ -416,7 +420,8 @@
         }else{
             d3.selectAll('.lowopacity').classed('lowopacity',false);
             d3.selectAll('.tick text').classed('lowopacity',false);
-            d3.select(item).classed('highlighted',false);
+            d3.selectAll('.g_wrapper').classed('highlighted',false);
+            rectClicked = "";
         }
     }
 </script>
