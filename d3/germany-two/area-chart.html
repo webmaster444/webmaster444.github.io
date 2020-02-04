@@ -559,11 +559,11 @@ function showTooltip(cuData){
     if (cuData.type == "month") {
         tooltipContent += "<tr><td><span class='gray circle'></span></td>";
         tooltipContent += "<td style='text-align:right'>This Year Sales</td>";
-        tooltipContent += "<td>" + numberFormatMK(cuData.sales) + "</td></tr>";
+        tooltipContent += "<td style='text-transform:uppercase'>" + numberFormatMK(cuData.sales) + "</td></tr>";
 
         tooltipContent += "<tr><td><span class='white circle'></span></td>";
         tooltipContent += "<td style='text-align:right'>This Year Sales Ziel</td>";
-        tooltipContent += "<td>" + numberFormatMK(cuData.target) + "</td></tr>";
+        tooltipContent += "<td style='text-transform:uppercase'>" + numberFormatMK(cuData.target) + "</td></tr>";
 
         if (cuData.color == "positive") {
             tooltipContent += "<tr><td><span class='green circle'></span></td>";
@@ -571,7 +571,7 @@ function showTooltip(cuData){
             tooltipContent += "<tr><td><span class='red circle'></span></td>";
         }
         tooltipContent += "<td style='text-align:right'>ΔPL</td>";
-        tooltipContent += "<td>" + numberFormatMK(cuData.y) + "</td></tr>";
+        tooltipContent += "<td style='text-transform:uppercase'>" + numberFormatMK(cuData.y) + "</td></tr>";
 
         tooltipContent += "<tr><td></td>";
         tooltipContent += "<td style='text-align:right'>ΔPL%</td>";

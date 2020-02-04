@@ -215,11 +215,11 @@
                 if(d.type == "month"){
                     tooltipContent += "<tr><td><span class='gray circle'></span></td>";
                     tooltipContent += "<td style='text-align:right'>This Year Sales</td>";
-                    tooltipContent += "<td>"+numberFormatMK(d.sales)+"</td></tr>";                
+                    tooltipContent += "<td style='text-transform:uppercase'>"+numberFormatMK(d.sales)+"</td></tr>";                
 
                     tooltipContent += "<tr><td><span class='white circle'></span></td>";
                     tooltipContent += "<td style='text-align:right'>This Year Sales Ziel</td>";
-                    tooltipContent += "<td>"+numberFormatMK(d.target)+"</td></tr>";                
+                    tooltipContent += "<td style='text-transform:uppercase'>"+numberFormatMK(d.target)+"</td></tr>";                
 
                     if(d.color == "positive"){
                         tooltipContent += "<tr><td><span class='green circle'></span></td>";
@@ -227,19 +227,19 @@
                         tooltipContent += "<tr><td><span class='red circle'></span></td>";
                     }                    
                     tooltipContent += "<td style='text-align:right'>ΔPL</td>";
-                    tooltipContent += "<td>"+numberFormatMK(d.y)+"</td></tr>";    
+                    tooltipContent += "<td style='text-transform:uppercase'>"+numberFormatMK(d.y)+"</td></tr>";    
 
                     tooltipContent += "<tr><td></td>";
                     tooltipContent += "<td style='text-align:right'>ΔPL%</td>";
-                    tooltipContent += "<td>"+d.dplpercent.toFixed(1)+"%</td></tr>";    
+                    tooltipContent += "<td style='text-transform:uppercase'>"+d.dplpercent.toFixed(1)+"%</td></tr>";    
                 }else if(d.type == "PL"){            
                     tooltipContent += "<tr><td><span class='white circle'></span></td>";
                     tooltipContent += "<td style='text-align:right'>This Year Sales Ziel</td>";
-                    tooltipContent += "<td>"+numberFormatMK(d.y)+"</td></tr>";                
+                    tooltipContent += "<td style='text-transform:uppercase'>"+numberFormatMK(d.y)+"</td></tr>";                
                 }else if(d.type == "AC"){
                     tooltipContent += "<tr><td><span class='gray circle'></span></td>";
                     tooltipContent += "<td style='text-align:right'>This Year Sales</td>";
-                    tooltipContent += "<td>"+numberFormatMK(d.y)+"</td></tr>";                
+                    tooltipContent += "<td style='text-transform:uppercase'>"+numberFormatMK(d.y)+"</td></tr>";                
 
                     if(d.color == "positive"){
                         tooltipContent += "<tr><td><span class='green circle'></span></td>";
@@ -247,7 +247,7 @@
                         tooltipContent += "<tr><td><span class='red circle'></span></td>";
                     }                    
                     tooltipContent += "<td style='text-align:right'>ΔPL</td>";
-                    tooltipContent += "<td>"+numberFormatMK(d.y)+"</td></tr>";    
+                    tooltipContent += "<td style='text-transform:uppercase'>"+numberFormatMK(d.y)+"</td></tr>";    
 
                     tooltipContent += "<tr><td></td>";
                     tooltipContent += "<td style='text-align:right'>ΔPL%</td>";
