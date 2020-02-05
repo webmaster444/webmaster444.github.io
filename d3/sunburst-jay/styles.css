@@ -97,3 +97,7 @@ h5{
     font-size: 12px;
     font-weight: normal;
 }
+
+#sequence text.breadcrumb-text{
+    fill: black;
+}

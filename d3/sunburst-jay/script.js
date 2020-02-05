@@ -50,9 +50,11 @@ $('[name="selection[]"]').change(function(){
     });            
 
     if(checked.includes('Sensitivity')){
+        $("#data-selection-widget select").hide();
         $("#data-selection-widget select").children('option[value="color"]').hide();
         $("#data-selection-widget select").val('length');
     }else{
+        // $("#data-selection-widget select").show();
         if($(this).attr('id')=="checkbox-redundancy"){
             if(checked.includes("RowCount")){
                 if($("#select-rowcount").val()=="length"){                            
@@ -621,7 +623,7 @@ function initializeBreadcrumbTrail() {
     // Add the svg area.
     var trail = d3.select("#sequence").append("svg:svg")
         .attr("width", 1300)
-        .attr("height", 50)
+        .attr("height", 100)
         .attr("id", "trail");
     // Add the label at the end, for the percentage.
     trail.append("svg:text")
@@ -672,18 +674,42 @@ function updateBreadcrumbs(nodeArray, percentageString) {
         .attr("text-anchor", "middle")
         .text(function(d) { return d.data.name; });
 
+    entering.append('text')
+        .attr('class','breadcrumb-text')
+        .attr("x", (b.w + b.t) / 2)
+        .attr("y", b.h / 2 + 30)
+        .attr("dy", "0.35em")
+        .attr("text-anchor", "middle")
+        .text(function(d) { return "Row Count:" + d.data[field_rowcnt]; });
+
+    entering.append('text')
+        .attr('class','breadcrumb-text')
+        .attr("x", (b.w + b.t) / 2)
+        .attr("y", b.h / 2 + 40)
+        .attr("dy", "0.35em")
+        .attr("text-anchor", "middle")
+        .text(function(d) { return "Sensitivity Score:" + d.data[field_sensitivity]; });
+
+    entering.append('text')
+        .attr('class','breadcrumb-text')
+        .attr("x", (b.w + b.t) / 2)
+        .attr("y", b.h / 2 + 50)
+        .attr("dy", "0.35em")
+        .attr("text-anchor", "middle")
+        .text(function(d) { return "Redundancy multiple:" + d.data[field_redundancy]; });
+
     // Merge enter and update selections; set position for all nodes.
     entering.merge(trail).attr("transform", function(d, i) {
     return "translate(" + i * (b.w + b.s) + ", 0)";
     });
 
     // Now move and update the percentage at the end.
-    d3.select("#trail").select("#endlabel")
-        .attr("x", (nodeArray.length) * (b.w + b.s) + 10)
-        .attr("y", b.h / 2)
-        .attr("dy", "0.35em")
-        .attr("text-anchor", "start")
-        .text(percentageString);
+    // d3.select("#trail").select("#endlabel")
+    //     .attr("x", (nodeArray.length) * (b.w + b.s) + 10)
+    //     .attr("y", b.h / 2)
+    //     .attr("dy", "0.35em")
+    //     .attr("text-anchor", "start")
+    //     .text(percentageString);
 
     // Make the breadcrumb trail visible, if it's hidden.
     d3.select("#trail")
