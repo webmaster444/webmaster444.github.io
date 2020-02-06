@@ -8,6 +8,9 @@
     <script src='https://d3js.org/d3.v4.min.js'></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
     <style>
+        body{
+            position: relative;
+        }
         .axis path,
         .axis line {
           fill: none;
@@ -45,6 +48,28 @@
             border-radius: 8px;         
             pointer-events: none;    
             color: white;       
+        }
+
+        .arrow-left{
+            width: 0; 
+            height: 0; 
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;           
+            border-right:10px solid black;             
+            position: absolute;
+            left: -10px;
+            bottom: 20px;
+        }
+
+        .arrow-right{
+            width: 0; 
+            height: 0; 
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;            
+            border-left: 10px solid black;
+            position: absolute;
+            right: -10px;
+            bottom: 20px
         }
 
         span.circle{
@@ -577,14 +602,30 @@ function showTooltip(cuData){
         tooltipContent += "<td style='text-align:right'>ΔPL%</td>";
         tooltipContent += "<td>" + cuData.dplpercent.toFixed(1) + "%</td></tr>";
     }
-
+    
     tooltipContent += "</table>";
+
+    let direction = "left";
+    if(d3.event.pageX + 185 < width){
+        direction = "left";
+    }else{
+        direction = "right";
+    }
+    tooltipContent += '<div class="arrow-'+direction+'"></div>';
+
+    
     div.transition()
         .duration(200)
         .style("opacity", .9);
     div.html(tooltipContent)
-        .style("left", (d3.event.pageX) + "px")
-        .style("top", (d3.event.pageY - 28) + "px");
+        .style("left", function(){
+            if(direction == "right"){
+                return (d3.event.pageX) - 185 + "px";
+            }else{
+                return (d3.event.pageX) + "px";    
+            }            
+        })
+        .style("top", (d3.event.pageY - 90) + "px");
 }
 
 function hideTooltip(){

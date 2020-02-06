@@ -54,8 +54,8 @@ $('[name="selection[]"]').change(function(){
         $("#data-selection-widget select").children('option[value="color"]').hide();
         $("#data-selection-widget select").val('length');
     }else{
-        // $("#data-selection-widget select").show();
         if($(this).attr('id')=="checkbox-redundancy"){
+            $("#select-redundancy").show();
             if(checked.includes("RowCount")){
                 if($("#select-rowcount").val()=="length"){                            
                     $("#select-redundancy").val("color");
@@ -64,6 +64,7 @@ $('[name="selection[]"]').change(function(){
                 }
             }
         }else if($(this).attr('id')=="checkbox-rowcount"){
+            $("#select-rowcount").show();
             if(checked.includes("Redundancy")){
                 if($("#select-redundancy").val()=="length"){
                     $("#select-rowcount").val("color");
