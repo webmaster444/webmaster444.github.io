@@ -166,8 +166,7 @@ const yRedundancy = d3.scaleLinear().range([5,maxRadius - yMin - 70]);
 const color = d3.scaleOrdinal(d3.schemeCategory20);
 var xScale = d3.scaleLinear().domain([0, 100]).range([0, 500])
 
-var colorScale = d3.scaleLinear().range(["#E5E5E5","#FC0E36"]);    
-var redundancyColorScale = d3.scaleLinear().range(["#AEAEAE", "#B928BB"]);
+var colorScale = d3.scaleLinear().range(["#EEEEEE", "#B928BB","#FC0E36"]);
 
 const partition = d3.partition();
 
@@ -458,7 +457,6 @@ function render_chart(root){
         yRedundancy.domain([0, d3.max(root.descendants().filter(function(d){return d.height == 0}).map(function(d){return parseFloat(d.data[field_redundancy]);}))]);            
     }else{             
         let new_clicked = getIndexfromRoot(root, clicked_data);
-        console.log(new_clicked);
         // let new_root = d3.hierarchy(clicked_data);
         // console.log(new_root);
         // // let new_clicked_data = setYDomains(clicked_data.data.node_id);
@@ -467,21 +465,11 @@ function render_chart(root){
         yRedundancy.domain([0, d3.max(new_clicked.descendants().map(function(d){return parseFloat(d.data[field_redundancy]);}))]);            
     }            
                 
-    // if(selected_color == field_rowcnt){
-    //     colorScale.domain(d3.extent(root.descendants().map(function(d){return d.data[field_rowcnt]})));
-    // }else if(selected_color == field_sensitivity){
-    //     colorScale.domain(d3.extent(root.descendants().map(function(d){return d.data[field_sensitivity]})));
-    // }else if(selected_color == field_redundancy){
-    //     colorScale.domain(d3.extent(root.descendants().map(function(d){return d.data[field_redundancy]})));
-    // }
     let colMin = d3.min(root.descendants().map(function(d){return d.data[selected_color]}));
     let colMax = d3.max(root.descendants().map(function(d){return d.data[selected_color]}));
-    if(selected_color == field_redundancy){
-        redundancyColorScale.domain(d3.extent(root.descendants().map(function(d){return d.data[selected_color]})));
-    }else{                
-        colorScale.domain(d3.extent(root.descendants().map(function(d){return d.data[selected_color]})));                
-    }
-    
+
+    let colMean = (colMin + colMax )/ 2;
+    colorScale.domain([colMin,colMean,colMax]);
     d3.select("#color-min").text(colMin);
     d3.select("#color-max").text(colMax);
 
@@ -515,15 +503,12 @@ function render_chart(root){
                 }else{
                     return color(d.data.name);
                 }                        
-            }else if(selected_color == field_sensitivity){   
-                // if(d.data[field_sensitivity]==0){
-                //     return sensitivity0color;
-                // }                                                
+            }else if(selected_color == field_sensitivity){                        
                 return colorScale(parseFloat(d.data[field_sensitivity]));                        
             }else if(selected_color == field_rowcnt){
                 return colorScale(d.data[field_rowcnt]);
             }else if(selected_color == field_redundancy){
-                return redundancyColorScale(d.data[field_redundancy]);
+                return colorScale(d.data[field_redundancy]);
             }
         })
         .attr('d', function(d){                    
@@ -609,12 +594,7 @@ function getSelectionValues(){
     $("#color_span").html(selected_color);
     if(selected_color==""){
         $(".color-legend").addClass('hide');
-    }else{
-        if(selected_color==field_redundancy){
-            $("#gradient stop").last().attr('stop-color',redundancyColorScale.range()[1]);
-        }else{
-            $("#gradient stop").last().attr('stop-color',colorScale.range()[1]);
-        }
+    }else{        
         $(".color-legend").removeClass('hide');                
     }          
 }      
