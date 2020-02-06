@@ -205,6 +205,7 @@ d3.csv('data.csv', function(error, data) {
     x.domain(chart_data.map(function(d) {
         return d.x
     }));
+
     y.domain([0, chart_data.reduce(function(acc, d) {
         return d3.max([acc, d.sales, d.target]);
     }, 0)]);
