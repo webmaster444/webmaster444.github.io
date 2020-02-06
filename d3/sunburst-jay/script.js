@@ -50,12 +50,11 @@ $('[name="selection[]"]').change(function(){
     });            
 
     if(checked.includes('Sensitivity')){
-        $("#data-selection-widget select").hide();
         $("#data-selection-widget select").children('option[value="color"]').hide();
         $("#data-selection-widget select").val('length');
     }else{
         if($(this).attr('id')=="checkbox-redundancy"){
-            $("#select-redundancy").show();
+            // $("#select-redundancy").show();
             if(checked.includes("RowCount")){
                 if($("#select-rowcount").val()=="length"){                            
                     $("#select-redundancy").val("color");
@@ -64,7 +63,7 @@ $('[name="selection[]"]').change(function(){
                 }
             }
         }else if($(this).attr('id')=="checkbox-rowcount"){
-            $("#select-rowcount").show();
+            // $("#select-rowcount").show();
             if(checked.includes("Redundancy")){
                 if($("#select-redundancy").val()=="length"){
                     $("#select-rowcount").val("color");
@@ -120,7 +119,7 @@ $("#aggregate-select").change(function(){
 
 $("#checkbox-redundancy").change(function(){
     if($(this).prop('checked')==true){
-        $("#select-redundancy").removeClass('hide');
+        // $("#select-redundancy").removeClass('hide');
     }else{
         $("#select-redundancy").addClass('hide');
     }
@@ -128,7 +127,7 @@ $("#checkbox-redundancy").change(function(){
 
 $("#checkbox-rowcount").change(function(){
     if($(this).prop('checked')==true){
-        $("#select-rowcount").removeClass('hide');
+        // $("#select-rowcount").removeClass('hide');
     }else{
         $("#select-rowcount").addClass('hide');
     }
@@ -563,6 +562,8 @@ function getSelectionValues(){
     }); 
 
     if(checked.includes("Sensitivity")){
+        console.log('eee');
+        $("#data-selection-widget select").addClass('hide');
         selected_color = "SensitivtyScore";
         if(checked.includes("RowCount")){
             selected_length = field_rowcnt;
@@ -570,19 +571,22 @@ function getSelectionValues(){
             selected_length = field_redundancy;
         }
     }else{
+        console.log('ddd');
         if(checked.includes("RowCount")){
             if($("#select-rowcount").val() == "length"){
                 selected_length = field_rowcnt;
             }else if($("#select-rowcount").val() == "color"){
-                selected_color = field_rowcnt;
+                selected_color = field_rowcnt;                
             }
+            $("#select-rowcount").removeClass('hide');                
         }
         if(checked.includes("Redundancy")){
             if($("#select-redundancy").val() == "length"){
                 selected_length = field_redundancy;
             }else if($("#select-redundancy").val() == "color"){
-                selected_color = field_redundancy;
+                selected_color = field_redundancy;                
             }
+            $("#select-redundancy").removeClass('hide');
         }
     }                        
 
