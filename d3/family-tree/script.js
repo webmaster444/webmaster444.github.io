@@ -4,7 +4,7 @@ var colorArray = {
 };
 
 var marriedCircleWidth = 20, marriedTextFontSize = 12;
-
+var fontSizeArray = [15,15,14,13,12,11,10,8];
 var width = 1000,
     height = 1000,
     radius = 50 * Math.max(width, height) / 100,
@@ -148,7 +148,7 @@ function buildGraph(jsondata) {
         .attr('id', (_, i) => `hiddenMarriedArc${i}`)
         .attr('d', middleMarriedArcLine);
 
-    const textInfo = arc_wrapper.append('text')
+    const textInfo = arc_wrapper.append('text').style('font-size',d=>{ return fontSizeArray[d.depth]})
     // Add white contour
     textInfo.append('textPath')
         .attr('startOffset','50%')
@@ -273,10 +273,6 @@ function buildGraph(jsondata) {
 
     // var g_wrapper = svg.selectAll('.g_wrapper').data(partition.nodes(root)).enter().append('g').attr('class','g_wrapper');
 
-
-    d3.selectAll("text")
-        .style("pointer-events", "none");
-
     // d3.selectAll("path")
     //     .attr("fill-rule", "evenodd")
 
@@ -295,6 +291,7 @@ function insertData(data, gender = "root") {
     let res = {};
     let tmp = {};
     tmp.name = data.first + " " + data.last;
+    tmp.birth = data.birth;
     tmp.gender = gender;
     if (Object.keys(data.parents).length != 0) {
         tmp.children = [];
