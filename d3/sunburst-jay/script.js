@@ -363,11 +363,21 @@ function createTreeData(data) {
 
     result.forEach(function(store){
         store.children.forEach(function(tbl){
-            tbl[field_sensitivity] = parseFloat(d3.sum(tbl.children.map(function(d){return d[field_sensitivity]})) / tbl.children.length).toFixed(2);
-            tbl[field_redundancy] = parseFloat(d3.sum(tbl.children.map(function(d){return d[field_redundancy]})) / tbl.children.length).toFixed(2);
+            if($("#aggregate-select").val()=="average"){
+                tbl[field_sensitivity] = parseFloat(d3.sum(tbl.children.map(function(d){return d[field_sensitivity]})) / tbl.children.length).toFixed(2);
+                tbl[field_redundancy] = parseFloat(d3.sum(tbl.children.map(function(d){return d[field_redundancy]})) / tbl.children.length).toFixed(2);
+            }else{
+                tbl[field_redundancy] = parseFloat(d3.sum(tbl.children.map(function(d){return d[field_redundancy]}))).toFixed(2);
+                tbl[field_sensitivity] = parseFloat(d3.sum(tbl.children.map(function(d){return d[field_sensitivity]}))).toFixed(2);
+            }
         });
-        store[field_sensitivity] = parseFloat(d3.sum(store.children.map(function(d){return d[field_sensitivity]})) / store.children.length).toFixed(2);
-        store[field_sensitivity] = parseFloat(d3.sum(store.children.map(function(d){return d[field_sensitivity]})) / store.children.length).toFixed(2);
+        if($("#aggregate-select").val()=="average"){
+            store[field_sensitivity] = parseFloat(d3.sum(store.children.map(function(d){return d[field_sensitivity]})) / store.children.length).toFixed(2);
+            store[field_redundancy] = parseFloat(d3.sum(store.children.map(function(d){return d[field_redundancy]})) / store.children.length).toFixed(2);
+        }else{
+            store[field_sensitivity] = parseFloat(d3.sum(store.children.map(function(d){return d[field_sensitivity]}))).toFixed(2);
+            store[field_redundancy] = parseFloat(d3.sum(store.children.map(function(d){return d[field_redundancy]}))).toFixed(2);
+        }
     })
 
     var rings = [];
@@ -472,7 +482,6 @@ function render_chart(root){
     let colMax = d3.max(root.descendants().map(function(d){return parseFloat(d.data[selected_color]);}));
 
     let colMean = (colMin + colMax )/ 2;
-    console.log(colMin, colMax, colMean);
     colorScale.domain([colMin,colMean,colMax]);
     d3.select("#color-min").text(colMin);
     d3.select("#color-max").text(colMax);
