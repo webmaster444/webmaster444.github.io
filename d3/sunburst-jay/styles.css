@@ -64,6 +64,7 @@ fill: #fff;
 
 #chart {
 position: relative;
+margin-top: 50px;
 }
 
 #explanation {

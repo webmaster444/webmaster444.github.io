@@ -157,10 +157,9 @@ const x = d3.scaleLinear()
 
 let yMin = 150
 let yRange = [0, yMin+20, yMin+30,yMin+50, yMin+70, maxRadius];
-
 const y = d3.scaleLinear().range(yRange).domain([0,0.25,0.333,0.5,0.75,1]);
-const yRowCounts = d3.scaleLinear().range([5,maxRadius - yMin - 70]);
-const yRedundancy = d3.scaleLinear().range([5,maxRadius - yMin - 70]);
+const yRowCounts = d3.scaleLinear().range([5,maxRadius - yMin - 80]);
+const yRedundancy = d3.scaleLinear().range([5,maxRadius - yMin - 80]);
 
 const color = d3.scaleOrdinal(d3.schemeCategory20);
 var xScale = d3.scaleLinear().domain([0, 100]).range([0, 500])
@@ -345,7 +344,7 @@ function createTreeData(data) {
                     if($("#aggregate-select").val()=="sum"){                                                                
                         temp[field_sensitivity] += +o[field_sensitivity];
                         temp[field_redundancy] += +o[field_redundancy];
-                    }else if($("#aggregate-select").val()=="average"){
+                    }else if($("#aggregate-select").val()=="average"){                        
                         if(temp.children.length == 0){
                             temp[field_sensitivity] = 0;
                             temp[field_redundancy] = 0;
@@ -361,6 +360,15 @@ function createTreeData(data) {
                 .push({ name: o.DataElementName, size: +1, RowCounts: +o.RowCounts, SensitivtyScore: +o.SensitivtyScore,RedundancyMultiple: +o.RedundancyMultiple});
             return r;
         }, []);            
+
+    result.forEach(function(store){
+        store.children.forEach(function(tbl){
+            tbl[field_sensitivity] = parseFloat(d3.sum(tbl.children.map(function(d){return d[field_sensitivity]})) / tbl.children.length).toFixed(2);
+            tbl[field_redundancy] = parseFloat(d3.sum(tbl.children.map(function(d){return d[field_redundancy]})) / tbl.children.length).toFixed(2);
+        });
+        store[field_sensitivity] = parseFloat(d3.sum(store.children.map(function(d){return d[field_sensitivity]})) / store.children.length).toFixed(2);
+        store[field_sensitivity] = parseFloat(d3.sum(store.children.map(function(d){return d[field_sensitivity]})) / store.children.length).toFixed(2);
+    })
 
     var rings = [];
     $("input[name='rings[]']:checked").each(function ()
@@ -455,19 +463,16 @@ function render_chart(root){
         yRowCounts.domain([0, d3.max(root.descendants().filter(function(d){return d.height == 0}).map(function(d){return parseInt(d.data[field_rowcnt]);}))]);
         yRedundancy.domain([0, d3.max(root.descendants().filter(function(d){return d.height == 0}).map(function(d){return parseFloat(d.data[field_redundancy]);}))]);            
     }else{             
-        let new_clicked = getIndexfromRoot(root, clicked_data);
-        // let new_root = d3.hierarchy(clicked_data);
-        // console.log(new_root);
-        // // let new_clicked_data = setYDomains(clicked_data.data.node_id);
-        // console.log(new_root.descendants().map(function(d){console.log(d); return parseFloat(d.data.data[field_redundancy]);}));
+        let new_clicked = getIndexfromRoot(root, clicked_data);            
         yRowCounts.domain([0, d3.max(new_clicked.descendants().map(function(d){return parseInt(d.data[field_rowcnt])}))]);
         yRedundancy.domain([0, d3.max(new_clicked.descendants().map(function(d){return parseFloat(d.data[field_redundancy]);}))]);            
     }            
                 
-    let colMin = d3.min(root.descendants().map(function(d){return d.data[selected_color]}));
-    let colMax = d3.max(root.descendants().map(function(d){return d.data[selected_color]}));
+    let colMin = d3.min(root.descendants().map(function(d){return parseFloat(d.data[selected_color]);}));
+    let colMax = d3.max(root.descendants().map(function(d){return parseFloat(d.data[selected_color]);}));
 
     let colMean = (colMin + colMax )/ 2;
+    console.log(colMin, colMax, colMean);
     colorScale.domain([colMin,colMean,colMax]);
     d3.select("#color-min").text(colMin);
     d3.select("#color-max").text(colMax);
@@ -502,12 +507,12 @@ function render_chart(root){
                 }else{
                     return color(d.data.name);
                 }                        
-            }else if(selected_color == field_sensitivity){                        
+            }else if(selected_color == field_sensitivity){                                    
                 return colorScale(parseFloat(d.data[field_sensitivity]));                        
             }else if(selected_color == field_rowcnt){
-                return colorScale(d.data[field_rowcnt]);
+                return colorScale(parseFloat(d.data[field_rowcnt]));
             }else if(selected_color == field_redundancy){
-                return colorScale(d.data[field_redundancy]);
+                return colorScale(parseFloat(d.data[field_redundancy]));
             }
         })
         .attr('d', function(d){                    
@@ -561,8 +566,7 @@ function getSelectionValues(){
         checked.push($(this).val());
     }); 
 
-    if(checked.includes("Sensitivity")){
-        console.log('eee');
+    if(checked.includes("Sensitivity")){        
         $("#data-selection-widget select").addClass('hide');
         selected_color = "SensitivtyScore";
         if(checked.includes("RowCount")){
@@ -571,7 +575,6 @@ function getSelectionValues(){
             selected_length = field_redundancy;
         }
     }else{
-        console.log('ddd');
         if(checked.includes("RowCount")){
             if($("#select-rowcount").val() == "length"){
                 selected_length = field_rowcnt;
