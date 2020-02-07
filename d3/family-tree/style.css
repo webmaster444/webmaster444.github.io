@@ -5,3 +5,16 @@ path {
 #vis{
 	text-align: center;
 }
+
+.hidden-arc{
+    fill: none;
+    stroke: none;
+}
+
+.hidden-married-arc{
+	fill: none;
+	stroke: none;
+}
+text{
+	text-anchor: middle;
+}
