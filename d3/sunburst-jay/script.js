@@ -16,7 +16,8 @@ let tree_depth;
 
 // Filter by Sensitivity checkbox changes
 $("[name='sensitivity[]']").change(function(d){
-    data_filtered = filter_data();       
+    filter_data();       
+    console.log(data_filtered);
     let root = createTreeData(data_filtered);
     render_chart(root);              
 });
@@ -473,7 +474,9 @@ function render_chart(root){
         yRowCounts.domain([0, d3.max(root.descendants().filter(function(d){return d.height == 0}).map(function(d){return parseInt(d.data[field_rowcnt]);}))]);
         yRedundancy.domain([0, d3.max(root.descendants().filter(function(d){return d.height == 0}).map(function(d){return parseFloat(d.data[field_redundancy]);}))]);            
     }else{             
-        let new_clicked = getIndexfromRoot(root, clicked_data);            
+        console.log(clicked_data);
+        let new_clicked = getIndexfromRoot(root, clicked_data);                    
+        console.log(new_clicked);
         yRowCounts.domain([0, d3.max(new_clicked.descendants().map(function(d){return parseInt(d.data[field_rowcnt])}))]);
         yRedundancy.domain([0, d3.max(new_clicked.descendants().map(function(d){return parseFloat(d.data[field_redundancy]);}))]);            
     }            
@@ -566,6 +569,12 @@ function render_chart(root){
     d3.select("#container").on("mouseleave", mouseleave);
     
     totalSize = root.value;
+
+    if(clicked_data !=""){
+        let new_clicked = getIndexfromRoot(root, clicked_data);                    
+        focusOn(new_clicked);
+    }
+    
 }
 
 function getSelectionValues(){
@@ -720,19 +729,19 @@ function getIndexfromRoot(root, clicked_data){
         return res;
     }else{
         root.children.forEach(function(store){
-            if(store.data.name == clicked_data.data.name && clicked_data.data[field_rowcnt] == store.data[field_rowcnt])  {                
+            if(store.data.name == clicked_data.data.name && clicked_data.data[field_rowcnt] == store.data[field_rowcnt] && store.parent.data.name == clicked_data.parent.data.name)  {                
                 res = store;
                 return;
             }
             if(store.children){
                 store.children.forEach(function(table){
-                    if(table.data.name == clicked_data.data.name && clicked_data.data[field_rowcnt] == table.data[field_rowcnt])  {                
+                    if(table.data.name == clicked_data.data.name && clicked_data.data[field_rowcnt] == table.data[field_rowcnt] && table.parent.data.name == clicked_data.parent.data.name)  {                
                         res = table;
                         return;
                     }                
                     if(table.children){
                         table.children.forEach(function(el){
-                            if(el.data.name == clicked_data.data.name && clicked_data.data[field_rowcnt] == el.data[field_rowcnt])  {                
+                            if(el.data.name == clicked_data.data.name && clicked_data.data[field_rowcnt] == el.data[field_rowcnt] && el.parent.data.name == clicked_data.parent.data.name)  {                
                                 res = el;
                                 return;
                             }                               

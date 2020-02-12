@@ -6,6 +6,7 @@ var colorArray = {
 var marriedCircleWidth = 20, marriedTextFontSize = 12;
 var fontSizeArray = [15,15,14,13,12,11,10,8];
 var marriedFontSizeArray = [12,12,12,10,10,9,9,8];
+
 var width = 1000,
     height = 1000,
     radius = 50 * Math.max(width, height) / 100,
@@ -47,9 +48,11 @@ const middleArcLine = d => {
 
     const middleAngle = (angles[1] + angles[0]) / 2;
     const invertDirection = middleAngle > 0 && middleAngle < Math.PI; // On lower quadrants write text ccw
+
     if (invertDirection) { angles.reverse(); }
 
     const path = d3.path();
+
     path.arc(0, 0, r, angles[0], angles[1], invertDirection);
     return path.toString();
 };
@@ -59,11 +62,11 @@ const middleMarriedArcLine = d => {
         const halfPi = Math.PI/2;
         const angles = [x(d.x0) - halfPi, x(d.x1) - halfPi];        
 
-        const r = (Math.max(0, y(d.children[1].y0)) + marriedCircleWidth + Math.max(0, y(d.y1)) ) /2;
+        const r = (Math.max(0, y(d.children[1].y0)) + marriedCircleWidth + Math.max(0, y(d.y1)) ) /2 + 3;
+
         const middleAngle = (angles[1] + angles[0]) / 2;
         const invertDirection = middleAngle > 0 && middleAngle < Math.PI; // On lower quadrants write text ccw
-        if (invertDirection) { angles.reverse(); }
-
+        if (invertDirection) { angles.reverse(); }        
         const path = d3.path();
         path.arc(0, 0, r, angles[0], angles[1], invertDirection);
         return path.toString();
@@ -165,13 +168,13 @@ function buildGraph(jsondata) {
         .attr('xlink:href', (_, i) => `#hiddenArc${i}` )
         .text(d => d.data.name);
 
-    let marriedInfo = inner_arc_wrapper.append('text').attr('class','married-info-text').style('font-size',d=>{return marriedFontSizeArray[d.depth]});
+    let marriedInfo = inner_arc_wrapper.append('text').attr('class','married-info-text').style('font-size',d=>{return marriedFontSizeArray[d.depth]})
     // Add white contour
-    marriedInfo.append('textPath')
-        .attr('startOffset','50%')
-        .attr('xlink:href', (_, i) => `#hiddenMarriedArc${i}` )
-        .text(d=>d.data.married)
-        .style('fill', 'none');
+    // marriedInfo.append('textPath')
+    //     .attr('startOffset','50%')
+    //     .attr('xlink:href', (_, i) => `#hiddenMarriedArc${i}` )
+    //     .text(d=>d.data.married)
+    //     .style('fill', 'none');
 
     marriedInfo.append('textPath')
         .attr('startOffset','50%')
@@ -267,8 +270,7 @@ function buildGraph(jsondata) {
                 // angle = x(d.x + d.dx / 2) * 180 / Math.PI - 90,
                 angle = x(d.x0 + (d.x1 - d.x0) / 2) * 180 / Math.PI - 90,
                 rotate = angle + (multiline ? -.5 : 0);
-
-                console.log(angle);
+                
             return "rotate(" + rotate + ")translate(" + (y(d.y0) + 2*marriedCircleWidth + padding) + ")rotate(" + (angle > 90 ? -180 : 0) + ")";
         })
 
