@@ -4,15 +4,15 @@ var colorArray = {
 };
 
 var marriedCircleWidth = 20, marriedTextFontSize = 12;
-var fontSizeArray = [15,15,14,13,12,11,10,8];
-var marriedFontSizeArray = [12,12,12,10,10,9,9,8];
+var fontSizeArray = [10,10,8,8,3,3,3,3];
+var marriedFontSizeArray = [10,10,10,10,8,6,3];
 
 var width = 1000,
     height = 1000,
     radius = 50 * Math.max(width, height) / 100,
     x = d3.scaleLinear().range([0, 2 * Math.PI]),
-    y = d3.scalePow().exponent(1.3).domain([0, 1]).range([0, radius]),
-    // y = d3.scaleLinear().domain([0,1]).range([0,radius]);
+    // y = d3.scalePow().exponent(1.3).domain([0, 1]).range([0, radius]),
+    y = d3.scaleLinear().domain([0,1]).range([0,radius]);
     padding = 5;
 
 var svg = d3.select("#vis")
@@ -41,10 +41,11 @@ var arc = d3.arc()
         return Math.max(0, y(d.y1));
     });
 
-const middleArcLine = d => {
+const middleArcLine1 = d => {    
     const halfPi = Math.PI/2;
     const angles = [x(d.x0) - halfPi, x(d.x1) - halfPi];
-    const r = Math.max(0, (y(d.y0) + y(d.y1)) / 2);
+    var step = (y(d.y1) - y(d.y0)- marriedCircleWidth) / 5;
+    const r = Math.max(0, (y(d.y0)+ marriedCircleWidth  + step));
 
     const middleAngle = (angles[1] + angles[0]) / 2;
     const invertDirection = middleAngle > 0 && middleAngle < Math.PI; // On lower quadrants write text ccw
@@ -57,12 +58,69 @@ const middleArcLine = d => {
     return path.toString();
 };
 
+const middleArcLine2 = d => {    
+    const halfPi = Math.PI/2;
+    const angles = [x(d.x0) - halfPi, x(d.x1) - halfPi];
+    var step = (y(d.y1) - y(d.y0) - marriedCircleWidth) / 5;
+    const r = Math.max(0, (y(d.y0)+ marriedCircleWidth  + 2*step));
+
+    const middleAngle = (angles[1] + angles[0]) / 2;
+    const invertDirection = middleAngle > 0 && middleAngle < Math.PI; // On lower quadrants write text ccw
+
+    if (invertDirection) { angles.reverse(); }
+
+    const path = d3.path();
+
+    path.arc(0, 0, r, angles[0], angles[1], invertDirection);
+    return path.toString();
+};
+
+const middleArcLine3 = d => {    
+    const halfPi = Math.PI/2;
+    const angles = [x(d.x0) - halfPi, x(d.x1) - halfPi];
+    var step = (y(d.y1) - y(d.y0)- marriedCircleWidth) / 5;
+    const r = Math.max(0, (y(d.y0)+ marriedCircleWidth  + 3*step));
+
+    const middleAngle = (angles[1] + angles[0]) / 2;
+    const invertDirection = middleAngle > 0 && middleAngle < Math.PI; // On lower quadrants write text ccw
+
+    if (invertDirection) { angles.reverse(); }
+
+    const path = d3.path();
+
+    path.arc(0, 0, r, angles[0], angles[1], invertDirection);
+    return path.toString();
+};
+
+const middleArcLine4 = d => {    
+    const halfPi = Math.PI/2;
+    const angles = [x(d.x0) - halfPi, x(d.x1) - halfPi];
+    var step = (y(d.y1) - y(d.y0)- marriedCircleWidth) / 5;
+    const r = Math.max(0, (y(d.y0) + marriedCircleWidth + 4*step));
+
+    const middleAngle = (angles[1] + angles[0]) / 2;
+    const invertDirection = middleAngle > 0 && middleAngle < Math.PI; // On lower quadrants write text ccw
+
+    if (invertDirection) { angles.reverse(); }
+
+    const path = d3.path();
+
+    path.arc(0, 0, r, angles[0], angles[1], invertDirection);
+    return path.toString();
+};
 const middleMarriedArcLine = d => {
     if(d.children){
         const halfPi = Math.PI/2;
         const angles = [x(d.x0) - halfPi, x(d.x1) - halfPi];        
 
-        const r = (Math.max(0, y(d.children[1].y0)) + marriedCircleWidth + Math.max(0, y(d.y1)) ) /2 + 3;
+        var angle = x(d.x0 + (d.x1 - d.x0) / 2) * 180 / Math.PI - 90;      
+
+        if(angle >= 180 || angle <= 0 ){
+            var r = (Math.max(0, y(d.children[1].y0)) + marriedCircleWidth + Math.max(0, y(d.y1)) ) /2 - marriedFontSizeArray[d.depth] / 2;    
+        }else{
+            var r = (Math.max(0, y(d.children[1].y0)) + marriedCircleWidth + Math.max(0, y(d.y1)) ) /2 + marriedFontSizeArray[d.depth] / 4;    
+        }
+        
 
         const middleAngle = (angles[1] + angles[0]) / 2;
         const invertDirection = middleAngle > 0 && middleAngle < Math.PI; // On lower quadrants write text ccw
@@ -143,30 +201,58 @@ function buildGraph(jsondata) {
             return colorArray[d.data.gender];
         })
         .attr("d", arc)
-        .attr("fill-rule", "evenodd");
+        .on('mousemove',function(d){
+            var angle = x(d.x0 + (d.x1 - d.x0) / 2) * 180 / Math.PI - 90;      
+            console.log(angle);
+        })
 
     inner_arc_wrapper.append('path')
         .attr('class', 'hidden-arc')
-        .attr('id', (_, i) => `hiddenArc${i}`)
-        .attr('d', middleArcLine);
+        .attr('id', (_, i) => `hiddenArc1${i}`)
+        .attr('d', middleArcLine1);
+
+    inner_arc_wrapper.append('path')
+        .attr('class', 'hidden-arc')
+        .attr('id', (_, i) => `hiddenArc2${i}`)
+        .attr('d', middleArcLine2);
+
+    inner_arc_wrapper.append('path')
+        .attr('class', 'hidden-arc')
+        .attr('id', (_, i) => `hiddenArc3${i}`)
+        .attr('d', middleArcLine3);
+
+    inner_arc_wrapper.append('path')
+        .attr('class', 'hidden-arc')
+        .attr('id', (_, i) => `hiddenArc4${i}`)
+        .attr('d', middleArcLine4);
 
     inner_arc_wrapper.append('path')
         .attr('class', 'hidden-married-arc')
         .attr('id', (_, i) => `hiddenMarriedArc${i}`)
         .attr('d', middleMarriedArcLine);
 
+
     let textInfo = inner_arc_wrapper.append('text').style('font-size',d=>{ return fontSizeArray[d.depth]})
-    // Add white contour
-    textInfo.append('textPath')
-        .attr('startOffset','50%')
-        .attr('xlink:href', (_, i) => `#hiddenArc${i}` )
-        .text(d => d.data.name)
-        .style('fill', 'none');
 
     textInfo.append('textPath')
         .attr('startOffset','50%')
-        .attr('xlink:href', (_, i) => `#hiddenArc${i}` )
-        .text(d => d.data.name);
+        .attr('xlink:href', (_, i) => `#hiddenArc1${i}` )
+        .text(d => d.data.first);
+
+    textInfo.append('textPath')
+        .attr('startOffset','50%')
+        .attr('xlink:href', (_, i) => `#hiddenArc2${i}` )
+        .text(d => d.data.last);
+
+    textInfo.append('textPath')
+        .attr('startOffset','50%')
+        .attr('xlink:href', (_, i) => `#hiddenArc3${i}` )
+        .text(d => d.data.birth);
+
+    textInfo.append('textPath')
+        .attr('startOffset','50%')
+        .attr('xlink:href', (_, i) => `#hiddenArc4${i}` )
+        .text(d => d.data.died);
 
     let marriedInfo = inner_arc_wrapper.append('text').attr('class','married-info-text').style('font-size',d=>{return marriedFontSizeArray[d.depth]})
     // Add white contour
@@ -204,38 +290,20 @@ function buildGraph(jsondata) {
             }
             return colorArray[d.data.gender];
         })
-        .attr("d", arc)
-
-    // outer_arc_wrapper.append('path')
-    //     .attr('class', 'hidden-arc')
-    //     .attr('id', (_, i) => `outerhiddenArc${i}`)
-    //     .attr('d', middleArcLine);
+        .attr("d", arc)        .on('mousemove',function(d){
+            var angle = x(d.x0 + (d.x1 - d.x0) / 2) * 180 / Math.PI - 90;      
+            console.log(angle);
+        })
 
     outer_arc_wrapper.append('path')
         .attr('class', 'hidden-married-arc')
         .attr('id', (_, i) => `outerhiddenMarriedArc${i}`)
         .attr('d', middleMarriedArcLine);
 
-    // outertextInfo = outer_arc_wrapper.append('text').style('font-size',d=>{ return fontSizeArray[d.depth]})
-    // // Add white contour
-    // outertextInfo.append('textPath')
-    //     .attr('startOffset','50%')
-    //     .attr('xlink:href', (_, i) => `#outerhiddenArc${i}` )
-    //     .text(d => d.data.name)
-    //     .style('fill', 'none');
 
-    // outertextInfo.append('textPath')
-    //     .attr('startOffset','50%')
-    //     .attr('xlink:href', (_, i) => `#outerhiddenArc${i}` )
-    //     .text(d => d.data.name);
 
     outermarriedInfo = outer_arc_wrapper.append('text').attr('class','married-info-text').style('font-size',d=>{return marriedFontSizeArray[d.depth]});
-    // Add white contour
-    // outermarriedInfo.append('textPath')
-    //     .attr('startOffset','50%')
-    //     .attr('xlink:href', (_, i) => `#outerhiddenMarriedArc${i+4}` )
-    //     .text(d=>d.data.married)
-    //     .style('fill', 'none');
+
 
     outermarriedInfo.append('textPath')
         .attr('startOffset','50%')
@@ -256,90 +324,56 @@ function buildGraph(jsondata) {
         //color fill
         //#000000 is black
         .style("font-size", d=>{return fontSizeArray[d.depth]})
+        .style("line-height", d=>{return fontSizeArray[d.depth]})
         .style("fill", "#000000")
-        .attr("text-anchor", function(d) {
-            return x(d.x1 / 2) > Math.PI ? "end" : "start";
-        })
+        .attr("text-anchor", "middle")
 
-        .attr("dy", ".2em")
+        // .attr("dy", ".2em")
         //checks for multiline names
         .attr("transform", function(d) {
-            var multiline = (d.data.name || "")
-                .split(" ")
-                .length > 1.5,
+            var multiline = true,
                 // angle = x(d.x + d.dx / 2) * 180 / Math.PI - 90,
-                angle = x(d.x0 + (d.x1 - d.x0) / 2) * 180 / Math.PI - 90,
-                rotate = angle + (multiline ? -.5 : 0);
+                angle = x(d.x0 + (d.x1 - d.x0) / 2) * 180 / Math.PI - 90;
+            
+                if(angle < 90){
+                    var rotate = angle - .5;    
+                }else{
+                    var rotate = angle + .5;    
+                }
                 
-            return "rotate(" + rotate + ")translate(" + (y(d.y0) + 2*marriedCircleWidth + padding) + ")rotate(" + (angle > 90 ? -180 : 0) + ")";
+            // return "rotate(" + rotate + ")translate(" + (y(d.y0) + 2*marriedCircleWidth) + ")rotate(" + (angle > 90 ? -180 : 0) + ")";
+            return "rotate(" + rotate + ")translate(" + (y(d.y0) + 2*marriedCircleWidth) + ")rotate(" + (angle > 90 ? -180 : 0) + ")";
         })
 
     //1st row of text
     textEnter
         .append("tspan")
         .attr("x", 0)
-        .text(function(d) {
-            txt = d.data.name.split(" ");
-            for (var i = txt.length - 1; i >= 0; i--) {
-                if (txt[i].length < 4 && i != 0) {
-                    txt[i - 1] += txt[i];
-                    txt.splice(i, 1);
-                }
-
-            }
-            return d.depth ? txt[0] : "";
-        });
+        .text(d=>d.data.first);
 
     //2nd row of text
     textEnter
         .append("tspan")
         .attr("x", 0)
-        .attr("dy", ".9em")
-        .text(function(d) {
-            txt = d.data.name.split(" ");
-            for (var i = txt.length - 1; i >= 0; i--) {
-                if (txt[i].length < 4 && i != 0) {
-                    txt[i - 1] += txt[i];
-                    txt.splice(i, 1);
-                }
-
-            }
-            return d.depth ? txt[1] || "" : "";
-        });
+        // .attr("dy",d=>fontSizeArray[d.depth]+'px')
+        .attr('dy','1em')
+        .text(d=>d.data.last);
 
     //3rd row
     textEnter
         .append("tspan")
         .attr("x", 0)
-        .attr("dy", ".9em")
-        .text(function(d) {
-            txt = d.data.name.split(" ");
-            for (var i = txt.length - 1; i >= 0; i--) {
-                if (txt[i].length < 4 && i != 0) {
-                    txt[i - 1] += txt[i];
-                    txt.splice(i, 1);
-                }
-
-            }
-            return d.depth ? txt[2] || "" : "";
-        });
+        // .attr("dy", d=>fontSizeArray[d.depth]+'px')
+        .attr('dy','1em')
+        .text(d=>d.data.birth);
 
     //fourth row (if necessary)
     textEnter
         .append("tspan")
         .attr("x", 0)
-        .attr("dy", ".9em")
-        .text(function(d) {
-            txt = d.data.name.split(" ");
-            for (var i = txt.length - 1; i >= 0; i--) {
-                if (txt[i].length < 4 && i != 0) {
-                    txt[i - 1] += txt[i];
-                    txt.splice(i, 1);
-                }
-
-            }
-            return d.depth ? txt[3] || "" : "";
-        });
+        // .attr("dy", d=>fontSizeArray[d.depth]+'px')
+        .attr('dy','1em')
+        .text(d=>d.data.died);
 
     // var g_wrapper = svg.selectAll('.g_wrapper').data(partition.nodes(root)).enter().append('g').attr('class','g_wrapper');
     
@@ -359,6 +393,9 @@ function insertData(data, gender = "root") {
     let tmp = {};
     tmp.name = data.first + " " + data.last;
     tmp.birth = data.birth;
+    tmp.first = data.first;
+    tmp.last  = data.last;
+    tmp.died  = data.died;
     tmp.gender = gender;
     if(Object.keys(data).includes('parents')){    
         tmp.children = [];
