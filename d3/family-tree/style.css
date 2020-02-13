@@ -18,3 +18,11 @@ path {
 text{
 	text-anchor: middle;
 }
+
+.depth_0 text{
+	display: none;
+}
+
+.depth_0 text.root,.depth_0 .married-info-text{
+	display: block;
+}
