@@ -55,7 +55,6 @@
     d3.json('assets/sunburst.json').then(function(data) {
         initializeBreadcrumbTrail();
 
-        var color = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, data.children.length + 1));
         partition = data => {
             const root = d3.hierarchy(data)
                 .sum(d => d.value)
@@ -65,8 +64,9 @@
                 (root);
         }
 
-        const root = partition(data);
 
+        const root = partition(data);
+        var color = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, root.descendants().length + 1));
         root.each(d => d.current = d);
 
         const svg = d3.select('#chart-wrapper').append("svg")
@@ -81,7 +81,7 @@
             .data(root.descendants().slice(1))
             .join("path")
             .attr("fill", d => {
-                while (d.depth > 1) d = d.parent;
+                // while (d.depth > 1) d = d.parent;
                 return color(d.data.name);
             })
             .attr("fill-opacity", d => arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0)
@@ -199,8 +199,8 @@ function updateBreadcrumbs(nodeArray, percentageString) {
            // while (d.depth > 1) d = d.parent;
         return color(d.data.name);
     })
-    // .attr("fill-opacity", d => arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0)
-    .attr("fill-opacity", 1)
+    .attr("fill-opacity", d => arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0)
+    // .attr("fill-opacity", 1)
 
   entering.append("svg:text")
       .attr("x", (b.w + b.t) / 2)
