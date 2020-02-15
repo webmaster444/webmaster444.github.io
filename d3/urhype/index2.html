@@ -29,16 +29,16 @@ var div = d3.select("body").append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
 
-d3.json('assets/bubble.json').then(function(data) {
+d3.json('assets/bubble2.json').then(function(data) {
     pack = data => d3.pack()
         .size([width - 2, height - 2])
         .padding(3)
         (d3.hierarchy({
                 children: data
             })
-            .sum(d => d.value))
+            .sum(d => d.Storage))
 
-    var color = d3.scaleOrdinal(data.map(d => d.group), d3.schemeCategory10);
+    var color = d3.scaleOrdinal(data.map(d => d.Title), d3.schemeCategory10);
 
     const root = pack(data);
 
@@ -54,12 +54,12 @@ d3.json('assets/bubble.json').then(function(data) {
         .attr("transform", d => `translate(${d.x + 1},${d.y + 1})`);
 
     leaf.append("circle")
-        .attr("id", d => ('circle_' + d.depth + '_' + d.data.group + '_' + d.data.name))
+        .attr("id", d => ('circle_' + d.depth + '_' + d.data.Title))
         .attr("r", d => d.r)
         .attr("fill-opacity", 0.7)
-        .attr("fill", d => color(d.data.group))
+        .attr("fill", d => color(d.data.Title))
         .on('mousemove', function(d) {
-            var tooltipContent = "<p>"+d.data.group + "/ " + d.data.name+ ' / ' +d.value +"</p>";
+            var tooltipContent = "<p>"+d.data.Title + "/ " +d.data.Storage +"</p>";
             let direction = "left";
             if (d3.event.pageX + 100 < width) {
                 direction = "left";
@@ -89,14 +89,14 @@ d3.json('assets/bubble.json').then(function(data) {
         })
 
     leaf.append("clipPath")
-        .attr("id", d => ('clip_circle_' + d.depth + '_' + d.data.group + '_' + d.data.name))
+        .attr("id", d => ('clip_circle_' + d.depth + '_' + d.data.Title))
         .append("use")
-        .attr("xlink:href", d => ('#circle_' + d.depth + '_' + d.data.group + '_' + d.data.name));
+        .attr("xlink:href", d => ('#circle_' + d.depth + '_' + d.data.Title));
 
     leaf.append("text")
-        .attr("clip-path", d => ("url(#clip_circle_" + d.depth + '_' + d.data.group + '_' + d.data.name))
+        .attr("clip-path", d => ("url(#clip_circle_" + d.depth + '_' + d.data.Title))
         .selectAll("tspan")
-        .data(d => d.data.name.split(/(?=[A-Z][a-z])|\s+/g))
+        .data(d => d.data.Title.split(/(?=[A-Z][a-z])|\s+/g))
         .join("tspan")
         .attr("x", 0)
         .attr("y", (d, i, nodes) => `${i - nodes.length / 2 + 0.8}em`)
