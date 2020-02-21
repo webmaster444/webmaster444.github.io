@@ -28,7 +28,7 @@ const config = {
   left_margin: 280,
   right_margin: 350,
   top_margin: 80,
-  bottom_margin: 40,
+  bottom_margin: 10,
 
   // change date label and its position.
   dateLabel_switch: true,  

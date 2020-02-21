@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Customizable Bar Chart</title>
+    <title>PHP Customizable Bar Chart</title>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/handsontable@7.4.0/dist/handsontable.full.min.css" rel="stylesheet" media="screen">
     <link rel="stylesheet" href="assets/css/stylesheet.css">
@@ -13,9 +13,6 @@
 </head>
 
 <body class="visualisation-editor tab-preview published edited">
-    <!--     <div id="chart_wrapper">
-        <svg></svg>
-    </div> -->
     <header>
         <h3>Customizable Bar Chart</h3>
     </header>
@@ -39,6 +36,7 @@
                         <div id="visualisation" class="full-screen-ready">
                             <div id="visualisation-inner" class="editor-core">
                                 <div class="preview-holder">
+                                    <div id="chart_wrapper"></div>
                                 </div>
                             </div>
                             <div class="side-panel">
@@ -50,7 +48,7 @@
                                                 <label for="setting-column_chart">
                                                     <h3 class="no-select">Chart style</h3></label>
                                                 <div id="setting-column_chart" name="column_chart" class="buttons-container">
-                                                    <input type="radio" name="column_chart" value="false" id="column_chart_0">
+                                                    <input type="radio" name="column_chart" value="false" id="column_chart_0" checked="checked">
                                                     <label for="column_chart_0" style="width: 50%; border-radius: 3px 0px 0px 3px;">Horizontal</label>
                                                     <input type="radio" name="column_chart" value="true" id="column_chart_1">
                                                     <label for="column_chart_1" style="width: 50%; border-radius: 0px 3px 3px 0px;">Vertical</label>
@@ -122,12 +120,10 @@
                                                 <label for="setting-color_mode">
                                                     <h3 class="no-select">Color mode</h3></label>
                                                 <div id="setting-color_mode" name="color_mode" class="buttons-container">
-                                                    <input type="radio" name="color_mode" value="category" id="color_mode_0">
-                                                    <label for="color_mode_0" style="width: 33.3333%; border-radius: 3px 0px 0px 3px;">By category</label>
-                                                    <input type="radio" name="color_mode" value="bar" id="color_mode_1">
-                                                    <label for="color_mode_1" style="width: 33.3333%;">By bar</label>
+                                                    <input type="radio" name="color_mode" value="bar" id="color_mode_1" checked="checked">
+                                                    <label for="color_mode_1" style="width: 50%; border-radius: 3px 0px 0px 3px;">By bar</label>
                                                     <input type="radio" name="color_mode" value="single" id="color_mode_2">
-                                                    <label for="color_mode_2" style="width: 33.3333%; border-radius: 0px 3px 3px 0px;">Single</label>
+                                                    <label for="color_mode_2" style="width: 50%; border-radius: 0px 3px 3px 0px;">Single</label>
                                                 </div>
                                             </div>
                                             <div class="settings-option option-type-color hidden width-quarter">
@@ -167,12 +163,12 @@
                                                     <div class="dropdown-list"></div>
                                                 </div>
                                             </div>
-                                            <div class="settings-option option-type-boolean width-half">
+<!--                                             <div class="settings-option option-type-boolean width-half">
                                                 <label for="setting-color.categorical_extend">
                                                     <h3 class="no-select">Auto-extend</h3></label>
                                                 <input id="setting-color.categorical_extend" name="color.categorical_extend" type="checkbox">
                                                 <label class="slider" for="setting-color.categorical_extend"></label>
-                                            </div>
+                                            </div> -->
                                             <div class="settings-option option-type-color hidden width-half">
                                                 <label for="setting-color.categorical_seed_color">
                                                     <h3 class="no-select">Seed color</h3></label>
@@ -195,11 +191,11 @@
                                                     <label for="color.categorical_color_space_1" style="width: 50%; border-radius: 0px 3px 3px 0px;">HSL</label>
                                                 </div>
                                             </div>
-                                            <div class="settings-option option-type-text">
+<!--                                             <div class="settings-option option-type-text">
                                                 <label for="setting-color.categorical_custom_palette">
                                                     <h3 class="no-select">Color overrides</h3></label>
                                                 <textarea id="setting-color.categorical_custom_palette" name="color.categorical_custom_palette" type="text"></textarea>
-                                            </div>
+                                            </div> -->
                                             <div class="settings-option option-type-string hidden width-full">
                                                 <label for="setting-color.sequential_palette">
                                                     <h3 class="no-select">Palette</h3></label>
@@ -388,7 +384,7 @@
                                                     <h3 class="no-select">Shape</h3></label>
                                                 <div id="setting-image_circle" name="image_circle" class="buttons-container">
                                                     <input type="radio" name="image_circle" value="false" id="image_circle_0">
-                                                    <label for="image_circle_0" style="width: 50%; border-radius: 3px 0px 0px 3px;">Rectangle</label>
+                                                    <label for="image_circle_0" style="width: 50%; border-radius: 3px 0px 0px 3px;">Original</label>
                                                     <input type="radio" name="image_circle" value="true" id="image_circle_1">
                                                     <label for="image_circle_1" style="width: 50%; border-radius: 0px 3px 3px 0px;">Circle</label>
                                                 </div>
@@ -714,84 +710,10 @@
                                                     <h3 class="no-select">Max</h3></label>
                                                 <input id="setting-scale_max" name="scale_max" type="number">
                                             </div>
-                                        </div>
-                                        <div class="settings-block">
-                                            <h2 class="no-select" tabindex="0"><i class="fa fa-caret-right"></i><i class="fa fa-caret-down"></i>Annotations</h2>
-                                            <div class="settings-option option-type-boolean settings-buttons">
-                                                <label for="setting-annotations_enabled" class="hidden">
-                                                    <h3 class="no-select"></h3></label>
-                                                <div id="setting-annotations_enabled" name="annotations_enabled" class="buttons-container">
-                                                    <input type="radio" name="annotations_enabled" value="true" id="annotations_enabled_0">
-                                                    <label for="annotations_enabled_0" style="width: 50%; border-radius: 3px 0px 0px 3px;">Enabled</label>
-                                                    <input type="radio" name="annotations_enabled" value="false" id="annotations_enabled_1">
-                                                    <label for="annotations_enabled_1" style="width: 50%; border-radius: 0px 3px 3px 0px;">Disabled</label>
-                                                </div>
-                                            </div>
-                                            <div class="settings-option option-type-text">
-                                                <label for="setting-annotations_content">
-                                                    <h3 class="no-select">One per line, in format “Thing :: 2012”</h3></label>
-                                                <textarea id="setting-annotations_content" name="annotations_content" type="text"></textarea>
-                                            </div>
-                                            <div class="settings-option option-type-color width-quarter">
-                                                <label for="setting-annotations_text_color">
-                                                    <h3 class="no-select">Text color</h3></label>
-                                                <div class="color-wrapper">
-                                                    <input id="setting-annotations_text_color" name="annotations_text_color" type="color">
-                                                </div>
-                                            </div>
-                                            <div class="settings-option option-type-number width-quarter">
-                                                <label for="setting-annotations_text_size">
-                                                    <h3 class="no-select">Size</h3></label>
-                                                <input id="setting-annotations_text_size" name="annotations_text_size" type="number" min="0" step="0.1">
-                                            </div>
-                                            <div class="settings-option option-type-string settings-buttons width-half">
-                                                <label for="setting-annotations_text_weight">
-                                                    <h3 class="no-select">Weight</h3></label>
-                                                <div id="setting-annotations_text_weight" name="annotations_text_weight" class="buttons-container">
-                                                    <input type="radio" name="annotations_text_weight" value="bold" id="annotations_text_weight_0">
-                                                    <label for="annotations_text_weight_0" style="width: 50%; border-radius: 3px 0px 0px 3px;">Bold</label>
-                                                    <input type="radio" name="annotations_text_weight" value="normal" id="annotations_text_weight_1">
-                                                    <label for="annotations_text_weight_1" style="width: 50%; border-radius: 0px 3px 3px 0px;">Regular</label>
-                                                </div>
-                                            </div>
-                                            <div class="settings-divider"></div>
-                                            <div class="settings-option option-type-color width-quarter">
-                                                <label for="setting-annotations_line_color">
-                                                    <h3 class="no-select">Line color</h3></label>
-                                                <div class="color-wrapper">
-                                                    <input id="setting-annotations_line_color" name="annotations_line_color" type="color">
-                                                </div>
-                                            </div>
-                                            <div class="settings-option option-type-number width-quarter">
-                                                <label for="setting-annotations_line_opacity">
-                                                    <h3 class="no-select">Opacity</h3></label>
-                                                <input id="setting-annotations_line_opacity" name="annotations_line_opacity" type="number" min="0" max="1" step="0.1">
-                                            </div>
-                                            <div class="settings-option option-type-number width-quarter">
-                                                <label for="setting-annotations_line_width">
-                                                    <h3 class="no-select">Width</h3></label>
-                                                <input id="setting-annotations_line_width" name="annotations_line_width" type="number" min="0">
-                                            </div>
-                                            <div class="settings-option option-type-number width-quarter">
-                                                <label for="setting-annotations_line_dash">
-                                                    <h3 class="no-select">Dash</h3></label>
-                                                <input id="setting-annotations_line_dash" name="annotations_line_dash" type="number" min="0">
-                                            </div>
-                                            <div class="settings-option option-type-string width-half">
-                                                <label for="setting-annotations_align">
-                                                    <h3 class="no-select">Align</h3></label>
-                                                <input id="setting-annotations_align" name="annotations_align" type="text" data-autocomplete="annotations_align-dropdown" autocomplete="off" data-value="middle"><i class="fa fa-chevron-down clickable"></i>
-                                                <div class="dropdown autocomplete click-to-open" id="annotations_align-dropdown">
-                                                    <div class="dropdown-list"></div>
-                                                </div>
-                                            </div>
-                                            <div class="settings-option option-type-string width-half">
-                                                <label for="setting-annotations_offset">
-                                                    <h3 class="no-select">Offset</h3></label>
-                                                <input id="setting-annotations_offset" name="annotations_offset" type="text" data-autocomplete="annotations_offset-dropdown" autocomplete="off" data-value="on"><i class="fa fa-chevron-down clickable"></i>
-                                                <div class="dropdown autocomplete click-to-open" id="annotations_offset-dropdown">
-                                                    <div class="dropdown-list"></div>
-                                                </div>
+                                            <div class="settings-option option-type-number hidden width-quarter">
+                                                <label for="setting-scale_min">
+                                                    <h3 class="no-select">Min</h3></label>
+                                                <input id="setting-scale_min" name="scale_min" type="number">
                                             </div>
                                         </div>
                                         <div class="settings-block">
@@ -821,7 +743,7 @@
                                                     <div class="dropdown-list"></div>
                                                 </div>
                                             </div>
-                                            <div class="settings-option option-type-boolean width-half">
+<!--                                             <div class="settings-option option-type-boolean width-half">
                                                 <label for="setting-timeline.axis_nice_x">
                                                     <h3 class="no-select">Clean X axis</h3></label>
                                                 <input id="setting-timeline.axis_nice_x" name="timeline.axis_nice_x" type="checkbox">
@@ -838,7 +760,7 @@
                                                     <h3 class="no-select">Snap when scrubbing</h3></label>
                                                 <input id="setting-timeline.scrubber_snap" name="timeline.scrubber_snap" type="checkbox">
                                                 <label class="slider" for="setting-timeline.scrubber_snap"></label>
-                                            </div>
+                                            </div> -->
                                             <div class="settings-option option-type-boolean width-half">
                                                 <label for="setting-timeline.play_on_load">
                                                     <h3 class="no-select">Play on load</h3></label>
@@ -960,7 +882,7 @@
                                         </div>
                                         <div class="settings-block">
                                             <h2 class="no-select" tabindex="0"><i class="fa fa-caret-right"></i><i class="fa fa-caret-down"></i>Number formatting</h2>
-                                            <div class="settings-option option-type-string settings-buttons width-half">
+<!--                                             <div class="settings-option option-type-string settings-buttons width-half">
                                                 <label for="setting-localization.input_decimal_separator">
                                                     <h3 class="no-select">Decimal separator in data sheet</h3></label>
                                                 <div id="setting-localization.input_decimal_separator" name="localization.input_decimal_separator" class="buttons-container">
@@ -969,8 +891,8 @@
                                                     <input type="radio" name="localization.input_decimal_separator" value="," id="localization.input_decimal_separator_1">
                                                     <label for="localization.input_decimal_separator_1" style="width: 50%; border-radius: 0px 3px 3px 0px;">,</label>
                                                 </div>
-                                            </div>
-                                            <div class="settings-option option-type-string width-half">
+                                            </div> -->
+<!--                                             <div class="settings-option option-type-string width-half">
                                                 <label for="setting-localization.output_separators">
                                                     <h3 class="no-select">Number format to display</h3></label>
                                                 <input id="setting-localization.output_separators" name="localization.output_separators" type="text" data-autocomplete="localization.output_separators-dropdown" autocomplete="off" data-value=",."><i class="fa fa-chevron-down clickable"></i>
@@ -987,7 +909,7 @@
                                                 <div class="dropdown autocomplete click-to-open" id="blank_cells-dropdown">
                                                     <div class="dropdown-list"></div>
                                                 </div>
-                                            </div>
+                                            </div> -->
                                             <div class="settings-divider"></div>
                                             <h3 class="settings-subhead">Number styling</h3>
                                             <div class="settings-option option-type-string width-quarter">
@@ -1000,12 +922,12 @@
                                                     <h3 class="no-select">Suffix</h3></label>
                                                 <input id="setting-value_format.suffix" name="value_format.suffix" type="text">
                                             </div>
-                                            <div class="settings-option option-type-number width-half">
+<!--                                             <div class="settings-option option-type-number width-half">
                                                 <label for="setting-value_format.n_dec">
                                                     <h3 class="no-select">Decimal places</h3></label>
                                                 <input id="setting-value_format.n_dec" name="value_format.n_dec" type="number" min="-10" max="10" step="1">
-                                            </div>
-                                            <div class="settings-option option-type-boolean width-full">
+                                            </div> -->
+<!--                                             <div class="settings-option option-type-boolean width-full">
                                                 <label for="setting-value_format.strip_zeros">
                                                     <h3 class="no-select">Remove trailing zeros</h3></label>
                                                 <input id="setting-value_format.strip_zeros" name="value_format.strip_zeros" type="checkbox">
@@ -1022,7 +944,7 @@
                                                     <h3 class="no-select">Multiply/divide values</h3></label>
                                                 <input id="setting-value_format.transform_labels" name="value_format.transform_labels" type="checkbox">
                                                 <label class="slider" for="setting-value_format.transform_labels"></label>
-                                            </div>
+                                            </div> -->
                                             <div class="settings-option option-type-string hidden width-three-quarters">
                                                 <label for="setting-value_format.transform" class="hidden">
                                                     <h3 class="no-select"></h3></label>
@@ -1044,14 +966,14 @@
                                         </div>
                                         <div class="settings-block">
                                             <h2 class="no-select" tabindex="0"><i class="fa fa-caret-right"></i><i class="fa fa-caret-down"></i>Layout</h2>
-                                            <div class="settings-option option-type-font">
+<!--                                             <div class="settings-option option-type-font">
                                                 <label for="setting-layout.body_font">
                                                     <h3 class="no-select">Font</h3></label>
                                                 <input id="setting-layout.body_font" name="layout.body_font" class="font-menu" data-autocomplete="layout.body_font-dropdown" autocomplete="off"><i class="fa fa-chevron-down clickable"></i>
                                                 <div class="dropdown autocomplete click-to-open" id="layout.body_font-dropdown">
                                                     <div class="dropdown-list"></div>
                                                 </div>
-                                            </div>
+                                            </div> -->
                                             <div class="settings-option option-type-number">
                                                 <label for="setting-layout.max_width">
                                                     <h3 class="no-select">Maximum width</h3></label>
@@ -1109,7 +1031,7 @@
                                                 </div>
                                             </div>
                                             <div class="settings-divider"></div>
-                                            <div class="settings-option option-type-string settings-buttons">
+<!--                                             <div class="settings-option option-type-string settings-buttons">
                                                 <label for="setting-layout.layout_order">
                                                     <h3 class="no-select">Layout order</h3></label>
                                                 <div id="setting-layout.layout_order" name="layout.layout_order" class="buttons-container">
@@ -1122,7 +1044,7 @@
                                                     <input type="radio" name="layout.layout_order" value="stack-4" id="layout.layout_order_3">
                                                     <label for="layout.layout_order_3" style="width: 25%; border-radius: 0px 3px 3px 0px;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAdCAYAAAHZdKxuAAAAAXNSR0IArs4c6QAAANtJREFUSA3tVNEOwjAI3Iy/p2/tR/bRH6zekmuA1glO45bYZAHKcdDCOk1izbXWC+0zlJzzDVJ5sNGW9qSUKj4QKY8yWvBDUWnoKKVcTzS2yWHiIfeMwm2yIbLbRL3DRJYubi+0bAPCkcvapO3AdFgZvuDuyJZR2i4wSpBBP9ZD7RsOLQ9gD/Y5ZmaA3EEHWY6r3SEwrzDEHLpnlvOXa4/7xttZfhNwyPdKcqLPaz6JlXpr9bNgCfbobw2ch5iY0CQzyCOPR9ya5zleBPNy3LxknAbiv1YxExxH3gEqBW7I4zw3PQAAAABJRU5ErkJggg=="></label>
                                                 </div>
-                                            </div>
+                                            </div> -->
                                             <div class="settings-option option-type-string settings-buttons width-three-quarters">
                                                 <label for="setting-layout.space_between_sections">
                                                     <h3 class="no-select">Space between sections</h3></label>
@@ -1599,12 +1521,12 @@
                                                     <h3 class="no-select">Source name</h3></label>
                                                 <input id="setting-layout.source_name" name="layout.source_name" type="text">
                                             </div>
-                                            <div class="settings-option option-type-string width-half">
+<!--                                             <div class="settings-option option-type-string width-half">
                                                 <label for="setting-layout.source_url">
                                                     <h3 class="no-select">Source url</h3></label>
                                                 <input id="setting-layout.source_url" name="layout.source_url" type="text">
-                                            </div>
-                                            <div class="settings-option option-type-boolean">
+                                            </div> -->
+                                            <!-- <div class="settings-option option-type-boolean">
                                                 <label for="setting-layout.multiple_sources">
                                                     <h3 class="no-select">Multiple sources</h3></label>
                                                 <input id="setting-layout.multiple_sources" name="layout.multiple_sources" type="checkbox">
@@ -1746,7 +1668,7 @@
                                                 <div class="dropdown autocomplete click-to-open" id="layout.footer_border_style-dropdown">
                                                     <div class="dropdown-list"></div>
                                                 </div>
-                                            </div>
+                                            </div> -->
                                         </div>
                                     </form>
                                     <div class="detailed-settings"></div>
@@ -1857,9 +1779,11 @@
                                     <span class="dropdown-btn import-data">
 										<span class="btn action" data-action="add-data"><i class="fa fa-upload"></i> Upload data file</span>
                                     </span>
-                                    <input type="file" id="theDataFile" style="display:none;" accept=".csv, .xlsx, .xls"/>
+                                    <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="post" enctype="multipart/form-data" id="csvform">
+                                        <input type="file" id="theDataFile" name="csvfile" style="display:none;" accept=".csv, .xlsx, .xls"/>
+                                    </form>
                                 </div>                                
-                                <div id="spreadsheet" class="handsontable htRowHeaders htColumnHeaders ht__manualColumnMove after-selection--columns" data-sheet="2124498">
+                                <div id="spreadsheet">
                                 </div>
                             </div>
                         </div>
@@ -1871,27 +1795,13 @@
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/handsontable@7.4.0/dist/handsontable.full.min.js"></script>
-    <script src="assets/js/xlsx.min.js"></script>
-    <script src="assets/js/flourish.js"></script>
+    <!-- <script src="assets/js/xlsx.min.js"></script> -->
+    <!-- <script src="assets/js/flourish.js"></script> -->
     <script src="assets/js/page-script.js"></script>
-    <!--     <script src="assets/js/config.js"></script>
-    <script src="assets/js/visual.js"></script>  -->
+    <script src="assets/js/tmp_data.js"></script>
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/visual.js"></script> 
     <script>
-        //     	var data = [
-        //   ['', 'Ford', 'Tesla', 'Toyota', 'Honda'],
-        //   ['2017', 10, 11, 12, 13],
-        //   ['2018', 20, 11, 14, 13],
-        //   ['2019', 30, 15, 12, 13]
-        // ];
-
-        // var container = document.getElementById('example');
-        // var hot = new Handsontable(container, {
-        // data: data,
-        // rowHeaders: true,
-        // colHeaders: true,
-        // contextMenu: true,
-        // licenseKey: 'non-commercial-and-evaluation'
-        // });
     </script>
 </body>
 

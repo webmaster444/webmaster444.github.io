@@ -4,23 +4,32 @@ if (!Array.prototype.remove) {
         return i > -1 ? this.splice(i, 1) : [];
     };
 }
-
-d3.csv("assets/data/richest_people.csv").then(function(data) {
-    draw(data)    
-});
-
-
+// d3.csv('assets/data/full_data.csv', function(data,error){
+//     console.log(data['Country Name']);
+// })
+draw(data);
 function draw(data) {
+    // console.log(data);
+    var json_data = JSON.parse(csvJSON(data));
     var date = [];
     var names = [];
-    data.forEach(element => {
-        if (date.indexOf(element["date"]) == -1) {
-            date.push(element["date"]);
-        }
-        if (names.indexOf(element['name']) == -1) {
-            names.push(element['name']);
-        }
+    
+    names = json_data.map(function(d){return d["Country Name"]});    
+
+    date = Object.keys(json_data[0]).filter(function(d){        
+        return parseInt(d)>1900;
     });
+
+    
+    // data.forEach(element => {
+    //     if (date.indexOf(element["date"]) == -1) {
+    //         date.push(element["date"]);
+    //     }
+    //     if (names.indexOf(element['name']) == -1) {
+    //         names.push(element['name']);
+    //     }
+    // });
+
     let rate = [];
     var auto_sort = config.auto_sort;
     if (auto_sort) {
@@ -29,6 +38,7 @@ function draw(data) {
         var time = date;
     }
     
+
     var colorByNames = new Object;
 
     var colorsArray = ["#FF0000", "#000000", "#6B7490", "#666665", "#3D0048", "#001348", "#004839", "#1F5200", "#5A5700", "#5A0000", "#9C0082", "#47009C", "#00289C", "#006F9C", "#009C6A", "#6A9C00", "#9C5A00", "#9C0000", "#FF00F0", "#8700FF", "#001BFF", "#00BDFF", "#04FF00", "#FFA200"];
@@ -63,18 +73,19 @@ function draw(data) {
     };
     var background_color = config.background_color;
 
-    d3.select("body").attr("style", "background:" + background_color);
+    // d3.select("body").attr("style", "background:" + background_color);
 
     var enter_from_0 = config.enter_from_0;
     interval_time /= 3;
     var lastData = [];
+    
     var currentdate = time[0].toString();
     var currentData = [];
 
     const width = document.getElementById("chart_wrapper").getBoundingClientRect().width;
-    const height = document.getElementById("chart_wrapper").getBoundingClientRect().height;
+    const height = document.getElementById("chart_wrapper").getBoundingClientRect().height - 5;
 
-    const svg = d3.select("svg")
+    const svg = d3.select("#chart_wrapper").append("svg")
         .attr('width', width)
         .attr('height', height)
         .style('background', function(d, i) {
@@ -552,4 +563,26 @@ function getRandomColor() {
         color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
+}
+
+function csvJSON(csv){
+    var result = [];
+    // var lines=csv.split("\n");
+    var headers=csv[0];
+
+    for(var i=1;i<csv.length;i++){
+
+        var obj = {};
+        var currentline=csv[i];
+
+        for(var j=0;j<headers.length;j++){            
+            // Have some special invisible characters so used regex
+            obj[headers[j].replace(/[^a-zA-Z0-9 ]/g, "")] = currentline[j];
+        }
+
+        result.push(obj);
+    }
+
+    //return result; 
+    return JSON.stringify(result);
 }
