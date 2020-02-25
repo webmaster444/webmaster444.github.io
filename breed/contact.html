@@ -193,12 +193,12 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 	<script src="js/gmaps.min.js"></script>
 	<script src="js/theme.js"></script>
 	<script>
-		$("#contactForm").submit(function(e){
+		$("#contactForm").submit(function(e){			
 			e.preventDefault();
 			$.ajax({
 			url:'http://superbcoders.com/webmaster444/contact_jl.php',
 			type:'POST',
-			data:{foo:'bar'},
+			data:$("#contactForm").serialize(),
 			crossDomain:true,
 			success:function(data){
 			 	console.log(data);
