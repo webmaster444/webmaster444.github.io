@@ -69,8 +69,17 @@
   	left: 50%;
   	transform: translate(-50%,-50%);
   	color: white;
-  	opacity: 0.8;
+  	opacity: 1;
   	text-align: center;
+}
+.btn-info:hover, .btn-info:focus{
+	background-color: #AA0000;
+	color: white;
+	opacity: 0.9;
+}
+.btn-info{
+	background-color: #AA0000;
+	color: white;
 }
 
 .contact_icon_img{
