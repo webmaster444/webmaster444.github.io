@@ -59,6 +59,8 @@
 
 #main_nav a{
 	color: #fff;
+	font-weight: 600;
+    font-size: 18px;
 }
 
 #header_content,#contact_content{
