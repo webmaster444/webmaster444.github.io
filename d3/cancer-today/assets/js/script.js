@@ -181,7 +181,7 @@ function changeLabels(data){
         var d2 = interpolate(t);
         var pos = outerArc.centroid(d2);
         pos[0] = chart_r * 0.95 * (midAngle(d2) < Math.PI ? 1 : -1);
-        return [arc.centroid(d2), outerArc.centroid(d2), pos];
+        return [arc.centroid(d2), outerArc.centroid(d2)];
       };      
     });
   
