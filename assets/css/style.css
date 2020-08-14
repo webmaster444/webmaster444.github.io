@@ -135,3 +135,43 @@
 	width: 30px;
 	margin-left: 5px;
 }
+
+.desktop-only{
+	display: block;
+}
+
+.mobile-only{
+	display: none;
+}
+@media screen and (max-width:767px){
+	.desktop-only{
+		display: none;
+	}
+	.mobile-only{
+		display: block;
+	}
+	#about p {
+		font-weight: 500;
+		font-size: 15px;
+	}
+	#contact_content a {
+		font-size: 18px;
+	}
+
+	#contact_content{
+		position: absolute;
+		transform: none;
+		top: 50px;
+		left: initial;
+	}
+	#contact{
+		height: 300px;
+	}
+
+	#contact h2{
+		margin-top: initial !important;
+	}
+	.nav>li>a{
+		padding: 9px 10px;
+	}
+}

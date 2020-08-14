@@ -28,7 +28,7 @@
     	<img alt="Brand" src="assets/images/webmaster-logo.png" width="180px"/>
     </a>
 
-    <ul class="nav navbar-nav navbar-right">
+    <ul class="nav navbar-nav navbar-right desktop-only">
         <li><a href="#header">Home</a></li>
         <li><a href="#projects">Projects </a></li>
         <li><a href="#about">About</a></li>
@@ -56,7 +56,7 @@
       <div  class="col-sm-12">
         <h3>Projects</h3>
         <hr/>
-        <div class="col-xs-3"> <!-- required for floating -->
+        <div class="col-sm-3 col-xs-12 desktop-only"> <!-- required for floating -->
           <!-- Nav tabs -->
           <ul class="nav nav-tabs tabs-left">
             <li class="active"><a href="#d3" data-toggle="tab"><img class="skills_logo_img" src="assets/images/d3.png" alt="D3.js logo">D3.js</a></li>            
@@ -66,8 +66,17 @@
             <li><a href="#other" data-toggle="tab"><img class="skills_logo_img" src="assets/images/other.png" alt="Other logo">Other</a></li>            
           </ul>
         </div>
-
-        <div class="col-xs-9">
+        <div class="col-sm-3 col-xs-12 mobile-only"> <!-- required for floating -->
+          <!-- Nav tabs -->
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#d3" data-toggle="tab"><img class="skills_logo_img" src="assets/images/d3.png" alt="D3.js logo"></a></li>            
+            <li><a href="#python" data-toggle="tab"><img class="skills_logo_img" src="assets/images/python.png" alt="Python"></a></li>
+            <li><a href="#react" data-toggle="tab"><img class="skills_logo_img" src="assets/images/react.png" alt="React.js logo"></a></li>
+            <li><a href="#laravel" data-toggle="tab"><img class="skills_logo_img" src="assets/images/laravel.png" alt="Other logo"></a></li>           
+            <li><a href="#other" data-toggle="tab"><img class="skills_logo_img" src="assets/images/other.png" alt="Other logo"></a></li>            
+          </ul>
+        </div>
+        <div class="col-sm-9 col-xs-12">
           <!-- Tab panes -->
           <div class="tab-content">
             <div class="tab-pane active" id="d3"><h3>D3.js projects</h3>
@@ -541,11 +550,11 @@
 	</div>
 	<div id="contact_content" class="container">
 	<div class='row'>
-	<div class="col-md-6">
+	<div class="col-md-6 col-xs-12">
 		<h1>Get in touch</h1>
 	</div>
 
-	<div class="col-md-6" style="text-align: left;">
+	<div class="col-md-6 col-xs-12" style="text-align: left;">
 		<h2 style="margin-top: -3px;"><a href="mailto:jlmobile710@gmail.com" ><img class="contact_icon_img" src="assets/images/email_icon.png" width="35px" alt="Email Icon">jlmobile710@gmail.com</a></h2>
 		<h2><a href="skype:live:jlmobile710?call"><img class="contact_icon_img" src="assets/images/skype_icon.png" width="40px" alt="Skype icon">live:jlmobile710</a></h2>
 	</div>
