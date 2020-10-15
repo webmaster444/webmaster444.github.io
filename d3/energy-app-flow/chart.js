@@ -10,14 +10,14 @@ d3.json('energy-initial-test-v3.json', function(json){
     })
     addSidebarItems(selectedCityData);
     let boilers = selectedCityData[0].children[0].boilers[0].boilers[0];
-    drawAreaChart("#boiler-chart",boilers,'boilerfires');
-    drawAreaChart("#carbon-chart",boilers,'co2savingkg');
-    drawAreaChart("#reduction-chart",boilers,'reductionkwh');
+    updateSingleScreen("#boiler-chart",boilers,'boilerfires');
+    updateSingleScreen("#carbon-chart",boilers,'co2savingkg');
+    updateSingleScreen("#reduction-chart",boilers,'reductionkwh');
 })
 
 
-function drawAreaChart(wrapper, chartData,type){
-    console.log(chartData);
+function updateSingleScreen(wrapper, chartData,type){
+    $(wrapper).html("");
     let m2gon = chartData.m2gstatuson, m2goff=chartData.m2gstatusoff;
     let currentStep = $(wrapper).closest('.screen-frame').find('.screen-step.active').html().toLowerCase();
 
@@ -44,7 +44,9 @@ function drawAreaChart(wrapper, chartData,type){
     y = d3.scaleLinear().rangeRound([height, 0]);
     x.domain([0, d3.max(Object.keys(m2gonSparkline))]);
     y.domain([0, d3.max([d3.max(m2gonSparkline),d3.max(m2goffSparkline)])]);
+    // update widget text and value
     updateWidget(m2gon,m2goff,currentStep,type,wrapper);
+    // draw area chart
     let svg = d3.select(wrapper).append('svg').attr('width',width).attr('height',height).append("g").attr("transform", "translate(0, 20)");
     var area = d3.area()
     .x(function(d,i) { return x(i); })
@@ -95,5 +97,24 @@ function addSidebarItems(buildingsData){
 }
 
 $('.screen-step').on('click', function(){
-    console.log('screen-step');
+    $(this).siblings().removeClass('active');
+    $(this).addClass('active');
+
+    let type = $(this).closest('.single-screen').attr('type');
+    let wrapperClass = $(this).closest('.single-screen').find('.screen-chart').attr('id');
+
+    // reload data and change that screen
+    d3.json('energy-initial-test-v3.json', function(json){
+        let cities = json.children;
+        let cityNames = cities.map(function(d){return d.name});
+        let selectedCity = "Westmorland";
+        let selectedCityData = "";
+        cities.forEach(function(city){
+            if(city.name==selectedCity){
+                selectedCityData = city.children;
+            }
+        })        
+        let boilers = selectedCityData[0].children[0].boilers[0].boilers[0];
+        updateSingleScreen('#'+wrapperClass,boilers,type);        
+    })
 })

@@ -455,6 +455,7 @@ img.eye-icon {
 
 .screen-step{
 	padding: 2px 5px;
+	cursor: pointer;
 }
 .screen-chart{
 	height: 100%;
