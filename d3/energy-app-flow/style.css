@@ -98,6 +98,11 @@ p{
 .right-icon input{
 	padding-right: 50px;
 }
+.widget-value{
+	text-align: left;
+	font-size: 80px;
+    font-weight: bold;
+}
 
 .form-control.arrow-right{
 	position: relative;
@@ -389,14 +394,18 @@ img.eye-icon {
 	border-top: 1px solid #707070;
 }
 .placeholder .status-wrapper{
-	margin-right: 6px;
+	margin-right: 15px;
 	margin-left: 15px;
 }
 
 .screen-frame{
 	border:1px solid white;
-	border-radius: 10px;
+	border-radius: 30px;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
 	min-height: 500px;
+	margin-top: 5px;
+	padding: 20px;
 }
 
 .screens-wrapper{
@@ -405,10 +414,66 @@ img.eye-icon {
 }
 
 .main-content{
-	margin-left: 300px;
+	padding-left: 300px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
 }
 
 .single-screen{
 	flex-basis: 33%;
 	text-align: center;
+	max-width: 400px;
+	margin: 20px;
+}
+.screen-title{
+	font-size: 25px;
+	margin-top: 15px;
+}
+
+.screen-option-chooser{
+    border-radius: 30px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    width: 100%;
+    border: 1px solid white;
+    display: flex;
+    min-height: 50px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.space-between{
+	justify-content: space-between;
+}
+
+.screen-step.active{
+	border-bottom: 3px solid #8dc73f;
+}
+
+.screen-step{
+	padding: 2px 5px;
+}
+.screen-chart{
+	height: 100%;
+}
+
+.text-left{
+	text-align: left;
+}
+.screen-value-widget{
+	padding: 20px 0;
+}
+
+.m2goffarea{
+	fill: #9d630e;
+}
+.m2gonarea{
+	fill: #8dc73f;
+}
+
+.axis path, .axis text, .axis .tick line{
+	display: none;
 }
