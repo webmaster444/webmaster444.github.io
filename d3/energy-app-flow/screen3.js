@@ -8,7 +8,7 @@ d3.json('energy-initial-test-v3.json', function(json){
             selectedCityData = city.children;
         }
     })
-    addSidebarItems(selectedCityData);
+    // addSidebarItems(selectedCityData);
     let boilers = selectedCityData[0].children[0].boilers[0].boilers[0];
     updateSingleScreen("#boiler-chart",boilers,'boilerfires');
     updateSingleScreen("#carbon-chart",boilers,'co2savingkg');
@@ -89,12 +89,12 @@ function updateWidget(withm2g, withoutm2g, interval, type, wrapper){
             $(wrapper).closest('.screen-frame').find('.widget-value').html(value);
     }    
 }
-function addSidebarItems(buildingsData){    
-    buildingsData.forEach(function(building){
-        buildingItemHTML = '<div class="building-item"><img src="arrow-down.png" alt=""><h4 class="color-white uppercase">'+building.name+'</h4><div class="status-wrapper"><div class="status-online"></div></div><label class="checkbox-container"><input type="checkbox"><span class="checkmark"></span></label></div>';
-        $('.building-items').append(buildingItemHTML);
-    })    
-}
+// function addSidebarItems(buildingsData){    
+//     buildingsData.forEach(function(building){
+//         buildingItemHTML = '<div class="building-item"><img src="arrow-down.png" alt=""><h4 class="color-white uppercase">'+building.name+'</h4><div class="status-wrapper"><div class="status-online"></div></div><label class="checkbox-container"><input type="checkbox"><span class="checkmark"></span></label></div>';
+//         $('.building-items').append(buildingItemHTML);
+//     })    
+// }
 
 $('.screen-step').on('click', function(){
     $(this).siblings().removeClass('active');

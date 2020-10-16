@@ -179,6 +179,7 @@ aside{
 	bottom: 0;
 	background-color: #4e4e4e;
 	border-top-left-radius: 20px;
+	z-index: 10;
 }
 
 hr{
@@ -286,13 +287,7 @@ hr{
 .sidebar-item.active .grey-eye{
 	display: none;
 }
-.building-item{
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	border-bottom: 1px solid #707070;
-	cursor: pointer;
-}
+
 .building-item img{
 	padding-left: 10px;
 }
@@ -357,7 +352,7 @@ img.eye-icon {
     padding-right: 10px;
 }
 
-.building-item h4{
+.building-item h4, .building-item h5{
 	width: 100%;
 	padding-left: 10px;
 }
@@ -430,6 +425,7 @@ img.eye-icon {
 .screen-title{
 	font-size: 25px;
 	margin-top: 15px;
+	font-weight: normal;
 }
 
 .screen-option-chooser{
@@ -475,6 +471,83 @@ img.eye-icon {
 	fill: #8dc73f;
 }
 
-.axis path, .axis text, .axis .tick line{
+.screen3 .axis path, .screen3 .axis text, .screen3 .axis .tick line{
+	display: none;
+}
+
+.one-third{
+	flex-basis: 33%;
+}
+
+.one-third > div{
+	padding: 30px;
+}
+
+.line{
+	fill: none;
+	stroke: black;
+}
+
+
+/* screen 5*/
+.screen5 .charts-wrapper{
+	width: 100%;
+}
+
+.line1{
+	stroke: #f29900;
+}
+
+.line2{
+	stroke: #b6b6b6;
+}
+
+.screen5 .axis path, .screen5 .axis text{
+	stroke: #b6b6b6;
+	fill: #b6b6b6;
+}
+
+text.label{
+	font-size: 10px;
+	font-weight: bold;
+}
+
+.screen5 .screen-step-selector{
+	padding: 0 0px 0px 40px ;
+}
+
+.building-item a{
+	display: flex;
+    align-items: center;
+    justify-content: space-between;    
+	cursor: pointer;
+	width: 100%;
+}
+
+.building-item{
+	border-bottom: 1px solid #707070;
+}
+
+.building-item ul li{
+	list-style-type: none;	
+}
+
+.building-subitem{
+	display: flex;
+    align-items: center;
+    justify-content: space-between;    
+	cursor: pointer;
+	width: 100%;
+}
+
+.building-item ul{
+	margin: 5px 0 20px;
+}
+
+.building-item h5{
+	margin: 6px 0;
+}
+
+.hide{
 	display: none;
 }
