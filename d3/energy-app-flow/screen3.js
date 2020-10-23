@@ -1,21 +1,3 @@
-d3.json('energy-initial-test-v3.json', function(json){
-    let cities = json.children;
-    let cityNames = cities.map(function(d){return d.name});
-    let selectedCity = "Westmorland";
-    let selectedCityData = "";
-    cities.forEach(function(city){
-        if(city.name==selectedCity){
-            selectedCityData = city.children;
-        }
-    })
-    // addSidebarItems(selectedCityData);
-    let boilers = selectedCityData[0].children[0].boilers[0].boilers[0];
-    updateSingleScreen("#boiler-chart",boilers,'boilerfires');
-    updateSingleScreen("#carbon-chart",boilers,'co2savingkg');
-    updateSingleScreen("#reduction-chart",boilers,'reductionkwh');
-})
-
-
 function updateSingleScreen(wrapper, chartData,type){
     $(wrapper).html("");
     let m2gon = chartData.m2gstatuson, m2goff=chartData.m2gstatusoff;
@@ -89,12 +71,6 @@ function updateWidget(withm2g, withoutm2g, interval, type, wrapper){
             $(wrapper).closest('.screen-frame').find('.widget-value').html(value);
     }    
 }
-// function addSidebarItems(buildingsData){    
-//     buildingsData.forEach(function(building){
-//         buildingItemHTML = '<div class="building-item"><img src="arrow-down.png" alt=""><h4 class="color-white uppercase">'+building.name+'</h4><div class="status-wrapper"><div class="status-online"></div></div><label class="checkbox-container"><input type="checkbox"><span class="checkmark"></span></label></div>';
-//         $('.building-items').append(buildingItemHTML);
-//     })    
-// }
 
 $('.screen-step').on('click', function(){
     $(this).siblings().removeClass('active');
@@ -103,18 +79,16 @@ $('.screen-step').on('click', function(){
     let type = $(this).closest('.single-screen').attr('type');
     let wrapperClass = $(this).closest('.single-screen').find('.screen-chart').attr('id');
 
-    // reload data and change that screen
-    d3.json('energy-initial-test-v3.json', function(json){
-        let cities = json.children;
-        let cityNames = cities.map(function(d){return d.name});
-        let selectedCity = "Westmorland";
-        let selectedCityData = "";
-        cities.forEach(function(city){
-            if(city.name==selectedCity){
-                selectedCityData = city.children;
-            }
-        })        
-        let boilers = selectedCityData[0].children[0].boilers[0].boilers[0];
-        updateSingleScreen('#'+wrapperClass,boilers,type);        
-    })
+    let filteredData = filterDataByCheckbox();
+    let boilers=filteredData['boilers'];
+    updateSingleScreen('#'+wrapperClass,boilers,type);        
+})
+
+
+$(document).on('change','.placeholder input[type="checkbox"], .building-lists-wrapper input[type="checkbox"]', function(){
+    let filteredData = filterDataByCheckbox();
+    let boilers=filteredData['boilers'];
+    updateSingleScreen("#boiler-chart",boilers,'boilerfires');
+    updateSingleScreen("#carbon-chart",boilers,'co2savingkg');
+    updateSingleScreen("#reduction-chart",boilers,'reductionkwh');
 })

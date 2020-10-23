@@ -1,6 +1,6 @@
+let detailData, cuData;
 d3.json('energy-initial-test-v3.json', function(json){
-    let cities = json.children;
-    let cityNames = cities.map(function(d){return d.name});
+    let cities = json.children;    
     let selectedCity = "Westmorland";
     let selectedCityData = "";
     cities.forEach(function(city){
@@ -9,10 +9,13 @@ d3.json('energy-initial-test-v3.json', function(json){
         }
     })
     // addSidebarItems(selectedCityData);
-    let boilers = selectedCityData[0].children[0].boilers[0].boilers;
-    updateSingleScreen("#template-profile",boilers,'template-profile');
-    updateSingleScreen("#boiler-load",boilers,'boiler-load');
-    updateSingleScreen("#mg2-status",boilers,'mg2-status');
+    detailData = selectedCityData;
+    // let boilers = selectedCityData[0].children[0].boilers[0].boilers;
+    cuData = getBoilers('Schools','School1');
+    updateSingleScreen("#template-profile",cuData,'template-profile');
+    updateSingleScreen("#boiler-load",cuData,'boiler-load');
+    updateSingleScreen("#mg2-status",cuData,'mg2-status');
+    $('.all-checkbox, .parent-checkbox').attr('disabled','disabled');
 })
 
 
@@ -83,19 +86,46 @@ $('.screen-step').on('click', function(){
 
     let type = $(this).closest('.one-third').attr('type');
     let wrapperClass = $(this).closest('.one-third').attr('id');
-
+    
+    // let boilers=detailData['boilers'];
+    updateSingleScreen('#'+wrapperClass,cuData,type); 
     // reload data and change that screen
-    d3.json('energy-initial-test-v3.json', function(json){
-        let cities = json.children;
-        let cityNames = cities.map(function(d){return d.name});
-        let selectedCity = "Westmorland";
-        let selectedCityData = "";
-        cities.forEach(function(city){
-            if(city.name==selectedCity){
-                selectedCityData = city.children;
-            }
-        })        
-        let boilers = selectedCityData[0].children[0].boilers[0].boilers;
-        updateSingleScreen('#'+wrapperClass,boilers,type);        
-    })
+    // d3.json('energy-initial-test-v3.json', function(json){
+    //     let cities = json.children;
+    //     let cityNames = cities.map(function(d){return d.name});
+    //     let selectedCity = "Westmorland";
+    //     let selectedCityData = "";
+    //     cities.forEach(function(city){
+    //         if(city.name==selectedCity){
+    //             selectedCityData = city.children;
+    //         }
+    //     })        
+    //     let boilers = selectedCityData[0].children[0].boilers[0].boilers;
+       
+    // })
 })
+
+$(document).on('change','.building-subitem input[type="checkbox"]', function(){    
+    // let boilers=detailChartData['boilers'];
+    // console.log(detailChartData);
+    // updateSingleScreen("#template-profile",boilers,'template-profile');
+    // updateSingleScreen("#boiler-load",boilers,'boiler-load');
+    // updateSingleScreen("#mg2-status",boilers,'mg2-status');
+    $('.building-subitem input[type="checkbox"]').prop('checked',false);
+    $(this).prop('checked',true);
+})
+
+$(document).on('click','.building-subitem', function(){
+    let buildingName = $(this).find('h5').html();
+    let buildingType = $(this).closest('.building-item').find('h4').html();
+    cuData = getBoilers(buildingType, buildingName);    
+    updateSingleScreen("#template-profile",cuData,'template-profile');
+    updateSingleScreen("#boiler-load",cuData,'boiler-load');
+    updateSingleScreen("#mg2-status",cuData,'mg2-status');
+})
+
+function getBoilers(buildingType, buildingName){
+    let cuBuildings = detailData.filter((d)=>d.name==buildingType);
+    let cuBuilding = cuBuildings[0].children.filter((d)=>d.name==buildingName);
+    return cuBuilding[0]['boilers'][0]['boilers'];
+}
