@@ -1,8 +1,9 @@
 var overallChartData, detailChartData;
-d3.json('energy-initial-test-v3.json', function(json){
+d3.json('energy-initial-test-v4.json', function(json){
     let cities = json.children;
     let selectedCity = "Westmorland";
     let selectedCityData = "";
+    updateCityLabel(selectedCity);
     cities.forEach(function(city){
         if(city.name==selectedCity){
             selectedCityData = city.children;
@@ -116,4 +117,8 @@ function filterDataByCheckbox(){
     let checked = getAllCheckedBoxes();
     let filteredData = overallChartData.filter(c=>checked.includes(c.name));
     return makeOneChild(filteredData);
+}
+
+function updateCityLabel(cityname){
+    $('header h2,.sidebar-item .cityname').html(cityname);
 }

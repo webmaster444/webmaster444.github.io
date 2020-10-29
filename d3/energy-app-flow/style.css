@@ -413,7 +413,8 @@ img.eye-icon {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 100%;
+	width: 100%;
+	height: calc(100% - 60px);
 }
 
 .single-screen{

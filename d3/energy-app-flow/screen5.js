@@ -45,7 +45,7 @@ function updateSingleScreen(wrapper, chartData,type){
                 break;
         }
 
-        let width = $(wrapper).find('.charts-wrapper').width(), height = 200;        
+        let width = $(wrapper).find('.charts-wrapper').width(), height = 150;        
         let margin = {top:30, left:40,right:0,bottom:30};
         width = width - margin.left - margin.right;
         var x = d3.scaleLinear().range([0, width]),
