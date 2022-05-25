@@ -20,7 +20,7 @@
     "babelify": "^7.3.0",
     "css-loader": "^0.26.1",
     "envify": "^4.0.0",
-    "grunt": "^1.0.1",
+    "grunt": "^1.5.3",
     "grunt-babel": "^6.0.0",
     "grunt-browserify": "^5.0.0",
     "grunt-contrib-uglify": "^2.0.0",
