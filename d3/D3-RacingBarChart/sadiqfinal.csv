@@ -1,0 +1,91 @@
+name,type,value,date,color
+Carlos Slim & Family,Mexico,53500000000,2010-01-01,#0aa800
+Carlos Slim & Family,Mexico,74000000000,2011-01-01,#0aa800
+Carlos Slim & Family,Mexico,69000000000,2012-01-01,#0aa800
+Carlos Slim & Family,Mexico,73000000000,2013-01-01,#0aa800
+Carlos Slim & Family,Mexico,72000000000,2014-01-01,#0aa800
+Carlos Slim & Family,Mexico,77100000000,2015-01-01,#0aa800
+Carlos Slim & Family,Mexico,50000000000,2016-01-01,#0aa800
+Carlos Slim & Family,Mexico,54500000000,2017-01-01,#0aa800
+Carlos Slim & Family,Mexico,67100000000,2018-01-01,#0aa800
+Bill Gates,United States,53000000000,2010-01-01,#3d5dff
+Bill Gates,United States,56000000000,2011-01-01,#3d5dff
+Bill Gates,United States,61000000000,2012-01-01,#3d5dff
+Bill Gates,United States,67000000000,2013-01-01,#3d5dff
+Bill Gates,United States,76000000000,2014-01-01,#3d5dff
+Bill Gates,United States,79200000000,2015-01-01,#3d5dff
+Bill Gates,United States,75000000000,2016-01-01,#3d5dff
+Bill Gates,United States,86000000000,2017-01-01,#3d5dff
+Bill Gates,United States,90000000000,2018-01-01,#3d5dff
+Warren Buffet,United States,47000000000,2010-01-01,#3d5dff
+Warren Buffet,United States,50000000000,2011-01-01,#3d5dff
+Warren Buffet,United States,44000000000,2012-01-01,#3d5dff
+Warren Buffet,United States,53500000000,2013-01-01,#3d5dff
+Warren Buffet,United States,58200000000,2014-01-01,#3d5dff
+Warren Buffet,United States,72700000000,2015-01-01,#3d5dff
+Warren Buffet,United States,60800000000,2016-01-01,#3d5dff
+Warren Buffet,United States,75600000000,2017-01-01,#3d5dff
+Warren Buffet,United States,84000000000,2018-01-01,#3d5dff
+Mukesh Ambani,India,29000000000,2010-01-01,#ffad33
+Mukesh Ambani,India,27000000000,2011-01-01,#ffad33
+Lakshmi Mittal,India,28700000000,2010-01-01,#ffad33
+Lakshmi Mittal,India,31100000000,2011-01-01,#ffad33
+Larry Ellison,United States,28000000000,2010-01-01,#3d5dff
+Larry Ellison,United States,39500000000,2011-01-01,#3d5dff
+Larry Ellison,United States,36000000000,2012-01-01,#3d5dff
+Larry Ellison,United States,43000000000,2013-01-01,#3d5dff
+Larry Ellison,United States,48000000000,2014-01-01,#3d5dff
+Larry Ellison,United States,54300000000,2015-01-01,#3d5dff
+Larry Ellison,United States,43600000000,2016-01-01,#3d5dff
+Larry Ellison,United States,52200000000,2017-01-01,#3d5dff
+Larry Ellison,United States,58500000000,2018-01-01,#3d5dff
+Bernard Arnault,France,27500000000,2010-01-01,#4e1aff
+Bernard Arnault,France,41000000000,2011-01-01,#4e1aff
+Bernard Arnault,France,41000000000,2012-01-01,#4e1aff
+Bernard Arnault,France,29000000000,2013-01-01,#4e1aff
+Bernard Arnault,France,72000000000,2018-01-01,#4e1aff
+Eike Batista,Brazil,27000000000,2010-01-01,#00c72d
+Eike Batista,Brazil,30000000000,2011-01-01,#00c72d
+Eike Batista,Brazil,30000000000,2012-01-01,#00c72d
+Amancio Ortega,Spain,25000000000,2010-01-01,#fff929
+Amancio Ortega,Spain,31000000000,2011-01-01,#fff929
+Amancio Ortega,Spain,37500000000,2012-01-01,#fff929
+Amancio Ortega,Spain,57000000000,2013-01-01,#fff929
+Amancio Ortega,Spain,64000000000,2014-01-01,#fff929
+Amancio Ortega,Spain,64500000000,2015-01-01,#fff929
+Amancio Ortega,Spain,67000000000,2016-01-01,#fff929
+Amancio Ortega,Spain,71300000000,2017-01-01,#fff929
+Amancio Ortega,Spain,70000000000,2018-01-01,#fff929
+Karl Albrecht,Germany,23500000000,2010-01-01,#ffec42
+Karl Albrecht,Germany,25400000000,2012-01-01,#ffec42
+Christy Walton & Family,United States,26500000000,2011-01-01,#3d5dff
+Christy Walton & Family,United States,36700000000,2014-01-01,#3d5dff
+Christy Walton & Family,United States,41700000000,2015-01-01,#3d5dff
+Steffan Persson,Sweden,26000000000,2012-01-01,#fff74d
+Li Ka-Shing,Hong Kong,25500000000,2012-01-01,#ff0513
+Li Ka-Shing,Hong Kong,31000000000,2013-01-01,#ff0513
+Charles Koch,United States,34000000000,2013-01-01,#3d5dff
+Charles Koch,United States,40000000000,2014-01-01,#3d5dff
+Charles Koch,United States,42900000000,2015-01-01,#3d5dff
+Charles Koch,United States,39600000000,2016-01-01,#3d5dff
+Charles Koch,United States,48300000000,2017-01-01,#3d5dff
+Charles Koch,United States,60000000000,2018-01-01,#3d5dff
+David Koch,United States,34000000000,2013-01-01,#3d5dff
+David Koch,United States,40000000000,2014-01-01,#3d5dff
+David Koch,United States,42900000000,2015-01-01,#3d5dff
+David Koch,United States,39600000000,2016-01-01,#3d5dff
+David Koch,United States,48300000000,2017-01-01,#3d5dff
+David Koch,United States,60000000000,2018-01-01,#3d5dff
+Liliane Bettencourt,France,30000000000,2013-01-01,#4e1aff
+Liliane Bettencourt,France,40100000000,2015-01-01,#4e1aff
+Sheldon Adelson,United States,38000000000,2014-01-01,#3d5dff
+Jim Walton,United States,34700000000,2014-01-01,#3d5dff
+Jim Walton,United States,40600000000,2015-01-01,#3d5dff
+Jeff Bezos,United States,45200000000,2016-01-01,#3d5dff
+Jeff Bezos,United States,72800000000,2017-01-01,#3d5dff
+Jeff Bezos,United States,112000000000,2018-01-01,#3d5dff
+Mark Zuckerberg,United States,44600000000,2016-01-01,#3d5dff
+Mark Zuckerberg,United States,56000000000,2017-01-01,#3d5dff
+Mark Zuckerberg,United States,71000000000,2018-01-01,#3d5dff
+Michael Bloomberg,United States,40000000000,2016-01-01,#3d5dff
+Michael Bloomberg,United States,47500000000,2017-01-01,#3d5dff
